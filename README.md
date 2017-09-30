@@ -1,3 +1,11 @@
-# ML-AL
-Machine Learning Deep Learning
-New journey
+# Machine Learning 
+
+thanks Andrew Ng
+
+## 1. Neural Networks  and Deep Learning 
+
+## 2. 
+
+
+
+
