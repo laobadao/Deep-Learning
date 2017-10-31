@@ -7,6 +7,8 @@ thanks Andrew Ng
 ## 2. Improving Deep Neural Networks :
 -   logistic regression
 
+SVM 支持向量机
 
+Logistic Regression
 
 
