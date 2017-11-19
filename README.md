@@ -11,4 +11,6 @@ SVM 支持向量机
 
 Logistic Regression
 
+3.9 gradient desent of neural networks
+
 
