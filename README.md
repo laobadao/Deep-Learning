@@ -1,4 +1,4 @@
-# Machine Learning 
+# Deep Learning 
 
 thanks Andrew Ng
 
