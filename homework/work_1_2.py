@@ -76,6 +76,26 @@ def sigmoid1(x):
 
 	return s
 
+# GRADED FUNCTION: sigmoid_derivative
+
+def sigmoid_derivative(x):
+    """
+    Compute the gradient (also called the slope or derivative) of the sigmoid function with respect to its input x.
+    You can store the output of the sigmoid function into variables and then use it to calculate the gradient.
+
+    Arguments:
+    x -- A scalar or numpy array
+
+    Return:
+    ds -- Your computed gradient.
+    """
+
+    ### START CODE HERE ### (≈ 2 lines of code)
+    s = 1.0 /(1 + 1/np.exp(x))
+    ds = s*(1-s)
+    ### END CODE HERE ###
+
+    return ds
 
 
 if __name__ == '__main__':
@@ -86,6 +106,8 @@ if __name__ == '__main__':
 	# you will see this give an error when you run it, because x is a vector.
 	# basic_sigmoid(x)
 	# TypeError: must be real number, not list
-
-
+	print(sigmoid_derivative(0))
+	# 0.25 
+	print(sigmoid_derivative(x))
+	# [ 0.19661193  0.10499359  0.04517666]
 
