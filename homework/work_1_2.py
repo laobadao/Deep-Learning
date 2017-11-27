@@ -56,6 +56,28 @@ def basic_sigmoid(x):
  # 不常用 math 这个库，因为因为它的输入参数为实数，而实际上，在 deep learning 中，我们常用到的训练数据
  # 都是 矩阵 或向量的形式,所以 numpy 这个库，非常的有用
 
+
+import numpy as np # this means you can access numpy functions by writing np.function() instead of numpy.function()
+
+def sigmoid1(x):
+	"""
+	Compute the sigmoid of x
+
+	Arguments:
+	x -- A scalar (标量) or numpy array of any size.
+
+	Return:
+	s -- sigmoid1(x)
+	"""
+
+	### START CODE HERE ### (≈ 1 line of code)
+	s = 1.0/(1+1/np.exp(x))
+	### END CODE HERE ###
+
+	return s
+
+
+
 if __name__ == '__main__':
 
 	print(basic_sigmoid(3))
