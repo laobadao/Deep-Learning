@@ -59,7 +59,11 @@ def basic_sigmoid(x):
 if __name__ == '__main__':
 
 	print(basic_sigmoid(3))
-
+	### One reason why we use "numpy" instead of "math" in Deep Learning ###
+	x = [1, 2, 3]
+	# you will see this give an error when you run it, because x is a vector.
+	# basic_sigmoid(x)
+	# TypeError: must be real number, not list
 
 
 
