@@ -1,5 +1,9 @@
 # Deep Learning 
 
+deeplearning.ai
+
+coursera
+
 thanks Andrew Ng
 
 ## 1. Neural Networks  and Deep Learning 
