@@ -8,4 +8,7 @@ thanks Andrew Ng
 
 
 
+mac  using jupyter notebok ----- 
 
+
+python3 -m IPython notebook 
