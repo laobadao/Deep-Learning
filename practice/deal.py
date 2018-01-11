@@ -64,11 +64,11 @@ def deleteln(infile, outfile):
 
 # 调用示例
 if __name__ == "__main__":
-	filename = "1_10"
+	filename = "1_14"
 	delblankline(filename, "no.txt")
 	addPunctuation(filename +"no", "ch.txt")
 	deleteln(filename+"noch","ch.txt")
-	# filename = "1_9"
+	# filename = "1_13"
 	# delblankline(filename, "no.txt")
-	# addengPunctuation(filename+"no", "eng.txt")
-	# deleteln(filename+"noeng","en.txt")
+	addengPunctuation(filename+"no", "eng.txt")
+	deleteln(filename+"noeng","en.txt")
