@@ -1,0 +1,358 @@
+﻿欢迎收看机器深度学习的实操课程(字幕来源：网易云课堂)
+Welcome to this course on the practical aspects of deep learning.
+关于如何构建神经网络  大家可能已经了解了
+Perhaps now you've learned how to implement a neural network.
+那么本周  我们将继续学习如何有效运作神经网络
+In this week you'll learn the practical aspects of how to make your neural network work well,
+内容涉及超参数调优  如何构建数据
+ranging from things like hyperparameter tuning to how to set up your data,
+以及如何确保优化算法快速运行
+to how to make sure your optimization algorithm runs quickly
+从而使学习算法在合理时间内完成自我学习
+so that you get your learning algorithm to learn in a reasonable time.
+第一周  我们首先说说神经网络机器学习中的问题
+In this first week, we'll first talk about the cellular machine learning problem,
+然后是随机神经网络
+then we'll talk about randomization.
+还会学习一些
+And we'll talk about some tricks for
+确保神经网络正确运行的技巧
+making sure your neural network implementation is correct.
+带着这些问题  我们开始今天的课程
+With that, let's get started.
+在配置训练  验证和测试数据集的过程中做出正确决策
+Making good choices in how you set up your training, development, and
+会在很大程度上帮助大家
+test sets can make a huge difference in helping you quickly
+创建高效的神经网络
+find a good high performance neural network.
+训练神经网络时  我们需要做出很多决策
+When training a neural network you have to make a lot of decisions,
+例如  神经网络分多少层
+such as how many layers will your neural network have?
+每层含有多少个隐藏单元
+And how many hidden units do you want each layer to have?
+学习速率是多少
+And what's the learning rates?
+各层采用哪些激活函数
+And what are the activation functions you want to use for the different layers?
+创建新应用的过程中
+When you're starting on a new application,
+我们不可能从一开始就准确预测出这些信息
+it's almost impossible to correctly guess the right values for all of these,
+和其他超级参数
+and for other hyperparameter choices, on your first attempt.
+实际上  应用型机器学习是一个高度迭代的过程
+So in practice applied machine learning is a highly iterative process,
+通常在项目启动时  我们会先有一个初步想法
+in which you often start with an idea,
+比如构建一个含有特定层数  隐藏单元数量
+such as you want to build a neural network of a certain number of layers,
+或数据集个数等等的神经网络
+certain number of hidden units, maybe on certain data sets and so on.
+然后编码  并尝试运行这些代码
+And then you just have to code it up and try it by running your code.
+通过运行和测试得到该神经网络
+You run and experiment and you get back a result that tells you
+或这些配置信息的运行结果
+how well this particular network, or this particular configuration works.
+你可能会根据输出结果
+And based on the outcome,
+重新完善自己的想法  改变策略
+you might then refine your ideas and change your choices and
+或者为了找到更好的神经网络不断迭代更新自己的方案
+maybe keep iterating in order to try to find a better and a better neural network.
+现如今  深度学习已经在自然语言处理
+Today, deep learning has found great success in a lot of areas.
+计算机视觉  语音识别
+ranging from natural language processing to computer vision to
+以及结构化数据应用等众多领域取得巨大成功
+speech recognition to a lot of applications on also structured data.
+结构化数据无所不包  从广告到网络搜索
+And structured data includes everything from advertisements to web search,
+其中网络搜索不仅包括网络搜索引擎  还包括购物网站
+which isn't just Internet search engines it's also, for example, shopping websites.
+从所有根据搜索栏词条
+Already any websites that wants
+传输结果的网站
+deliver great search results when you enter terms into a search bar,
+再到计算机安全  物流
+to computer security, to logistics, such as
+比如  判断司机去哪接送货
+figuring out where to send drivers to pick up and drop off things,
+范围之广  不胜枚举
+to many more.
+我发现  可能有自然语言处理方面的人才
+So what I'm seeing is that sometimes a researcher with a lot of experience in NLP
+想踏足计算机视觉领域
+might try to do something in computer vision.
+或者经验丰富的语音识别专家
+Or maybe a researcher with a lot of experience in speech recognition might
+想投身广告行业
+jump in and try to do something on advertising.
+又或者  有的人想从电脑安全领域跳到物流行业
+Or someone from security might want to jump in and do something on logistics.
+在我看来  从一个领域或者应用领域得来的直觉经验
+And what I've seen is that intuitions from one domain or
+通常无法转移到其它应用领域
+from one application area often do not transfer to other application areas.
+最佳决策取决于你所拥有的数据量
+And the best choices may depend on the amount of data you have,
+计算机配置中输入特征的数量
+the number of input features you have through your computer configuration and
+用GPU训练还是CPU
+whether you're training on GPUs or CPUs.
+GPU和CPU的具体配置以及其他诸多因素
+And if so, exactly what configuration of GPUs and CPUs, and many other things.
+目前为止  我觉得  对于很多应用系统
+So for a lot of applications, I think it's almost impossible.
+即使是经验丰富的深度学习行家也不太可能一开始就
+Even very experienced deep learning people find it almost impossible to correctly
+预设出最匹配的超级参数
+guess the best choice of hyperparameters the very first time.
+所以说  应用深度学习是一个典型的迭代过程
+And so today, applied deep learning is a very iterative process
+需要多次循环往复
+where you just have to go around this cycle many times
+才能为应用程序找到一个称心的神经网络
+to hopefully find a good choice of network for your application.
+因此  循环该过程的效率是决定
+So one of the things that determine how quickly you can make progress is
+项目进展速度的一个关键因素
+how efficiently you can go around this cycle.
+而创建高质量的训练数据集  验证集和测试集
+And setting up your data sets well in terms of your train, development and
+也有助于提高循环效率
+test sets can make you much more efficient at that.
+假设这是训练数据  我用一个长方形表示
+So if this is your training data, let's draw that as a big box.
+我们通常会将这些数据划分成几部分
+Then traditionally you might take all the data you have and
+一部分作为训练集
+carve off some portion of it to be your training set.
+一部分作为简单交叉验证集
+Some portion of it to be your hold-out cross validation set,
+有时也称之为验证集
+and this is sometimes also called the development set.
+方便起见  我就叫它验证集（dev set）
+And for brevity, I'm just going to call this the dev set, but
+其实都是同一个概念
+all of these terms mean roughly the same thing.
+最后一部分则作为测试集
+And then you might carve out some final portion of it to be your test set.
+接下来  我们开始对训练集执行训练算法
+And so the workflow is that you keep on training algorithms on your training sets.
+通过验证集或简单交叉验证集
+And use your dev set or your hold-out cross validation set to see which
+通过验证集或简单交叉验证集选择最好的模型
+of many different models performs best on your dev set.
+经过充分验证
+And then after having done this long enough,
+我们选定了最终模型
+when you have a final model that you want to evaluate,
+然后就可以在测试集上进行评估了
+you can take the best model you have found and evaluate it on your test set.
+为了无偏评估算法的运行状况
+In order to get an unbiased estimate of how well your algorithm is doing,
+在机器学习发展的小数据量时代
+so in the previous era of machine learning, it was common practice
+常见做法是将所有数据三七分
+to take all your data and split it according to maybe a 70/30%
+就是人们常说的70%验证集  30%测试集
+in terms of a people often talk about the 70/30 train test splits.
+如果没有明确设置验证集  也可以按照
+If you don't have an explicit dev set or maybe a 60/20/20% split
+60%训练  20%验证和20%测试集来划分
+in terms of 60% train, 20% dev and 20% test.
+这是前几年机器学习领域普遍认可的最好的实践方法
+And several years ago, this was widely considered best practice in machine learning.
+如果只有100条
+If you have maybe 100 examples in total,
+1000条或者1万条数据
+maybe 1000 examples in total, maybe after 10,000 examples.
+那么按上述比例划分是非常合理的
+These sorts of ratios were perfectly reasonable rules of thumb.
+但是在大数据时代
+But in the modern big data era, where, for example,
+我们现在的数据量可能是百万级别
+you might have a million examples in total, then the trend is that your dev and
+那么验证集和测试集占数据总量的比例会趋向于变得更小
+test sets have been becoming a much smaller percentage of the total.
+因为验证集的目的就是验证不同的算法
+Because remember, the goal of the dev set or the development set is that you're
+检验哪种算法更有效
+going to test different algorithms on it and see which algorithm works better.
+因此  验证集要足够大才能评估
+So the dev set just needs to be big enough for
+比如2个甚至10个不同算法
+you to evaluate, say, two different algorithm choices or
+并迅速判断出哪种算法更有效
+ten different algorithm choices and quickly decide which one is doing better.
+我们可能不需要拿出20%的数据作为验证集
+And you might not need a whole 20% of your data for that.
+比如我们有100万条数据
+So, for example, if you have a million training examples you might decide that
+那么取1万条数据便足以进行评估
+just having 10,000 examples in your dev set is more than enough
+找出其中表现最好的1-2种算法
+to evaluate which one or two algorithms does better.
+同样地  根据最终选择的分类器
+And in a similar vein, the main goal of your test set is, given your final classifier,
+测试集的主要目的是正确评估分类器的性能
+to give you a pretty confident estimate of how well it's doing.
+所以  如果拥有百万数据  我们只需要1000条数据
+And again, if you have a million examples maybe you might decide that 10,000
+便足以评估单个分类器
+examples is more than enough in order to evaluate a single classifier and
+准确评估该分类器的性能
+give you a good estimate of how well it's doing.
+假设我们有100万条数据
+So in this example where you have a million examples,
+其中1万条作验证集  1万条作测试集
+if you need just 10,000 for your dev and 10,000 for your test,
+100万里取1万  比例是1%
+your ratio will be more like this 10,000 is 1% of 1 million,
+即：训练集占98%  验证集和测试集各占1%
+so you'll have 98% train, 1% dev, 1% test.
+对于数据量过百万的应用
+And I've also seen applications where,
+训练集可以占到99.5%
+if you have even more than a million examples, you might end up
+验证和测试集各占0.25%
+with 99.5% train and 0.25% dev, 0.25% test,
+或者测试集占0.4%  测试集占0.1%
+or maybe a 0.4% dev, 0.1% test.
+总结一下  在机器学习中
+So just to recap, when setting up your machine learning problem,
+我们通常将样本分成训练集  验证集和测试集三部分
+I'll often set it up into a train, dev and test sets, and
+数据集规模相对较小的  适用传统的划分比例
+if you have a relatively small dataset, these traditional ratios might be okay.
+数据集规模较大的  验证集和测试集可以占到
+But if you have a much larger data set, it's also fine to set your dev and test sets
+数据总量的20%或10%以下
+to be much smaller than your 20% or even 10% of your data.
+后面我会给出如何划分验证集和测试集的具体指导
+We'll give more specific guidelines on the sizes of dev and test sets later in this specialization.
+现代深度学习的另一个趋势是  越来越多的人
+One other trend we're seeing in the era of modern deep learning is that
+在训练和测试集分布不匹配的情况下进行训练
+more and more people train on mismatched train and test distributions.
+假设你要构建一个用户可以上传大量图片的应用程序
+Let's say you're building an app that lets users upload a lot of pictures
+目的是找出并呈现所有猫咪图片
+and your goal is to find pictures of cats in order to show your users.
+可能你的用户都是爱猫人士
+Maybe all your users are cat lovers.
+训练集可能是从网上下载的猫咪图片
+Maybe your training set comes from cat pictures downloaded off the Internet, but
+而验证集和测试集是用户在这个应用上上传的猫的图片
+your dev and test sets might comprise cat pictures from users using our app.
+就是说  训练集可能是从网络上抓下来的图片
+So maybe your training set has a lot of pictures crawled off the Internet
+而验证集和测试集是用户上传的图片
+but the dev and test sets are pictures uploaded by users.
+结果许多网页上的猫咪图片分辨率很高
+Turns out a lot of webpages have very high resolution, very professional,
+很专业  后期制作精良
+very nicely framed pictures of cats.
+而用户上传的照片可能是用手机随意拍摄的
+But maybe your users are uploading blurrier, lower res images
+像素低  比较模糊
+just taken with a cell phone camera in a more casual condition.
+这两类数据有所不同
+And so these two distributions of data may be different.
+针对这种情况  根据经验  我建议大家
+The rule of thumb I'd encourage you to follow in this case is to make sure
+要确保验证集和测试集的数据来自同一分布
+that the dev and test sets come from the same distribution.
+关于这个问题我也会多讲一些
+We'll say more about this particular guideline as well, but
+因为你们要用验证集来评估不同的模型
+because you will be using the dev set to evaluate a lot of different models and
+尽可能地优化性能
+trying really hard to improve performance on the dev set.
+如果验证集和测试集来自同一个分布
+It's nice if your dev set comes from the same distribution as your test set.
+但由于深度学习算法需要大量的训练数据
+But because deep learning algorithms have such a huge hunger for training data,
+为了获取更大规模的训练数据集
+one trend I'm seeing is that you might use all sorts of creative tactics,
+我们可以采用当前流行的各种创意策略
+such as crawling webpages, in order to acquire a much bigger
+例如  网页抓取
+training set than you would otherwise have.
+代价就是训练集数据与验证集和测试集数据
+Even if part of the cost of that is then that your training set
+有可能不是来自同一分布
+data might not come from the same distribution as your dev and test sets.
+但只要遵循这个经验法则
+But you find that so long as you follow this rule of thumb,
+你会发现  机器学习算法会变得更快
+that progress in your machine learning algorithm will be faster.
+我会在后面的课程中  
+And I'll give a more detailed explanation
+更加详细地解释这条经验法则
+for this particular rule of thumb later in the specialization as well.
+最后一点  就算没有测试集也不要紧
+Finally, it might be okay to not have a test set.
+测试集的目的是对
+Remember the goal of the test set is to give you a unbiased estimate
+最终所选定的神经网络系统做出无偏评估
+of the performance of your final network, of the network that you selected.
+如果不需要无偏评估
+But if you don't need that unbiased estimate,
+也可以不设置测试集
+then it might be okay to not have a test set.
+所以如果只有验证集  没有测试集
+So what you do, if you have only a dev set but not a test set,
+我们要做的就是  在训练集上训练  尝试不同的模型框架
+is you train on the training set and then you try different model architectures,
+在验证集上评估这些模型
+evaluate them on the dev set,
+然后迭代并选出适用的模型
+and then use that to iterate and try to get to a good model.
+因为验证集中已经涵盖测试集数据
+Because you've fit your data to the dev set,
+其不再提供无偏性能评估
+this no longer gives you an unbiased estimate of performance.
+当然  如果你不需要无偏评估  那就再好不过了
+But if you don't need one, that might be perfectly fine.
+在机器学习中  如果只有一个训练集和一个验证集
+In the machine learning world, when you have just a train and
+而没有独立的测试集
+a dev set but no separate test set.
+遇到这种情况 训练集还被人们称为训练集
+Most people will call this a training set
+而验证集则被称为测试集
+and they will call the dev set the test set.
+不过在实际应用中  人们只是把测试集当成简单交叉验证集使用
+But what they actually end up doing is using the test set as a hold-out cross validation set,
+并没有完全实现该术语的功能
+which maybe isn't completely a great use of terminology,
+因为他们把验证集数据过度拟合到了测试集中
+because they're then overfitting to the test set.
+如果某团队跟你说他们只设置了一个训练集和一个测试集
+So when the team tells you that they have only a train and a test set,
+我会很谨慎  心想他们是不是真的有训练验证集
+I would just be cautious and think, do they really have a train dev set?
+因为他们把验证集数据过度拟合到了测试集中
+Because they're overfitting to the test set.
+让这些团队改变叫法  改称其为“训练验证集”
+Culturally, it might be difficult to change some of these team's terminology
+ 而不是“训练测试集”可能不太容易
+and get them to call it a trained dev set rather than a trained test set.
+即便我认为“训练验证集”在专业用词上更准确
+Even though I think calling it a train and development set would be a more correct terminology.
+实际上  如果你不需要无偏评估算法性能
+And this is actually okay practice if you don't need a completely
+那么这样是ok的
+unbiased estimate of the performance of your algorithm.
+所以说  搭建训练验证集和测试集能够加速神经网络的集成
+So having set up a train dev and test set will allow you to integrate more quickly.
+也可以更有效地衡量算法的偏差和方差
+It will also allow you to more efficiently measure the bias and variance of your algorithm,
+从而帮助我们更高效地选择合适的方法来优化算法
+so you can more efficiently select ways to improve your algorithm.
+我们下节课继续讲
+Let's start to talk about that in the next video.
