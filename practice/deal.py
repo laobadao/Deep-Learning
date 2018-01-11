@@ -27,7 +27,7 @@ def addPunctuation(infile, outfile):
             # +"，"
             outfp.writelines(li+"，")
             i = i + 1
-            j = j+1
+        j = j+1
     infp.close()
     outfp.close()
 
@@ -45,7 +45,7 @@ def addengPunctuation(infile, outfile):
             # +","
             outfp.writelines(li)
             i = i + 1
-            j = j+1
+        j = j+1
     infp.close()
     outfp.close()
 
