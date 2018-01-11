@@ -1,0 +1,435 @@
+﻿1
+00:00:01,125 --> 00:00:04,590
+上节课 我们学习了深度神经网络如何(字幕来源：网易云课堂)
+ In the last video you saw how very deep neural networks
+
+2
+00:00:04,590 --> 00:00:08,050
+产生梯度消失和梯度爆炸问题
+ can have the problems of vanishing and exploding gradients.
+
+3
+00:00:08,125 --> 00:00:12,350
+最终 针对该问题 我们想出了一个不完整的解决方案 虽然不能彻底解决问题
+ It turns out that a partial solution to this, doesn't solve it entirely,
+
+4
+00:00:12,425 --> 00:00:13,450
+却很有用
+ but helps a lot,
+
+5
+00:00:13,525 --> 00:00:18,910
+有助于我们为神经网络更谨慎地选择随机初始化参数
+ is better or more careful choice of the random initialization for your neural network.
+
+6
+00:00:19,000 --> 00:00:24,325
+为了更好地理解它
+To understand this, let's start with the example of initializing the weights for a single neuron
+
+7
+00:00:24,375 --> 00:00:27,370
+我们先举一个神经单元权重初始化的例子 然后再演变到整个深度网络
+and then we're going to generalize this to a deep network.
+
+8
+00:00:27,500 --> 00:00:31,075
+我们来看看只有一个神经元的情况
+Let's go through this with an example with just a single neuron
+
+9
+00:00:31,225 --> 00:00:33,140
+然后才是深度网络
+ and then we'll talk about the deep net later.
+
+10
+00:00:33,200 --> 00:00:39,060
+单个神经元可能有4个输入特征 从X1到X4
+So a single neuron you might input four features x1 through x4,
+
+11
+00:00:39,060 --> 00:00:42,465
+经过a=g(z)处理 最终得到ŷ
+ and then you have some a=g(z) and end it up with some y,
+
+12
+00:00:42,570 --> 00:00:48,475
+稍后讲深度网络时 这些输入表示为a[l]
+ and later on for a deeper net you know these inputs will be right some layer a(l),
+
+13
+00:00:48,775 --> 00:00:51,650
+暂时我们用x表示
+ but for now let's just call this x for now.
+
+14
+00:00:51,780 --> 00:01:03,475
+z=w1x1+ w2x2+………….+ wnxn
+ So z is going to be equal to w1x1 + w2x2 +... + it goes WnXn
+
+15
+00:01:03,625 --> 00:01:08,020
+b=0 暂时忽略b
+ and let's set b=0, so you know lets just ignore b for now.
+
+16
+00:01:08,320 --> 00:01:13,400
+为了预防z值过大或过小
+ So in order to make z not blow up and not become too small,
+
+17
+00:01:13,550 --> 00:01:17,150
+你可以看到 n越大
+ you notice that the larger n is,
+
+18
+00:01:17,350 --> 00:01:21,500
+你希望Wi越小
+ the smaller you want Wi to be, right?
+
+19
+00:01:21,775 --> 00:01:25,375
+因为z是WiXi的和
+ Because z is the sum of the WiXi,
+
+20
+00:01:25,625 --> 00:01:30,450
+如果你把很多此类项相加 希望每项值更小
+ and so if you're adding up a lot of these terms, you want each of these terms to be smaller.
+
+21
+00:01:30,680 --> 00:01:40,875
+最合理的方法就是设置Wi=1/n
+ One reasonable thing to do would be to set the variance of Wi to be equal to 1 over n,
+
+22
+00:01:41,275 --> 00:01:45,100
+ n表示神经元的输入特征数量
+where n is the number of input features that's going into a neuron.
+
+23
+00:01:45,400 --> 00:01:51,440
+实际上 你要做的就是设置某层权重矩阵W
+ So in practice, what you can do is set the weight matrix W for a certain layer
+
+24
+00:01:51,575 --> 00:01:57,700
+等于np.random.randn
+ to be np.random.randn you know,
+
+25
+00:01:57,900 --> 00:02:01,825
+这里是矩阵的shape函数
+ and then whatever the shape of the matrix is for this out here,
+
+26
+00:02:01,925 --> 00:02:06,125
+再乘以
+ and then times square root of
+
+27
+00:02:06,420 --> 00:02:14,450
+该层每个神经元的特征数量分之一
+ one over the number of features that I fed into each neuron in layer l
+
+28
+00:02:14,800 --> 00:02:16,550
+即1/n[l-1]
+ so it's going to be n of (l-1)
+
+29
+00:02:16,600 --> 00:02:21,575
+这就是l层上拟合的单元数量
+ because that's the number of units that I'm feeding(貌似是fitting) in to each of the units in layer l.
+
+30
+00:02:21,650 --> 00:02:27,900
+结果 如果你用的是Relu激活函数 而不是1/n
+ It turns out that if you're using a Relu activation function that rather than 1 over n,
+
+31
+00:02:27,950 --> 00:02:32,000
+方差设置为2/n 效果会更好
+ it turns out that set in the variance that 2 over n works a little bit better.
+
+32
+00:02:32,010 --> 00:02:37,600
+你尝尝发现 初始化时 尤其是使用Relu激活函数时
+ So you often see that in initialization, especially if you're using a Relu activation function,
+
+33
+00:02:37,700 --> 00:02:42,420
+g[l](z)=Relu(z)
+ so if gl of (z) is ReLu of (z),
+
+34
+00:02:42,475 --> 00:02:44,925
+它取决于你对随机变量的熟悉程度
+ oh, and it depends on how familiar you are with random variables.
+
+35
+00:02:45,030 --> 00:02:48,125
+这是高斯随机变量
+ It turns out that something, a Gaussian random variable
+
+36
+00:02:48,125 --> 00:02:50,850
+ 然后乘以它的平方根
+ and then multiplying it by a square root of this,
+
+37
+00:02:50,920 --> 00:02:55,350
+也就是引用这个方差2/n
+ that says the variance to be quoted to this thing, to be to 2/n
+
+38
+00:02:55,650 --> 00:02:59,480
+这里 我用的是n[l-11] 因为
+ and the reason I went from n to this n superscript l-1 was,
+
+39
+00:03:01,175 --> 00:03:04,150
+本例中 逻辑回归的特征是不变的
+ in this example with logistic regression which is unable to input features,
+
+40
+00:03:04,225 --> 00:03:05,725
+但一般情况下
+ but in more general case
+
+41
+00:03:05,825 --> 00:03:12,175
+l层上的每个神经元都有n(l-1)个输入
+ layer l would have n (l-1) inputs each of the units in that layer.
+
+42
+00:03:12,300 --> 00:03:19,300
+如果激活函数的输入特征被零均值 标准方差 方差是1
+ So if the input features of activations are roughly mean 0 and standard variance
+
+43
+00:03:19,300 --> 00:03:24,600
+z也会调整到相似范围
+ and variance 1 then this would cause z to also take on a similar scale
+
+44
+00:03:24,675 --> 00:03:26,580
+这就没解决问题
+ and this doesn't solve,
+
+45
+00:03:26,625 --> 00:03:31,850
+但它确实降低了坡度消失和爆炸问题
+ but it definitely helps reduce the vanishing, exploding gradients problem
+
+46
+00:03:31,950 --> 00:03:34,875
+因为它给权重矩阵W设置了合理值
+ because it's trying to set each of the weight matrices w
+
+47
+00:03:35,000 --> 00:03:38,575
+你也知道  它不能比1大很多 也不能比1小很多
+ you know so that it's not too much bigger than 1, and not too much less than 1,
+
+48
+00:03:38,625 --> 00:03:42,500
+所以梯度没有爆炸或消失过快
+ so it doesn't explode or vanish too quickly.
+
+49
+00:03:42,775 --> 00:03:44,975
+我提到了其它变体函数
+I've just mention some other variants.
+
+50
+00:03:45,070 --> 00:03:49,375
+刚刚提到的函数是Relu激活函数
+The version we just described is assuming a Relu activation function,
+
+51
+00:03:49,425 --> 00:03:52,200
+一篇由Herd等人撰写的论文曾介绍过
+ and this by a paper by Herd et al..
+
+52
+00:03:52,300 --> 00:03:53,750
+对于几个其它变体函数
+ A few other variants,
+
+53
+00:03:53,800 --> 00:03:57,600
+如Tanh激活函数
+ if you are using a TanH activation function,
+
+54
+00:03:57,700 --> 00:04:01,800
+有篇论文提到
+ then there's a paper that shows that instead of using the constant 2,
+
+55
+00:04:01,870 --> 00:04:04,025
+常量1比常量2的效率更高
+it's better use the constant 1,
+
+56
+00:04:04,050 --> 00:04:12,250
+对于tanh函数来说  它是1/n^([l-1])的平方根
+and so 1 over this, instead of 2, and so you multiply it by the square root of this.
+
+57
+00:04:12,500 --> 00:04:17,550
+这里平方根的作用与这个公式作用相同
+ So this square root term will plays this term
+
+58
+00:04:17,675 --> 00:04:22,600
+它适用于Tanh激活函数
+ and you use this if you're using a TanH activation function.
+
+59
+00:04:23,075 --> 00:04:26,500
+被称为Xavier初始化
+ This is called Xavier initialization.
+
+60
+00:04:26,870 --> 00:04:30,800
+Yoshua Bengio和他的同事还提出另一种方法
+ And another version we're taught by Yoshua Bengio and his colleagues,
+
+61
+00:04:30,925 --> 00:04:32,575
+你可能在一些论文中看到过
+ you might see in some papers,
+
+62
+00:04:32,750 --> 00:04:35,725
+他们使用的是公式2/(n^[l-1]+n^[l] )的平方根
+ but is to use this formula,
+
+63
+00:04:36,425 --> 00:04:40,075
+其它理论已对此证明
+ which you know has some other theoretical justification,
+
+64
+00:04:40,525 --> 00:04:43,800
+但如果你想用Relu激活函数
+ but I would say if you're using a Relu activation function,
+
+65
+00:04:43,850 --> 00:04:46,600
+也就是最常用的激活函数
+ which is really the most common activation function,
+
+66
+00:04:46,700 --> 00:04:48,375
+我会用这个公式np.sqrt(2/n^[l-1] )
+ I would use this formula.
+
+67
+00:04:48,450 --> 00:04:52,150
+如果使用TanH函数 可以用公式√(1/n^([l-1]) )
+ If you're using TanH, you could try this version instead,
+
+68
+00:04:52,250 --> 00:04:54,550
+有些作者也会使用这个函数
+ and some authors will also use this,
+
+69
+00:04:54,925 --> 00:04:58,675
+实际上 我认为所有这些公式只是给你一个起点
+ but in practice, I think all of these formulas just give you a starting point,
+
+70
+00:04:58,750 --> 00:05:04,125
+它们给出初始化权重矩阵的方差的默认值
+ it gives you a default value to use for the variance of the initialization of your weight matrices.
+
+71
+00:05:04,270 --> 00:05:06,760
+如果你想添加方差
+ If you wish the variance here,
+
+72
+00:05:06,825 --> 00:05:11,600
+方差参数则是另一个你需要调整的超级参数
+ this variance parameter could be another thing that you could tune of your hyperparameters,
+
+73
+00:05:11,670 --> 00:05:16,275
+可以给公式np.sqrt(2/n^[l-1] )添加一个乘数参数
+ so you could have another parameter that multiplies into this formula
+
+74
+00:05:16,275 --> 00:05:20,650
+调优作为超级参数激增一份子的乘子参数
+ and tune that multiplier as part of your hyperparameter surge.
+
+75
+00:05:21,125 --> 00:05:26,050
+有时调优该超级参数效果一般
+Sometimes tuning the hyperparameter has a modest size effect.
+
+76
+00:05:26,100 --> 00:05:30,450
+这并不是我想调优的首要超级参数
+ It's not one of the first hyperparameters I would usually try to tune,
+
+77
+00:05:30,575 --> 00:05:33,475
+但我已经发现调优过程中产生的问题
+ but I've also seen some problems with tuning this
+
+78
+00:05:33,570 --> 00:05:35,400
+虽然调优该参数能起到一定作用
+ you know helps a reasonable amount,
+
+79
+00:05:35,475 --> 00:05:38,025
+但考虑到相比调优其它超级参数的重要性
+ but this is usually lower down for me in terms of
+
+80
+00:05:38,170 --> 00:05:42,775
+我通常把它的优先级放得比较低
+ how important it is relative to the other hyperparameters you can tune.
+
+81
+00:05:42,920 --> 00:05:47,925
+希望现在你对梯度消失或爆炸问题
+ So I hope that gives you some intuition about the problem of vanishing or exploding gradients,
+
+82
+00:05:47,950 --> 00:05:52,775
+以及如何为权重矩阵初始化合理值已经有了一个直观认识
+ as well as how choosing a reasonable scaling for how you initialize the weights.
+
+83
+00:05:52,850 --> 00:05:58,275
+希望你设置的权重矩阵 既不会增长过快 也不会太快下降到0
+ Hopefully that makes your weights, you know not explode too quickly and not decay to zero too quickly
+
+84
+00:05:58,375 --> 00:06:02,400
+从而训练出一个
+ so you can train a reasonably deep network without the weights,
+
+85
+00:06:02,450 --> 00:06:05,730
+权重或梯度不会增长或消失过快的深度网络
+ or the gradients exploding or vanishing too much.
+
+86
+00:06:05,850 --> 00:06:08,875
+我们在训练深度网络时
+ When you train deep networks this is another trick that will help
+
+87
+00:06:08,920 --> 00:06:11,850
+这也是一个加快训练速度的技巧
+  you make your neural networks trained much more quickly.
+

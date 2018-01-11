@@ -22,7 +22,7 @@ def addPunctuation(infile, outfile):
     j = 0
     for li in lines:
         # if j == 4*i+2:
-        if j == 2 * i:
+        if j == 4*i+2:
             # +"，"
             outfp.writelines(li+"，")
             i = i + 1
@@ -40,7 +40,7 @@ def addengPunctuation(infile, outfile):
     j = 0
     for li in lines:
         # if j == 4*i+3:
-        if j == 2 * i+1:
+        if j == 4*i+3:
             # +","
             outfp.writelines(li)
             i = i + 1
@@ -60,10 +60,14 @@ def deleteln(infile, outfile):
     infp.close()
     outfp.close()
 
+
 # 调用示例
 if __name__ == "__main__":
-        delblankline("1_1", "no.txt")
-        # addPunctuation("1_1no", "ch.txt")
-        addengPunctuation("1_1no", "eng.txt")
-        # deleteln("1_1noch","ch.txt")
-        deleteln("1_1noeng","en.txt")
+	filename = "1_9"
+	delblankline(filename, "no.txt")
+	addPunctuation(filename +"no", "ch.txt")
+	deleteln(filename+"noch","ch.txt")
+	# filename = "1_9"
+	# delblankline(filename, "no.txt")
+	# addengPunctuation(filename+"no", "eng.txt")
+	# deleteln(filename+"noeng","en.txt")

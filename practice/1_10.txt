@@ -1,0 +1,475 @@
+﻿1
+00:00:00,675 --> 00:00:04,450
+训练神经网络 尤其是深度神经网络所面临的一个问题是(字幕来源：网易云课堂)
+ One of the problems of training neural network, especially very deep neural networks,
+
+2
+00:00:04,500 --> 00:00:07,200
+梯度消失或梯度爆炸
+ is data vanishing/exploding gradients.
+
+3
+00:00:07,390 --> 00:00:10,350
+也就是说 当你训练深度网络时
+ What that means is that when you're training a very deep network,
+
+4
+00:00:10,500 --> 00:00:14,175
+导数或坡度有时会变得非常大
+ your derivatives or your slopes can sometimes get either very very big
+
+5
+00:00:14,250 --> 00:00:17,400
+或非常小 甚至以指数方式变小
+ or very very small, maybe even exponentially small,
+
+6
+00:00:17,500 --> 00:00:19,250
+这加大了训练的难度
+ and this makes training difficult.
+
+7
+00:00:19,450 --> 00:00:25,250
+这节课 你将会了解梯度消失或爆炸问题的真正含义
+ In this video, you see what this problem of exploding or vanishing gradients really means,
+
+8
+00:00:25,325 --> 00:00:30,275
+以及如何更明智地选择随机初始化权重
+ as well as how you can use careful choices of the random weight initialization
+
+9
+00:00:30,400 --> 00:00:32,780
+从而避免这个问题
+ to significantly reduce this problem.
+
+10
+00:00:33,050 --> 00:00:36,010
+假设你正在训练这样一个极深的神经网络
+ Let's say you're training a very deep neural network like this,
+
+11
+00:00:36,025 --> 00:00:37,125
+为了节约幻灯片上的空间
+ to save space on the slide,
+
+12
+00:00:37,150 --> 00:00:40,250
+我画的神经网络每层只有两个隐藏单元
+ I've drawn it as if you have only two hidden units per layer,
+
+13
+00:00:40,400 --> 00:00:42,500
+但它可能含有更多
+ but it could be more as well.
+
+14
+00:00:42,625 --> 00:00:45,620
+但这个神经网络会有参数w[1]
+ But this neural network will have parameters w[1],
+
+15
+00:00:45,625 --> 00:00:51,585
+w[2] w[3]等等 直到w[L]
+ w[2], w[3] and so on, up to w[L].
+
+16
+00:00:51,725 --> 00:00:53,020
+为了简单起见
+ For the sake of simplicity,
+
+17
+00:00:53,075 --> 00:00:56,625
+假设我们使用激活函数g(z)=z
+ let's say we're using an activation function g(z)=z,
+
+18
+00:00:56,650 --> 00:00:58,600
+也就是线性激活函数
+so linear activation function.
+
+19
+00:00:58,775 --> 00:01:02,980
+我们忽略b 假设b[L]=0
+ And let's ignore b, let's say b[L]=0.
+
+20
+00:01:03,075 --> 00:01:07,675
+如果那样的话
+ So in that case you can show that the output y will be
+
+21
+00:01:07,750 --> 00:01:21,100
+输出y=w[L]*w[L-1]w[L-2] .....w[3]*Ww[2]*w1}*x
+ w[L] times w[L-1]  times w[L-2], dot, dot, dot down to the w[3], w[2], w[1] times x.
+
+22
+00:01:21,275 --> 00:01:23,750
+如果你想考验我的数学水平
+ But if you want to just check my math,
+
+23
+00:01:23,830 --> 00:01:27,915
+w[1]*x=z[1]
+ w[1] times x is going to be z[1],
+
+24
+00:01:27,950 --> 00:01:30,050
+因为b等于0
+ right, because b is equal to zero.
+
+25
+00:01:30,150 --> 00:01:33,790
+所以我想
+ So z[1] is equal to, I guess,
+
+26
+00:01:33,800 --> 00:01:38,060
+z[1]=w[1]*x 因为b=0
+ w[1] times x and then plus b which is zero.
+
+27
+00:01:38,075 --> 00:01:42,350
+ a[1]=g(z[1])
+ But then a[1] is equal to g of z[1].
+
+28
+00:01:42,525 --> 00:01:45,150
+因为我们使用了一个线性激活函数
+ But because we use a linear activation function,
+
+29
+00:01:45,275 --> 00:01:47,625
+它等于z[1]
+ this is just equal to z[1].
+
+30
+00:01:47,755 --> 00:01:50,360
+所以第一项w[1]*x等于a[1]
+ So this first term w[1]x is equal to a[1].
+
+31
+00:01:50,625 --> 00:01:57,950
+通过推理 你会得出w[2]*w[1]*x=a[2]
+ And then by the reasoning you can figure out that w[2] times w[1] times x is equal to a[2],
+
+32
+00:01:58,025 --> 00:02:00,850
+因为a[2]=g(z[2])
+ because that's going to be g of z[2],
+
+33
+00:02:01,125 --> 00:02:08,625
+还等于g(w[2]a[1])
+ is going to be g of w[2] times a[1]
+
+34
+00:02:08,925 --> 00:02:12,150
+可以用w[1]*x替换a[1]
+which you can plug that in here.
+
+35
+00:02:13,125 --> 00:02:16,690
+所以这一项就等于a[2]
+ So this thing is going to be equal to a[2],
+
+36
+00:02:16,850 --> 00:02:22,825
+这个就是a[3]
+ and then this thing is going to be a[3], and so on
+
+37
+00:02:23,000 --> 00:02:28,900
+所有这些矩阵数据传递的协议将给出ŷ而不是y的值
+ until the protocol of all these matrices gives you y^, not y.
+
+38
+00:02:29,170 --> 00:02:33,925
+假设每个权重矩阵w[L]等于...
+ Now, let's say that each of you weight matrices w[L]
+
+39
+00:02:34,000 --> 00:02:39,500
+假设它比1大一点
+ is equal to... let's say is just a little bit larger than one times the identity.
+
+40
+00:02:39,670 --> 00:02:43,225
+w[L]=[1.5,0,1.5,0]
+ So it's 1.5_1.5_0_0.
+
+41
+00:02:43,400 --> 00:02:45,700
+从技术上来讲 最后一项有不同维度
+ Technically, the last one has different dimensions,
+
+42
+00:02:45,770 --> 00:02:48,900
+可能它就是余下的权重矩阵
+ so maybe this is just the rest of these weight matrices.
+
+43
+00:02:49,100 --> 00:02:51,670
+ ŷ等于
+ Then y^ will be,
+
+44
+00:02:51,850 --> 00:02:54,575
+忽略最后这个不同维度的项
+ ignoring this last one with different dimension,
+
+45
+00:02:54,750 --> 00:03:01,770
+ŷ等于w[1][1.5,0,0,1.5)]的L-1次方乘以x
+ will be this 1.5_0_0_1.5 matrix to the power of L minus 1 times X,
+
+46
+00:03:01,870 --> 00:03:07,800
+因为我们假设所有矩阵都等于它
+ because we assume that each one of these matrices is equal to this thing.
+
+47
+00:03:08,100 --> 00:03:12,820
+它是1.5倍的单位矩阵 最后的计算结果就是ŷ
+ It's really 1.5 times the identity matrix, then you end up with this calculation.
+
+48
+00:03:13,000 --> 00:03:21,525
+ŷ也就等于1.5^（L-1）乘以x
+ And so Y^ will be essentially 1.5 to the power of L, to the power of L minus 1 times X,
+
+49
+00:03:21,625 --> 00:03:24,500
+如果对于一个深度神经网络来说 L值较大
+ and if L was large for very deep neural network,
+
+50
+00:03:24,625 --> 00:03:26,640
+那么ŷ的值也会非常大
+ Y^ will be very large.
+
+51
+00:03:26,640 --> 00:03:28,375
+实际上它呈指数级增长的
+ In fact, this grows exponentially,
+
+52
+00:03:28,525 --> 00:03:32,140
+它增长的比率是1.5^L
+ it grows like 1.5 to the number of layers.
+
+53
+00:03:32,200 --> 00:03:34,290
+因此对于一个深度神经网络
+ And so if you have a very deep neural network,
+
+54
+00:03:34,350 --> 00:03:36,575
+y的值将爆炸式增长
+ the value of y will explode.
+
+55
+00:03:36,775 --> 00:03:40,750
+相反地 如果权重是0.5
+ Now, conversely, if we replace this with 0.5,
+
+56
+00:03:40,830 --> 00:03:42,325
+它比1小
+ so something less than 1,
+
+57
+00:03:42,475 --> 00:03:45,850
+这项也就变成了0.5^L
+ then this becomes 0.5 to the power of L.
+
+58
+00:03:46,000 --> 00:03:52,900
+矩阵ŷ=w[1]乘以[0.5,0,0,0.5]的(L-1)次方再乘以x 再次忽略w[L]
+ This matrix becomes 0.5 to the L minus one times X, again ignoring w[L].
+
+59
+00:03:53,100 --> 00:03:57,220
+因此每个矩阵都小于1
+ And so each of your matrices are less than 1,
+
+60
+00:03:57,300 --> 00:04:00,410
+假设x[1] x[2]都是1
+ then let's say x[1], x[2] were one one,
+
+61
+00:04:00,520 --> 00:04:03,475
+激活函数将变成1/2 1/2
+ then the activations would be one half, one half,
+
+62
+00:04:03,700 --> 00:04:06,975
+1/4 1/4 1/8 1/8等
+ one fourth, one fourth, one eighth, one eighth,
+
+63
+00:04:07,075 --> 00:04:11,175
+直到最后一项变成1/2L
+ and so on, until this becomes 1 over 2 to the L.
+
+64
+00:04:11,225 --> 00:04:16,550
+所以作为自定义函数 激活函数的值将以指数级下降
+ So the activation values will decrease exponentially as a function of the def,
+
+65
+00:04:16,700 --> 00:04:19,675
+它是与网络层数量L相关的函数
+ as a function of the number of layers L of the network.
+
+66
+00:04:19,775 --> 00:04:25,900
+在深度网络中 激活函数以指数级递减
+ So in the very deep network, the activations end up decreasing exponentially.
+
+67
+00:04:26,150 --> 00:04:30,940
+我希望你得到的直观理解是
+ So the intuition I hope you can take away from this is that at the weights W,
+
+68
+00:04:31,025 --> 00:04:33,760
+权重W只比1略大一点
+ if they're all, you know, just a little bit bigger than 1
+
+69
+00:04:33,850 --> 00:04:36,800
+或者说只比单位矩阵大一点
+ or just a little bit bigger than the identity matrix,
+
+70
+00:04:36,975 --> 00:04:41,290
+深度神经网络的激活函数将爆炸式增长
+ then with a very deep network, the activations can explode.
+
+71
+00:04:41,375 --> 00:04:45,325
+如果W比1略小一点
+ And if W is you know just a little bit less than identity.
+
+72
+00:04:45,400 --> 00:04:48,125
+可能是0.9,0.9
+ So this maybe here's 0.9, 0.9,
+
+73
+00:04:48,375 --> 00:04:50,350
+在深度神经网络中
+ then you have a very deep network,
+
+74
+00:04:50,400 --> 00:04:53,100
+激活函数将以指数级递减
+ the activations will decrease exponentially.
+
+75
+00:04:53,225 --> 00:04:56,050
+虽然我只是论述了对L函数的激活函数
+ And even though I went through this argument in terms of
+
+76
+00:04:56,150 --> 00:05:00,425
+以指数级增长或下降
+ activations increasing or decreasing exponentially as a function of L,
+
+77
+00:05:00,650 --> 00:05:03,375
+它也适用于
+ a similar argument can be used to show that
+
+78
+00:05:03,425 --> 00:05:06,125
+与层数L相关的导数或梯度函数
+ the derivatives or the gradients the computer is going to send
+
+79
+00:05:06,225 --> 00:05:08,480
+也是呈指数增长
+ will also increase exponentially
+
+80
+00:05:08,480 --> 00:05:11,675
+或呈指数递减
+ or decrease exponentially as a function of the number of layers.
+
+81
+00:05:11,775 --> 00:05:15,925
+对于当前的神经网络 假设L=150
+ With some of the modern neural networks, let's say if L equals 150.
+
+82
+00:05:16,050 --> 00:05:20,675
+最近Microsoft对152层神经网络的研究取得了很大进展
+ Microsoft recently got great results with 152 layer neural network.
+
+83
+00:05:20,725 --> 00:05:22,950
+在这样一个深度神经网络中
+ But with such a deep neural network,
+
+84
+00:05:23,050 --> 00:05:27,825
+如果作为L的函数的激活函数或梯度函数以指数级增长或递减
+ if your activations or gradients increase or decrease exponentially as a function of L,
+
+85
+00:05:27,950 --> 00:05:31,300
+它们的值将会变得极大或极大
+ then these values could get really big or really small.
+
+86
+00:05:31,425 --> 00:05:33,675
+从而导致训练难度上升
+ And this makes training difficult,
+
+87
+00:05:33,770 --> 00:05:37,100
+尤其是梯度与L相差指数级
+ especially if your gradients are exponentially smaller than L,
+
+88
+00:05:37,275 --> 00:05:40,550
+梯度下降算法的步长会非常非常小
+ then gradient descent will take tiny little steps.
+
+89
+00:05:40,625 --> 00:05:43,975
+梯度下降算法将花费很长时间来学习
+ It will take a long time for gradient descent to learn anything.
+
+90
+00:05:44,370 --> 00:05:46,050
+总结一下
+ To summarize, you've seen
+
+91
+00:05:46,150 --> 00:05:50,850
+今天我们讲了深度神经网络是如何产生梯度消失或爆炸问题的
+ how deep networks suffer from the problems of vanishing or exploding gradients.
+
+92
+00:05:50,940 --> 00:05:55,900
+实际上 在很长一段时间内 它曾是训练深度神经网络的阻力
+ In fact, for a long time this problem was a huge barrier to training deep neural networks.
+
+93
+00:05:56,040 --> 00:06:00,275
+虽然有一个不能彻底解决此问题的解决方案
+ It turns out there's a partial solution that doesn't completely solve this problem,
+
+94
+00:06:00,350 --> 00:06:04,525
+但是已在如何选择初始化权重问题上提供了很多帮助
+ but that helps a lot which is careful choice of how you initialize the weights.
+
+95
+00:06:04,575 --> 00:06:07,090
+我们下节课继续讲
+ To see that, let's go to the next video.
+

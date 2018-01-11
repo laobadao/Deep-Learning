@@ -1,0 +1,427 @@
+﻿1
+00:00:00,225 --> 00:00:02,875
+上节课 我们讲了梯度检验(字幕来源：网易云课堂)
+
+
+In the last video you learned about gradient checking.
+
+2
+00:00:03,025 --> 00:00:07,175
+这节课 我想分享一些关于
+In this video, I want to share with you some practical tips or some notes
+
+3
+00:00:07,200 --> 00:00:10,725
+如何在神经网络实施梯度检验的实用技巧和注意事项
+on how to actually go about implementing this for your neural network.
+
+4
+00:00:10,775 --> 00:00:14,325
+首先 不要在训练中使用梯度检验 它只用于调试
+First, don't use grad check in training, only to debug.
+
+5
+00:00:14,425 --> 00:00:20,375
+我的意思是 计算所有i值的dθapprox[i]
+So what I mean is that, computing d theta approx i, for all the values of i,
+
+6
+00:00:20,425 --> 00:00:22,200
+是一个非常慢长的计算过程
+this is a very slow computation.
+
+7
+00:00:22,325 --> 00:00:26,200
+为了实施梯度下降 你必须使用backprop来计算dθ
+So to implement gradient descent, you'd use backprop to compute d theta and
+
+8
+00:00:26,320 --> 00:00:28,800
+并使用backprop来计算导数
+just use backprop to compute the derivative.
+
+9
+00:00:28,925 --> 00:00:31,800
+只有调试的时候 你才会计算它
+And it's only when you're debugging that you would compute this
+
+10
+00:00:31,850 --> 00:00:34,000
+来确认数值是否接近dθ
+to make sure it's close to d theta.
+
+11
+00:00:34,125 --> 00:00:37,200
+完成后 你会关闭梯度检验
+But once you've done that, then you would turn off the grad check, and
+
+12
+00:00:37,275 --> 00:00:39,575
+梯度检验的每一个迭代过程都不执行它
+don't run this during every iteration of gradient descent,
+
+13
+00:00:39,575 --> 00:00:41,250
+因为它太慢了
+because that's just much too slow.
+
+14
+00:00:41,375 --> 00:00:45,060
+第二点 如果算法的梯度检验失败 要检查所有项
+Second, if an algorithm fails grad check, look at the components,
+
+15
+00:00:45,150 --> 00:00:47,675
+检查每一项 并试着找出bug
+look at the individual components, and try to identify the bug.
+
+16
+00:00:47,775 --> 00:00:53,600
+也就是说 如果dθapprox[i]与dθ的值相差很大
+So what I mean by that is if d theta approx is very far from d theta,
+
+17
+00:00:53,750 --> 00:00:57,070
+我们要做的就是查找不同的i值 看看是哪个导致
+what I would do is look at the different values of i to see which are the values of
+
+18
+00:00:57,125 --> 00:01:01,950
+dθapprox[i]与dθ的值相差这么多
+d theta approx that are really very different than the values of d theta.
+
+19
+00:01:02,070 --> 00:01:03,275
+举个例子
+So for example,
+
+20
+00:01:03,325 --> 00:01:08,100
+如果你发现 相对于某些层或某层的db[l]
+if you find that the values of theta or d theta, they're very far off,
+
+21
+00:01:08,200 --> 00:01:12,450
+θ或dθ的值相差很大
+all correspond to dbl for some layer or for some layers,
+
+22
+00:01:12,525 --> 00:01:15,925
+但是dw[l]的各项非常接近
+but the components for dw are quite close, right?
+
+23
+00:01:16,075 --> 00:01:21,375
+注意 θ的各项与b和w的各项都是一一对应的
+Remember, different components of theta correspond to different components of b and w.
+
+24
+00:01:21,434 --> 00:01:25,918
+这时 你可能会发现
+When you find this is the case, then maybe you find that the bug is
+
+25
+00:01:25,975 --> 00:01:29,900
+在计算参数b的导数db的过程中存在bug
+in how you're computing db, the derivative with respect to parameters b.
+
+26
+00:01:30,050 --> 00:01:35,125
+反过来也一样  如果你发现它们的值相差很大
+And similarly, vice versa, if you find that the values that are very far,
+
+27
+00:01:35,275 --> 00:01:39,600
+dθapprox的值与dθ相差很大
+the values from d theta approx that are very far from d theta,
+
+28
+00:01:39,725 --> 00:01:44,450
+你会发现所有这些项都来自dw或某层的dw
+you find all those components came from dw or from dw in a certain layer,
+
+29
+00:01:44,625 --> 00:01:48,200
+可能帮你定位bug的位置
+then that might help you hone in on the location of the bug.
+
+30
+00:01:48,350 --> 00:01:51,075
+虽然未必能够帮你准确定位bug的位置
+This doesn't always let you identify the bug right away, but
+
+31
+00:01:51,175 --> 00:01:55,950
+但它可以帮你估测需要在哪些地方追踪bug
+sometimes it helps you give you some guesses about where to track down the bug.
+
+32
+00:01:56,475 --> 00:01:59,425
+第三点 在实施梯度检验时
+Next, when doing grad check,
+
+33
+00:01:59,500 --> 00:02:03,050
+如果使用正则化 请注意正则项
+remember your regularization term if you're using regularization.
+
+34
+00:02:03,200 --> 00:02:09,600
+如果代价函数J等于
+So if your cost function is J of theta equals 1 over m sum of your
+
+35
+00:02:14,950 --> 00:02:20,100
+J(θ)=1/m ∑_i▒[L(y ̂^(i) ,y^(i))]+λ/2m ∑_l▒[||W^[l] ||]_F^2]
+losses and then plus this regularization term, and sum of the l of wl squared,
+
+36
+00:02:20,250 --> 00:02:22,500
+这就是代价函数J的定义
+then this is the definition of J.
+
+37
+00:02:22,620 --> 00:02:29,025
+dθ等于与θ相关的J函数的梯度
+And you should have that d theta is gradient of J with respect to theta,
+
+38
+00:02:29,100 --> 00:02:30,650
+包括这个正则项
+including this regularization term.
+
+39
+00:02:30,725 --> 00:02:32,725
+记住一定要包括这个正则项
+So just remember to include that term.
+
+40
+00:02:32,750 --> 00:02:35,650
+第四点 梯度检验不能与dropout同时使用
+Next, grad check doesn't work with dropout,
+
+41
+00:02:35,725 --> 00:02:41,300
+因为每次迭代过程中 dropout会随机消除隐层单元的不同子集
+because in every iteration, dropout is randomly eliminating different subsets of the hidden units.
+
+42
+00:02:41,300 --> 00:02:47,725
+难以计算dropout在梯度下降上的代价函数J
+There isn't an easy to compute cost function J that dropout is doing gradient descent on.
+
+43
+00:02:48,090 --> 00:02:52,575
+因此dropout可作为优化代价函数J的一种方法
+It turns out that dropout can be viewed as optimizing some cost function J, but
+
+44
+00:02:52,650 --> 00:02:58,100
+但是代价函数J被定义为对所有指数极大的节点子集求和
+it's cost function J defined by summing over all exponentially large
+
+45
+00:02:58,125 --> 00:03:00,900
+而在任何迭代过程中  这些节点都有可能被消除
+subsets of nodes, they could eliminate in any iteration.
+
+46
+00:03:00,950 --> 00:03:04,350
+所以很难计算代价函数J
+So the cost function J is very difficult to compute,
+
+47
+00:03:04,425 --> 00:03:07,560
+你只是对成本函数做抽样
+and you're just sampling the cost function,
+
+48
+00:03:07,600 --> 00:03:11,375
+用dropout  每次随机消除不同的子集
+every time you eliminate different random subsets in those, we use dropout.
+
+49
+00:03:11,600 --> 00:03:16,475
+所以很难用梯度检验来双重检验dropout的计算
+So it's difficult to use grad check to double check your computation with dropouts.
+
+50
+00:03:16,600 --> 00:03:20,150
+所以我一般不同时使用梯度检验和dropout
+So what I usually do is implement grad check without dropout.
+
+51
+00:03:20,225 --> 00:03:25,280
+如果你想这样做 可以把dropout中的keep.prob设置为1
+So if you want, you can set keep-prob and dropout to be equal to 1.0.
+
+52
+00:03:25,400 --> 00:03:29,925
+然后打开dropout 并寄希望于dropout的实施是正确的
+And then turn on dropout and hope that my implementation of dropout was correct.
+
+53
+00:03:30,470 --> 00:03:34,775
+你还可以做点别的 比如修改节点丢失的模式
+There are some other things you could do, like fix the pattern of nodes dropped and
+
+54
+00:03:34,770 --> 00:03:40,070
+确认梯度检验是正确的
+verify that grad check for that pattern of [INAUDIBLE] is correct,
+
+55
+00:03:40,175 --> 00:03:42,700
+实际上 我一般不这么做
+but in practice I don't usually do that.
+
+56
+00:03:43,200 --> 00:03:48,010
+我建议关闭dropout 用梯度检验进行双重检查
+So my recommendation is turn off dropout, use grad check to double check
+
+57
+00:03:48,100 --> 00:03:50,125
+在没有dropout的情况下 你的算法至少是正确的
+that your algorithm is at least correct without dropout,
+
+58
+00:03:50,275 --> 00:03:52,200
+然后打开dropout
+and then turn on dropout.
+
+59
+00:03:52,400 --> 00:03:55,100
+最后一点 也是比较微妙的一点
+Finally, this is a subtlety.
+
+60
+00:03:55,375 --> 00:03:59,025
+现实中几乎不会出现这种情况
+It is not impossible, rarely happens, but it's not impossible that your
+
+61
+00:03:59,200 --> 00:04:04,475
+当W和b接近0时 梯度下降的实施是正确的
+implementation of gradient descent is correct when w and b are close to 0,
+
+62
+00:04:04,575 --> 00:04:06,425
+在随机初始化过程中...
+so at random initialization,
+
+63
+00:04:06,500 --> 00:04:09,550
+但是在运行梯度下降时 W和b变得更大
+But that as you run gradient descent and w and b become bigger,
+
+64
+00:04:09,650 --> 00:04:15,080
+可能只有在W和b接近0时 backprop的实施才是正确的
+maybe your implementation of backprop is correct only when w and b is close to 0,
+
+65
+00:04:15,150 --> 00:04:18,300
+但是当W和b变大时 它会变得越来越不准确
+but it gets more inaccurate when w and b become large.
+
+66
+00:04:18,425 --> 00:04:21,400
+你需要做一件事 我不经常这么做
+So one thing you could do, I don't do this very often,
+
+67
+00:04:21,500 --> 00:04:25,475
+就是在随机初始化过程中 运行梯度检验
+but one thing you could do is run grad check at random initialization
+
+68
+00:04:25,575 --> 00:04:27,475
+然后再训练网络
+and then train the network for a while
+
+69
+00:04:27,550 --> 00:04:30,750
+W和b会有一段时间远离0
+so that w and b have some time to wander away from 0,
+
+70
+00:04:30,900 --> 00:04:33,250
+如果随机初始化值比较小
+from your small random initial values.
+
+71
+00:04:33,370 --> 00:04:37,275
+反复训练网络之后 再重新运行梯度检验
+And then run grad check again after you've trained for some number of iterations.
+
+72
+00:04:37,375 --> 00:04:39,450
+这就是梯度检验
+So that's it for gradient checking.
+
+73
+00:04:39,550 --> 00:04:42,575
+恭喜大家 这是本周的最后一课了
+And congratulations for coming to the end of this week's materials.
+
+74
+00:04:42,620 --> 00:04:46,150
+回顾这一周 我们讲了如何配置训练集 验证集和测试集
+In this week, you've learned about how to set up your train, dev, and test sets,
+
+75
+00:04:46,350 --> 00:04:48,675
+如何分析偏差和方差
+how to analyze bias and variance
+
+76
+00:04:48,775 --> 00:04:51,450
+如何处理高偏差或高方差
+and what things to do if you have high bias versus high variance versus
+
+77
+00:04:51,550 --> 00:04:53,500
+以及高偏差和高方差并存的问题
+maybe high bias and high variance.
+
+78
+00:04:53,620 --> 00:04:59,900
+如何在神经网络中应用不同形式的正则化 如L2正则化
+You also saw how to apply different forms of regularization, like L2 regularization
+
+79
+00:05:00,025 --> 00:05:01,775
+和dropout
+and dropout on your neural network.
+
+80
+00:05:01,875 --> 00:05:05,200
+还有加快神经网络训练速度的技巧
+So some tricks for speeding up the training of your neural network.
+
+81
+00:05:05,310 --> 00:05:07,550
+最后是梯度检验
+And then finally, gradient checking.
+
+82
+00:05:07,650 --> 00:05:10,250
+这一周我们学习了很多内容
+So I think you've seen a lot in this week and
+
+83
+00:05:10,375 --> 00:05:13,950
+你可以在本周的编码作业中多多练习这些概念
+you get to exercise a lot of these ideas in this week's programming exercise.
+
+84
+00:05:14,050 --> 00:05:15,425
+祝你好运
+So best of luck with that, and
+
+85
+00:05:15,500 --> 00:05:18,350
+期待下周再见
+I look forward to seeing you in the week two materials.
+
