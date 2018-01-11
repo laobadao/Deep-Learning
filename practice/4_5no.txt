@@ -1,0 +1,394 @@
+﻿我们都知道深度神经网络(字幕来源：网易云课堂)
+we've all been hearing that deep neural networks
+，能解决好多问题
+,work really well for a lot of problems
+，其实并不需要很大的神经网络
+,it's not just that they need to be big neural networks is that
+，但是得有深度
+,specifically they need to be deep
+，得有比较多的隐藏层
+,or to have a lot of hidden layers
+，这是为啥呢
+,so why is that
+，我们一起来看几个例子来帮助理解
+.let's go to a couple examples and try to gain some intuition
+，为什么深度神经网络会很好用
+,for why deep networks might work well
+，首先 深度网络究竟在计算什么
+,so first what is there deep network computing
+，如果你在建一个人脸识别 或是人脸检测系统
+,if you're building a system for face recognition or face detection
+，深度神经网络所做的事就是
+,here's what the deep neural network could be doing
+，当你输入一张脸部的照片
+,perhaps you input a picture of a face
+，然后你可以把深度神经网络的第一层
+,then the first layer of the neural network you can think of
+，当成一个特征探测器 或者边缘探测器
+,as maybe being a feature detector or an edge detector
+，在这个例子里 我会建一个
+,in this example I'm plotting what a neural network
+，大概有20个隐藏单元的深度神经网络
+,with maybe twenty hidden units
+，是怎么针对这张图计算的
+,might be trying to compute on this image with the twenty hidden units
+，隐藏单元就是这些图里这些小方块
+,visualized by these little square boxes
+，举个例子 这个小方块就是一个隐藏单元
+.so for example this little visualization represents a hidden unit
+，它会去找这张照片里
+,that's trying to figure out if you know
+，边缘的方向
+,where the edges of that orientation are in the image
+，那么这个隐藏单元
+,and maybe this hidden unit
+，可能是在找水平向的
+,might be trying to figure out
+，边缘在哪里
+,where are the horizontal edges in this image
+，之后的课程里
+,and when we talk about convolutional networks
+，我们会讲专门做这种识别的卷积神经网络
+,in a later course of this particular visualization
+，到时候会细讲 为什么小单元是这么表示的
+,we'll make a bit more sense
+，你可以先把神经网络的第一层
+,but informally you can think of the first layer in neural network
+，当作看图 然后去找
+,as look on a picture and trying to figure out
+，这张照片的各个边缘
+,you know where the edges in this picture
+，我们可以把照片里组成边缘的
+,now let's figured out where the edges in this picture
+，像素们放在一起看
+,by grouping together pixels to form edges
+，然后它可以把被探测到的边缘
+,it can then take the detected edges
+，组合成面部的不同部分
+,and group edges together to form parts of faces
+，比如说 可能有一个神经元
+,so for example you might have a little neuron
+，会去找眼睛的部分
+,try to see it is finding an eye
+，另外还有别的在找鼻子的部分
+,or a different neuron trying to find that part of the nose
+，然后把这许多的边缘结合在一起
+,and so by putting together lots of edges
+，就可以开始检测人脸的不同部分
+,it can start to detect different parts of faces
+，最后再把这些部分放在一起
+,and finally by putting together on different parts of faces
+，比如鼻子眼睛下巴
+,like a nose or an eye an ear or chin
+，就可以识别或是探测不同的人脸啦
+,it can then try to recognize or detect different types of faces
+，你可以直觉上把这种神经网络的前几层
+,so intuitively you can think of the earlier layers of the neural network
+，当做探测简单的函数 比如边缘
+,is detecting simpler functions like edges
+，之后把它们跟后几层结合在一起
+,and then composing them together in the later layers of a neural network
+，那么总体上就能学习更多复杂的函数
+,so that they can learn one more complex functions
+，这些图的意义
+,these visualizations will make more sense
+，我们在学习卷积神经网络的时候再深入了解
+,when we talk about convolutional nets
+，还有一个技术性的细节需要理解的是
+,and one technical detail of this visualization
+，边缘探测器其实相对来说都是针对照片中非常小块的面积
+,the edge detectors are looking in relatively small areas of an image
+，就像这块 都是很小的区域
+,may be very small regions like that
+，面部探测器呢
+,and then the facial detectors
+，就会针对于大一些的区域
+,you can look at may be much larger areas in the image
+，但是主要的概念是
+,but the main intuition when you take away
+，一般你会从比较小的细节入手 比如边缘
+,from this is just finding simple things like edges
+，然后再一步步到更大更复杂的区域
+,and then building them up composing them together
+，比如一只眼睛或是一个鼻子
+,to detect more complex things like an eye or a nose
+，再把眼睛鼻子装一块 组成更复杂的部分
+,and the composing those together to find even more complex things
+，这种从简单到复杂的金字塔状表示方法
+,and this type of simple to complex hierarchical representation
+，或者组成方法
+,or compositional representation
+，也可以应用在图像或者人脸识别以外的其他数据上
+,applies in other types of data than images and face recognition as well
+，比如当你想要建一个语音识别系统的时候
+,for example if you're trying to build a speech recognition system
+，需要解决的就是如何可视化语音 比如你输入一个音频片段
+,is how to visualize speech but if you the input an audio clip
+，那么神经网络的第一层可能就会去先开始试着探测
+,then maybe the first level of a neural network might learn to detect
+，比较低层次的音频波形的一些特征
+,you know low level audio waveform features
+，比如音调是变高了还是低了
+,such as is this tone going up this is going down
+，分辨白噪音啦 咝咝咝的声音啦
+,is it a white noise or sibilant sound lights right
+，或者音调啦
+,and what is the pitch
+，可以选择这些相对程度比较低的波形特征
+,but you can detect take low level waveform features like that
+，然后把这些波形组合在一起
+,and then by composing low level waveforms
+，就能去探测声音的基本单元
+,maybe your learn to detect basic units of sound
+，在语言学中有个概念叫做音位
+,so in linguistics they called phonemes
+，比如说单词cat c的发音 嗑 就是一个音位
+,but for example in the word cat the cup is a phoneme
+，a的发音是个音位 t的发音 特 也是个音位
+,the up ciseaux means that tub is another phoneme
+，有了基本的声音单元以后
+,but learns to find with the basic units of sound and
+，组合起来
+,then composing that together
+，你就能识别音频当中的单词
+,maybe you're going to recognize words in the audio
+，单词再组合起来就能识别词组
+,and then you can compose those together in order to
+，再到完整的句子
+,recognize the entire you know phrases or sentences
+，所以深度神经网络的这许多隐层中
+,so deep neural network with multiple hidden layers might be able to
+，较早的前几层能学习一些低层次的简单特征
+,have the earlier layers learn these low levels simpler features
+，等到后几层
+,and then have the later deeper layers
+，就能把简单的特征结合起来
+,then put together the simpler things that's detected
+，去探测更加复杂的东西
+,in order to detect more complex things
+，比如你录在音频里的单词 词组
+,like recognize specific words or even phrases
+，或是句子 然后就能
+,or sentences that you're uttering
+，运行语音识别了
+,in order to carry out speech recognition
+，同时我们所计算的之前的几层
+,and what we see is that whereas the earlier layers are computing
+，也就是相对简单的输入函数
+,what seems like relatively simple functions of the input
+，比如图像单元的边缘啥的
+,such as where are the edges
+，到网络中的深层时 你实际上就能做
+,by the time you get deep in the network you can actually do
+，很多复杂的事
+,you know surprisingly complex things
+，比如探测面部 或是探测单词 短语 或是句子
+,such as detect faces or detect words or phrases or sentences
+，有些人喜欢把深度神经网络
+,some people like to make an analogy
+，和人类大脑做类比
+,between deep neural networks and the human brain
+，这些神经科学家觉得人的大脑
+,where we believe um neuroscientists believe that
+，也是先探测简单的东西
+,the human brain also starts off detecting simple things
+，比如你眼睛看得到的边缘
+,like edges in what your eye see
+，然后组合起来才能探测复杂的物体
+,and it builds those up to detect more complex things
+，比如脸
+,like the faces that you see
+，这种深度学习
+.I think analogies between deep learning
+，很人类大脑的比较 有时候比较危险
+,and the human brain are sometimes a little bit dangerous
+，但是不可否认的是
+,but you know there is a lot of truth
+，我们对大脑运作机制的认识很有价值
+,to this being how we think the human brain works
+，有可能大脑就是先从简单的东西
+,and that the human brain probably
+，比如边缘着手
+,detects simple things like edges first
+，再组合成一个完整的复杂物体
+,and then puts them together to form more and more complex objects
+，这类简单到复杂的过程
+,and so that has served as a loose form
+，同样也是其他一些深度学习的灵感来源
+,of inspiration for some deep learning as well
+，之后的视频我们也会继续
+,we'll say a bit more about the human brain
+，聊聊人类或是生物学理解的大脑
+,or about the biological brain in the later video this week
+，另外一个
+,the other piece of intuition
+，关于神经网络为何有效的理论
+,about why neural network seem to work well is the following
+，来源于电路理论
+,so this result comes from the circuit theory
+，它和你能够用电路元件计算哪些函数 有着分不开的联系
+,which pertains to thinking about what types of functions you can compute
+，根据不同的基本逻辑门
+,with different and gates and or gates
+，譬如与门 或门 非门
+,and not gates basically logic gates
+，在非正式的情况下 这些函数都
+,so informally these functions you can
+，可以用相对较小 但很深的神经网络来计算
+,compute with be relatively small but deep neural network
+，小在这里的意思是 隐藏单元的数量相对比较小
+,and by small I mean the number of hidden units is relatively small
+，但是如果你用浅一些的神经网络计算同样的函数
+,but that if you try to compute the same function with a shallow network
+，也就是说在我们不能用很多隐藏层时
+,so we aren't allowed enough hidden layers
+，你会需要成指数增长的单元数量才能达到同样的计算结果
+,then you might require exponentially more hidden units to compute
+，我再来举个例子 用没那么正式的语言介绍这个概念
+,so let me just give you one example and illustrate this a bit informally
+，假设你想要对输入特征计算异或
+,but let's say you're trying to compute the exclusive-or
+，或是奇偶性
+,or the parity of all your input features
+，你可以算x1 XOR x2 XOR x3 XOR直到xn
+,you can compute x1 XOR x2 XOR x3 XOR up to xn
+，假设你有n或者n_x个特征
+,and if you have n or n_x features
+，如果你画一个异或的树图
+,so if you build an XOR tree like this right
+，先要计算x1 x2的异或
+,so first compute the XOR of x1 x2
+，然后是x3和x4
+,then take x3 and x4 and compute their XOR
+，技术上来说如果你只用或门 还有非门的话
+,and technically if you're just using ands or not gate
+，你可能会需要几层
+,you might need a couple layers
+，才能计算异或函数
+,to compute the XOR function rather than just one layer
+，但是用相对小的电路
+,but with a relatively small circuit
+，你应该就可以计算异或了
+,you can compute the XOR right and so on
+，然后你可以继续建这样的一个异或树图
+,and then you can you know build really an XOR tree like so
+，那么你最后会得到这样的电路
+,and so eventually you have a circuit here that outputs you know the all
+，来输出结果y
+.let's call this y that outputs
+，y帽等于y 也就是输入特征的异或 或是奇偶性
+,y hat equals y the exclusive or the parity of all of these input bits
+，要计算异或关系
+,so to compute the XOR
+，这种树图对应网络的深度应该是O(log(n))
+,the depth of the network will be on the order of log n right this type of XOR tree
+，那么节点的数量和电路部件
+,so the number of nodes and the number of circuit circuit components
+，或是门的数量并不会很大
+,or the number of gates in this network is not that large
+，你也不需要太多门去计算异或
+,you don't need that many gates in order to compute the exclusive-or
+，但是如果你不能使用
+,but now if you're not allowed to use a neural network
+，多隐层的神经网络的话 在这个例子中隐层数为O(log n)
+,with multiple hidden layers with in this case order log and hidden layers
+，比如你被迫只能
+,if you're forced to compute this function
+，用单隐层来计算的话
+,with just one hidden layer right
+，这里全部都指向
+,so you have all these things going into you know
+，从这些隐藏单元到后面这里 再输出y
+,so let's hidden units and then these things then outputs y
+，那么要计算奇偶性 或者异或关系函数
+,then in order to compute the parity of XOR to compute this XOR function
+，就需要这一隐层的单元数呈指数增长才行
+,this hidden layer will need to be exponentially large
+，因为本质上来说你需要
+,because essentially you need to
+，列举耗尽2的n次方种可能的配置
+,exhaustively enumerate or two to the N possible configurations
+，或是2^n种输入比特的配置
+,or or the order of two to the N possible configurations of the input bits
+，异或运算的最终结果是1或0
+,that result in the exclusive or being either 1 or 0
+，那么你最终就会需要
+,so you end up needing a hidden layer
+，一个隐藏层 其中单元数目随输入比特指数上升
+,that is exponentially large in the number of bits
+，精确的说应该是
+.I think technically you could do this
+，2^(n-1)个隐藏单元数
+,with 2 to the N minus 1 hidden units right but that's the order to the end
+，也就是O(2^n)
+,also exponentially large in the number of bit
+，我希望 这能让你有点概念 意识到有很多数学函数
+,so I hope this gives a sense that there are mathematical functions
+，用深度网络计算
+,that are much easier to compute with deep networks
+，比浅网络要容易得多
+,than with shallow networks
+，我个人倒是认为这种电路理论
+.I have to admit that I personally found the result from circuit theory
+，对训练直觉思维没那么有用
+,less useful for gaining intuitions
+，但这个结果
+,but this is one of the results
+，人们还是经常提到的
+,that people often cite when just
+，用来解释为什么需要更深层的网络
+,when explaining the value of having very deep representations
+，除了这些原因
+,now in addition to these reasons for preferring deep neural networks
+，跟你掏心窝子说大实话
+,to be perfectly honest I think
+，我认为深度学习
+,the other reason the term term deep learning
+，这个名字挺唬人的
+,has taken off it's just branding right
+，这些概念以前都统称为 有很多隐层的神经网络
+,these things used to be called neural networks with a lot of hidden layers
+，但是深度学习听起来多高大上呀
+,but the phrase deep learning you know it's just a great brand
+，太深奥了 你说对不
+,it just is so deep right
+，这个词流传出去以后
+,so I think that once that term caught on that
+，这是神经网络的重新包装
+,really neural networks rebranded
+，或是多隐层神经网络的重新包装
+,or neural networks with many hidden layers rebranded
+，激发了大众的想象力
+,helped to capture the popular imagination as well
+，抛开这些公关概念重新包装不谈 深度网络确实效果不错
+,but regardless of the PR branding on deep networks do work well
+，有时候人们还是会按照字面意思钻牛角尖 非要用巨多隐层
+,sometimes people go overboard and insist on using tons of hidden layers
+，但是当我开始解决一个新问题时
+,but when I'm starting out on a new problem
+，我通常会从logistic回归开始
+.I'll often really start out with even logistic regressions
+，再试试一到两个隐层
+,and try something with one or two hidden layers
+，把隐层数量
+,and use that as a hyper parameter use that
+，当做参数 超参数一样去调试
+,as a parameter or hyper parameter that you tune
+，这样去找比较合适的深度
+,in order to try to find the right depth for your neural network
+，但是近几年以来
+,but over the last several years
+，有一些人会趋向于
+,there has been a trend toward people finding that
+，使用非常非常深邃的神经网络
+,for some applications very very deep neural networks
+，比如好几打的层数
+,here with maybe many dozens of layers sometimes
+，某些问题中只有这种网络才是最佳模型
+,can sometimes be the best model for a problem
+，这就是我想讲的 为什么深度学习效果拔群的直觉解释
+,so that's it so the intuitions for why deep learning seems to work well
+，现在我们来看看除了正向传播以外
+.let's now take a look at the mechanics of
+，反向传播该怎么具体实现
+,how to implement not just forward propagation but also back propagation
