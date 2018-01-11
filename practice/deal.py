@@ -1,3 +1,4 @@
+# encoding='utf-8'
 import os
 import re
 
@@ -26,7 +27,7 @@ def addPunctuation(infile, outfile):
             # +"，"
             outfp.writelines(li+"，")
             i = i + 1
-        j = j+1
+            j = j+1
     infp.close()
     outfp.close()
 
@@ -44,7 +45,7 @@ def addengPunctuation(infile, outfile):
             # +","
             outfp.writelines(li)
             i = i + 1
-        j = j+1
+            j = j+1
     infp.close()
     outfp.close()
 
@@ -63,7 +64,7 @@ def deleteln(infile, outfile):
 
 # 调用示例
 if __name__ == "__main__":
-	filename = "1_9"
+	filename = "1_10"
 	delblankline(filename, "no.txt")
 	addPunctuation(filename +"no", "ch.txt")
 	deleteln(filename+"noch","ch.txt")
