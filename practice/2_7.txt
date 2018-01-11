@@ -1,0 +1,719 @@
+﻿1
+00:00:00,357 --> 00:00:02,040
+你知道了Momentum(字幕来源：网易云课堂)
+You've seen how using momentum
+
+2
+00:00:02,040 --> 00:00:03,614
+可以加快梯度下降
+can speed up gradient descent.
+
+3
+00:00:03,614 --> 00:00:06,230
+还有一个叫做RMSprop的算法
+There's another algorithm called RMSprop,
+
+4
+00:00:06,230 --> 00:00:08,160
+全称是root mean square prop算法
+which stands for root mean square prop,
+
+5
+00:00:08,160 --> 00:00:10,204
+它也可以加速梯度下降
+that can also speed up gradient descent.
+
+6
+00:00:10,200 --> 00:00:11,539
+我们来看看它是如何运作的
+Let's see how it works.
+
+7
+00:00:11,530 --> 00:00:13,881
+回忆一下我们之前的例子
+Recall our example from before,
+
+8
+00:00:13,880 --> 00:00:15,943
+如果你执行梯度下降
+that if you implement gradient descent,
+
+9
+00:00:15,940 --> 00:00:20,570
+虽然横轴方向正在推进
+you can end up with huge oscillations in the vertical direction,
+
+10
+00:00:20,570 --> 00:00:24,569
+但纵轴方向会有大幅度摆动
+even while it's trying to make progress in the horizontal direction.
+
+11
+00:00:24,560 --> 00:00:27,440
+为了分析这个例子
+In order to provide intuition for this example,
+
+12
+00:00:27,440 --> 00:00:30,720
+假设纵轴代表参数b
+let's say that the vertical axis is the parameter b
+
+13
+00:00:30,720 --> 00:00:34,097
+横轴代表参数W
+and horizontal axis is the parameter W.
+
+14
+00:00:34,097 --> 00:00:38,220
+可能有W_1 W_2或者其他重要的参数
+Really could be W_1 and W_2 or some of the center parameters
+
+15
+00:00:38,220 --> 00:00:41,514
+为了便于理解 被称为b和W
+was named as b and W for the sake of intuition.
+
+16
+00:00:41,510 --> 00:00:46,481
+所以 你想减缓b方向的学习
+And so, you want to slow down the learning in the b direction,
+
+17
+00:00:46,480 --> 00:00:47,970
+即纵轴方向
+or in the vertical direction.
+
+18
+00:00:47,970 --> 00:00:50,900
+同时加快
+And speed up learning,
+
+19
+00:00:50,900 --> 00:00:54,351
+至少不是减缓横轴方向的学习
+or at least not slow it down in the horizontal direction.
+
+20
+00:00:54,351 --> 00:00:59,411
+RMSprop算法可以实现这一点
+So this is what the RMSprop algorithm does to accomplish this.
+
+21
+00:00:59,410 --> 00:01:06,337
+在第t次迭代中 该算法会照常计算
+On iteration t, it will compute as usual
+
+22
+00:01:06,337 --> 00:01:11,387
+当下mini-batch的微分dW db
+the derivative dW, db on the current mini-batch.
+
+23
+00:01:15,460 --> 00:01:18,850
+所以我会保留这个指数加权平均数
+So I was going to keep this exponentially weighted average.
+
+24
+00:01:18,850 --> 00:01:22,890
+我要用到新符号S_dW 而不是V_dW
+Instead of v_dW, I'm going to use the new notation S_dW.
+
+25
+00:01:22,890 --> 00:01:25,000
+因此S_dW等于
+So S_dW is equal to
+
+26
+00:01:25,000 --> 00:01:33,991
+β乘以之前的值加上(1-β)*(dW)^2
+beta times their previous value + 1- beta times dW squared.
+
+27
+00:01:33,990 --> 00:01:37,810
+有时候写成dW**2来表示幂的形式
+Sometimes write this dW star star 2 to explain exponentiation,
+
+28
+00:01:37,810 --> 00:01:40,950
+我们直接写成(dW)^2
+we should write this as dW squared.
+
+29
+00:01:40,950 --> 00:01:43,872
+澄清一下 这个平方的操作
+So for clarity, this squaring operation
+
+30
+00:01:43,870 --> 00:01:48,063
+是针对这一整个符号的
+is an element-wise squaring operation.
+
+31
+00:01:48,060 --> 00:01:50,451
+这样做能够保留
+So what this is doing is really keeping
+
+32
+00:01:50,450 --> 00:01:55,782
+微分平方的加权平均数
+an exponentially weighted average of the squares of the derivatives.
+
+33
+00:01:55,782 --> 00:02:04,368
+同样S_db = β*S_db + (1-β)*(db)^2
+And similarly, we also have S_db equals beta S_db + 1- beta, db squared.
+
+34
+00:02:04,368 --> 00:02:08,031
+再说一次 平方是针对整个符号的操作
+And again, the squaring is an element-wise operation.
+
+35
+00:02:08,030 --> 00:02:12,930
+接着RMSprop会这样更新参数值
+Next, RMSprop then updates the parameters as follows.
+
+36
+00:02:12,930 --> 00:02:17,177
+W变成了W减去学习率
+W gets updated as W minus the learning rate,
+
+37
+00:02:17,170 --> 00:02:21,804
+之前的值是α乘以dW
+and whereas previously we had alpha times dW
+
+38
+00:02:21,804 --> 00:02:27,596
+现在是dW除以S_dW的平方根
+now it's dW divided by square root of SdW.
+
+39
+00:02:27,596 --> 00:02:32,780
+b被赋值为b减去学习率
+And b gets updated as b minus the learning rate
+
+40
+00:02:32,780 --> 00:02:34,817
+乘以 不仅仅是梯度
+times, instead of just the gradient,
+
+41
+00:02:34,817 --> 00:02:39,600
+而是梯度除以S_db
+this is also divided by, now divided by S_db.
+
+42
+00:02:39,600 --> 00:02:42,666
+我们来理解一下其原理
+So let's gain some intuition about how this works.
+
+43
+00:02:42,666 --> 00:02:45,750
+记得在横轴方向
+Recall that in the horizontal direction or
+
+44
+00:02:45,750 --> 00:02:48,500
+或者在例子中的W方向
+in this example, in the W direction
+
+45
+00:02:48,500 --> 00:02:50,271
+我们希望学习速度快
+we want learning to go pretty fast.
+
+46
+00:02:50,270 --> 00:02:51,838
+而在垂直方向
+Whereas in the vertical direction
+
+47
+00:02:51,830 --> 00:02:54,251
+也就是例子中的b方向
+or in this example in the b direction,
+
+48
+00:02:54,251 --> 00:02:59,137
+我们希望减缓纵轴上的摆动
+we want to slow down all the oscillations into the vertical direction.
+
+49
+00:02:59,130 --> 00:03:02,600
+所以有了S_dW和S_db
+So with this terms S_dW and S_db,
+
+50
+00:03:02,600 --> 00:03:07,514
+我们希望S_dW会相对较小
+what we're hoping is that S_dW will be relatively small,
+
+51
+00:03:07,514 --> 00:03:11,836
+所以我们要除以一个较小的数
+so that here we're divided by relatively small number.
+
+52
+00:03:11,830 --> 00:03:14,740
+而希望S_db又较大
+Whereas S_db will be relatively large,
+
+53
+00:03:14,740 --> 00:03:17,740
+所以这里我们要除以较大的数字
+so that here we're divided by relatively large number,
+
+54
+00:03:17,740 --> 00:03:21,226
+这样就可以减缓纵轴上的变化
+in order to slow down the updates on a vertical dimension.
+
+55
+00:03:21,220 --> 00:03:23,788
+你看这些微分
+And indeed if you look at the derivatives,
+
+56
+00:03:23,780 --> 00:03:27,920
+垂直方向的
+these derivatives are much larger in the vertical direction
+
+57
+00:03:27,920 --> 00:03:30,063
+要比水平方向的大得多
+than in the horizontal direction.
+
+58
+00:03:30,060 --> 00:03:33,663
+所以斜率在b方向特别大
+So the slope is very large in the b direction, right?
+
+59
+00:03:33,663 --> 00:03:35,800
+所以这些微分中
+So with derivatives like this,
+
+60
+00:03:35,800 --> 00:03:40,431
+db较大 dW较小
+this is a very large db and a relatively small dW.
+
+61
+00:03:40,430 --> 00:03:43,822
+因为函数的倾斜程度
+Because the function is sloped much more steeply
+
+62
+00:03:43,820 --> 00:03:46,349
+在纵轴上 也就是b方向上
+in the vertical direction, that is in the b direction,
+
+63
+00:03:46,340 --> 00:03:50,383
+要大于在横轴上 也就是W方向上
+than in the w direction, than in horizontal direction.
+
+64
+00:03:50,383 --> 00:03:53,008
+db的平方较大
+And so, db square will be relatively large,
+
+65
+00:03:53,000 --> 00:03:54,800
+所以S_db也会较大
+So S_db will relatively large,
+
+66
+00:03:54,800 --> 00:03:58,010
+而相比之下 dw会小一些
+whereas compared to that dW will be smaller,
+
+67
+00:03:58,010 --> 00:03:59,540
+亦或dW平方会小一些
+or dW square will be smaller,
+
+68
+00:03:59,540 --> 00:04:01,506
+因此S_dW会小一些
+and so S_dW will be smaller.
+
+69
+00:04:01,506 --> 00:04:06,600
+结果就是纵轴上的更新
+So the net effect of this is that your updates in the vertical direction
+
+70
+00:04:06,600 --> 00:04:08,734
+要被一个较大的数相除
+are divided by a much larger number,
+
+71
+00:04:08,730 --> 00:04:10,884
+就能消除摆动
+and so that helps damp out the oscillations.
+
+72
+00:04:10,880 --> 00:04:13,066
+而水平方向的更新
+Whereas the updates in the horizontal direction
+
+73
+00:04:13,060 --> 00:04:15,066
+则被较小的数相除
+are divided by a smaller number.
+
+74
+00:04:15,060 --> 00:04:18,032
+RMSprop的影响就是
+So the net impact of using RMSprop is
+
+75
+00:04:18,032 --> 00:04:20,750
+你的更新最后会长这样
+that your updates will end up looking more like this.
+
+76
+00:04:22,402 --> 00:04:29,478
+纵轴方向上摆动较小
+That your updates in the vertical direction get damp out,
+
+77
+00:04:29,470 --> 00:04:31,783
+而横轴方向继续推进
+and then horizontal direction you can keep going.
+
+78
+00:04:31,780 --> 00:04:34,314
+还有个影响就是
+And one effect of this is also that
+
+79
+00:04:34,310 --> 00:04:37,306
+你可以用一个更大学习率α
+you can therefore use a larger learning rate alpha,
+
+80
+00:04:37,300 --> 00:04:38,522
+然后加快学习
+and get faster learning
+
+81
+00:04:38,520 --> 00:04:41,122
+而无须在纵轴上垂直方向偏离
+without diverging in the vertical direction.
+
+82
+00:04:41,120 --> 00:04:43,645
+要说明一点 我一直把
+Now just for the sake of clarity,I've been calling
+
+83
+00:04:43,640 --> 00:04:46,860
+纵轴和横轴方向分别称为b和W
+the vertical and horizontal directions b and W,
+
+84
+00:04:46,860 --> 00:04:48,348
+只是为了方便展示而已
+just to illustrate this.
+
+85
+00:04:48,340 --> 00:04:52,718
+实际中 你会处于参数的高维度空间
+In practice, you're in a very high dimensional space of parameters,
+
+86
+00:04:52,718 --> 00:04:55,740
+所以需要消除摆动的
+so maybe the vertical dimensions
+
+87
+00:04:55,740 --> 00:04:57,383
+垂直维度你要消除摆动
+where you're trying to damp the oscillation
+
+88
+00:04:57,383 --> 00:05:01,757
+实际上是参数W1 W2 W17的合集
+is a sum set of parameters, W1, W2, W17.
+
+89
+00:05:01,757 --> 00:05:07,223
+水平维度可能W3 W4等等
+And the horizontal dimensions might be W3, W4 and so on, right?.
+
+90
+00:05:07,220 --> 00:05:10,805
+因此把W和b分开只是方便说明
+And so, the separation there's a W and b is just an illustration.
+
+91
+00:05:10,805 --> 00:05:15,330
+实际中 dW是一个高维度的参数向量
+In practice, dW is a very high-dimensional parameter vector.
+
+92
+00:05:15,330 --> 00:05:18,133
+db也是一个高维度参数向量
+db is also very high-dimensional parameter vector,
+
+93
+00:05:18,133 --> 00:05:19,780
+但是你的直觉是
+but your intuition is that
+
+94
+00:05:19,780 --> 00:05:22,518
+在你要消除摆动的维度中
+in dimensions where you're getting these oscillations,
+
+95
+00:05:22,510 --> 00:05:26,053
+最终你要计算一个更大的和值
+you end up computing a larger sum.
+
+96
+00:05:26,050 --> 00:05:28,961
+这个平方和微分的加权平均值
+A weighted average for these squares and derivatives,
+
+97
+00:05:28,960 --> 00:05:30,909
+所以你最后去掉了
+and so you end up dumping out the directions
+
+98
+00:05:30,900 --> 00:05:32,666
+那些有摆动的方向
+in which there are these oscillations.
+
+99
+00:05:32,666 --> 00:05:35,140
+所以这就是RMSprop
+So that's RMSprop,
+
+100
+00:05:35,140 --> 00:05:36,922
+全称是均方根
+and it stands for root mean square
+
+101
+00:05:36,922 --> 00:05:41,080
+因为你将微分进行平方
+because here you're squaring the derivatives,
+
+102
+00:05:41,080 --> 00:05:43,699
+然后最后使用平方根
+and then you take the square root here at the end.
+
+103
+00:05:43,699 --> 00:05:47,660
+最后再就这个算法说一些细节的东西
+So finally, just a couple last details on this algorithm
+
+104
+00:05:47,660 --> 00:05:49,054
+然后我们再继续
+before we move on.
+
+105
+00:05:49,050 --> 00:05:51,368
+下个视频中 我们会将
+In the next video, we're actually going to
+
+106
+00:05:51,360 --> 00:05:54,937
+RMSprop和Momentum结合起来
+combine RMSprop together with momentum.
+
+107
+00:05:54,930 --> 00:05:58,395
+我们在Momentum中采用超参数β
+So rather than using the hyperparameter beta,
+
+108
+00:05:58,390 --> 00:06:00,223
+为了避免混淆 我们现在不用β
+which we had used for momentum,
+
+109
+00:06:00,223 --> 00:06:05,188
+而采用超参数β_2
+I'm going to call this hyperparameter beta 2 just to not clash,
+
+110
+00:06:05,180 --> 00:06:06,900
+以保证在Momentum和RMSprop中
+The same hyperparameter for
+
+111
+00:06:06,900 --> 00:06:09,134
+采用同一个超参数both momentum and for RMSprop.
+
+112
+00:06:09,134 --> 00:06:13,540
+要确保你的算法不会除以0
+And also to make sure that your algorithm doesn't divide by 0.
+
+113
+00:06:13,540 --> 00:06:17,788
+如果S_dW的平方根趋近于0怎么办？
+What if square root of S_dW, right, is very close to 0.
+
+114
+00:06:17,780 --> 00:06:19,562
+得到的答案就非常大
+Then things could blow up.
+
+115
+00:06:19,562 --> 00:06:22,140
+为了确保数值稳定
+Just to ensure numerical stability,
+
+116
+00:06:22,140 --> 00:06:24,200
+在实际中操练的时候
+when you implement this in practice
+
+117
+00:06:24,200 --> 00:06:27,460
+你要在分母加上一个很小很小的ε
+you add a very, very small epsilon to the denominator.
+
+118
+00:06:27,460 --> 00:06:30,760
+ε是多少没关系
+It doesn't really matter what epsilon is used.
+
+119
+00:06:30,760 --> 00:06:33,315
+10^(-8)是个不错的选择
+10 to the -8 would be a reasonable default,
+
+120
+00:06:33,310 --> 00:06:37,308
+这只是保证数值能稳定一些
+but this just ensures slightly greater numerical stability
+
+121
+00:06:37,300 --> 00:06:39,619
+无论什么原因
+that for numerical round off or whatever reason,
+
+122
+00:06:39,610 --> 00:06:42,570
+你都不会除以一个很小很小的数
+that you don't end up divided by a very, very small number.
+
+123
+00:06:42,570 --> 00:06:46,383
+所以RMSprop跟Momentum有很相似的一点
+So that's RMSprop, and similar to momentum
+
+124
+00:06:46,383 --> 00:06:51,460
+可以消除梯度下降中的摆动
+has the effects of damping out the oscillations in gradient descent,
+
+125
+00:06:51,460 --> 00:06:52,757
+包括mini-batch梯度下降
+in mini-batch gradient descent.
+
+126
+00:06:52,750 --> 00:06:56,192
+并允许你使用一个更大的学习率α
+and allowing you to maybe use a larger learning rate alpha.
+
+127
+00:06:56,190 --> 00:07:01,466
+从而加快你的算法学习速度
+And certainly speeding up the learning speed of your algorithm.
+
+128
+00:07:01,460 --> 00:07:03,949
+所以你学会了如何运用RMSprop
+So now you know to implement RMSprop,
+
+129
+00:07:03,940 --> 00:07:07,362
+这是给学习算法加速的另一个方法
+and this will be another way for you to speed up your learning algorithm.
+
+130
+00:07:07,362 --> 00:07:09,554
+关于RMSprop的一个趣事是
+One fun fact about RMSprop,
+
+131
+00:07:09,550 --> 00:07:13,035
+它的首次提出并不是在学术研究论文中
+it was actually first proposed not in an academic research paper
+
+132
+00:07:13,030 --> 00:07:14,770
+而是在多年前
+but in a Coursera course that
+
+133
+00:07:14,770 --> 00:07:17,608
+Jeff Hinton在Coursera的课程上
+Jeff Hinton had taught on Coursera many years ago.
+
+134
+00:07:17,608 --> 00:07:21,260
+我想Coursera不是故意打算成为
+I guess Coursera wasn't intended to be a platform
+
+135
+00:07:21,260 --> 00:07:24,145
+一个传播新兴的学术研究的平台
+for dissemination of novel academic research,
+
+136
+00:07:24,145 --> 00:07:26,214
+但是却达到了意想不到的效果
+but it worked out pretty well in that case.
+
+137
+00:07:26,214 --> 00:07:27,680
+就是从Coursera课程开始
+And was really from the Coursera course
+
+138
+00:07:27,680 --> 00:07:30,480
+RMSprop开始被人们广为熟知
+that RMSprop started to become widely known
+
+139
+00:07:30,480 --> 00:07:31,790
+并且发展迅猛
+and it really took off.
+
+140
+00:07:31,790 --> 00:07:32,970
+我们讲过了Momentum
+We talked about momentum.
+
+141
+00:07:32,970 --> 00:07:34,330
+我们讲了RMSprop
+We talked about RMSprop.
+
+142
+00:07:34,330 --> 00:07:36,185
+如果二者结合起来
+It turns out that if you put them together
+
+143
+00:07:36,180 --> 00:07:39,133
+你会得到一个更好的优化算法
+you can get an even better optimization algorithm.
+
+144
+00:07:39,133 --> 00:07:41,040
+在下个视频中我们再好好讲一讲为什么
+Let's talk about that in the next video.
+

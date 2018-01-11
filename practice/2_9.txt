@@ -1,0 +1,599 @@
+﻿1
+00:00:00,201 --> 00:00:03,140
+加快学习算法的一个办法就是(字幕来源：网易云课堂)
+One of the things that might help speed up your learning algorithm,
+
+2
+00:00:03,140 --> 00:00:06,038
+随时间慢慢减少学习率
+is to slowly reduce your learning rate over time.
+
+3
+00:00:06,030 --> 00:00:08,146
+我们将之成为学习率衰减
+We call this learning rate decay.
+
+4
+00:00:08,140 --> 00:00:10,330
+我们来看看如何做到
+Let's see how you can implement this.
+
+5
+00:00:10,330 --> 00:00:11,720
+首先通过一个例子看看
+Let's start with an example
+
+6
+00:00:11,720 --> 00:00:15,150
+为什么要计算学习率衰减
+of why you might want to implement learning rate decay.
+
+7
+00:00:15,150 --> 00:00:18,260
+假设你要使用mini-batch梯度下降法
+Suppose you're implementing mini-batch gradient descent,
+
+8
+00:00:18,260 --> 00:00:20,070
+mini-batch数量不大
+with a reasonably small mini-batch.
+
+9
+00:00:20,070 --> 00:00:24,210
+大概64或者128个样本
+Maybe a mini-batch has just 64,128 examples.
+
+10
+00:00:24,210 --> 00:00:28,210
+在迭代过程中会有噪音
+Then as you iterate, your steps will be a little bit noisy.
+
+11
+00:00:28,210 --> 00:00:31,400
+下降朝向这里的最小值
+And it will tend towards this minimum over here,
+
+12
+00:00:31,400 --> 00:00:33,940
+但是不会精确地收敛
+but it won't exactly converge.
+
+13
+00:00:33,940 --> 00:00:38,040
+所以你的算法最后在附近摆动
+But your algorithm might just end up wandering around,
+
+14
+00:00:38,040 --> 00:00:39,580
+并不会真正地收敛
+and never really converge,
+
+15
+00:00:39,580 --> 00:00:43,390
+因为你用的α是固定值
+because you're using some fixed value for alpha.
+
+16
+00:00:43,390 --> 00:00:46,660
+不同的mini-batch中有噪音
+And there's just some noise in your different mini-batches.
+
+17
+00:00:46,660 --> 00:00:52,371
+但要慢慢减少学习率α的话
+But if you were to slowly reduce your learning rate alpha,
+
+18
+00:00:52,370 --> 00:00:54,417
+在初期的时候
+then during the initial phases,
+
+19
+00:00:54,417 --> 00:00:56,410
+α学习率还较大
+while your learning rate alpha is still large,
+
+20
+00:00:56,410 --> 00:00:58,976
+你的学习还是相对较快
+you can still have relatively fast learning.
+
+21
+00:00:58,976 --> 00:01:01,580
+但是随着α变小
+But then as alpha gets smaller,
+
+22
+00:01:01,580 --> 00:01:05,551
+你的步伐也会变慢变小
+your steps you take will be slower and smaller.
+
+23
+00:01:05,551 --> 00:01:07,760
+所以最后你的曲线会
+And so you end up oscillating
+
+24
+00:01:07,760 --> 00:01:11,020
+在最小值附近的一小块区域里摆动
+in a tighter region around this minimum,
+
+25
+00:01:11,020 --> 00:01:13,660
+而不是在训练过程中
+rather than wandering far away,
+
+26
+00:01:13,660 --> 00:01:15,398
+大幅度在最小值附近摆动
+even as training goes on and on.
+
+27
+00:01:15,390 --> 00:01:19,718
+所以慢慢减少α的本质在于
+So the intuition behind slowly reducing alpha is that
+
+28
+00:01:19,710 --> 00:01:21,982
+在学习初期
+maybe during the initial steps of learning,
+
+29
+00:01:21,980 --> 00:01:24,728
+你能承受较大的步伐
+you could afford to take much bigger steps.
+
+30
+00:01:24,728 --> 00:01:29,060
+但当开始收敛的时候
+But then as learning approaches converges,
+
+31
+00:01:29,060 --> 00:01:33,070
+小一些的学习率能让你步伐小一些
+then having a slower learning rate allows you to take smaller steps.
+
+32
+00:01:33,070 --> 00:01:36,266
+你可以这样做到学习率衰减
+So here's how you can implement learning rate decay.
+
+33
+00:01:36,260 --> 00:01:43,682
+记得一代要历遍一次数据
+Recall that one epoch is one pass through the data,
+
+34
+00:01:45,430 --> 00:01:49,960
+如果你有以下这样的训练集
+So if you have a training set as follows,
+
+35
+00:01:49,960 --> 00:01:53,866
+你应该拆分成不同的mini-batch
+maybe you break it up into different mini-batches.
+
+36
+00:01:53,866 --> 00:02:00,446
+第一次历遍训练集叫做第一代
+Then the first pass through the training set is called the first epoch,
+
+37
+00:02:00,440 --> 00:02:05,263
+第二次就是第二代 以此类推
+and then the second pass is the second epoch, and so on.
+
+38
+00:02:05,263 --> 00:02:08,591
+你可以将α学习率设为
+So one thing you could do, is set your learning rate alpha
+
+39
+00:02:08,590 --> 00:02:13,626
+1除以1加上参数
+to be equal to 1 over 1 plus a parameter
+
+40
+00:02:13,626 --> 00:02:18,100
+我将其称为衰减率
+which I'm going to call the decay rate,
+
+41
+00:02:18,100 --> 00:02:22,490
+乘以代数
+times the epoch-num.
+
+42
+00:02:22,490 --> 00:02:26,890
+再乘以初始学习率α_0
+And this is going to be times some initial learning rate alpha_0.
+
+43
+00:02:26,890 --> 00:02:28,742
+注意这个衰减率
+Note that the decay rate here
+
+44
+00:02:28,742 --> 00:02:30,520
+是另一个
+becomes another hyper-parameter,
+
+45
+00:02:30,520 --> 00:02:32,044
+你需要调整的超参数
+which you might need to tune.
+
+46
+00:02:32,044 --> 00:02:33,910
+这里有一个具体例子
+So here's a concrete example.
+
+47
+00:02:34,851 --> 00:02:36,571
+如果你计算了几代
+If you take several epochs,
+
+48
+00:02:36,571 --> 00:02:39,659
+也就是历遍了几次
+so several passes through your data.
+
+49
+00:02:39,659 --> 00:02:46,211
+如果α_0为0.2 衰减率为1
+If alpha_0 = 0.2, and the decay-rate = 1,
+
+50
+00:02:46,210 --> 00:02:48,922
+那么在第一代中
+then during your first epoch,
+
+51
+00:02:48,922 --> 00:02:55,268
+α = 1/(1+1*α_0)
+alpha will be 1 / (1 + 1 * alpha_0).
+
+52
+00:02:55,260 --> 00:02:59,053
+所以学习率为0.1
+So your learning rate will be 0.1.
+
+53
+00:02:59,053 --> 00:03:01,920
+这是在代入这个公式计算
+That's just evaluating this formula,
+
+54
+00:03:01,920 --> 00:03:05,755
+此时衰减率是1而代数是1
+when the decay-rate is equal to 1, and the the epoch-num is 1.
+
+55
+00:03:05,755 --> 00:03:10,613
+在第二代学习率为0.67
+On the second epoch, your learning rate decays to 0.67.
+
+56
+00:03:10,613 --> 00:03:15,924
+第三代变成0.5 第四代为0.4 等等
+On the third, 0.5,on the fourth, 0.4, and so on.
+
+57
+00:03:15,924 --> 00:03:18,150
+你可以自己多计算几个数据
+And feel free to evaluate more of these values yourself.
+
+58
+00:03:18,150 --> 00:03:21,980
+要理解 作为代数的函数
+And get a sense that, as a function of your epoch number
+
+59
+00:03:21,980 --> 00:03:24,605
+根据上述公式
+your learning rate gradually decreases,
+
+60
+00:03:24,600 --> 00:03:29,325
+你的学习率呈递减趋势
+right, according to this formula up on top.
+
+61
+00:03:29,320 --> 00:03:34,188
+如果你想用学习率衰减 要做的是
+So if you wish to use learning rate decay, what you can do is
+
+62
+00:03:34,188 --> 00:03:38,830
+要去尝试不同的值 包括超参数α_0
+try a variety of values of both hyper-parameter alpha 0.
+
+63
+00:03:38,830 --> 00:03:41,550
+以及超参数衰退率
+As well as this decay rate hyper-parameter,
+
+64
+00:03:41,550 --> 00:03:44,311
+找到合适的值
+and then try to find the value that works well.
+
+65
+00:03:44,310 --> 00:03:46,869
+除了这个学习率衰减的公式
+Other than this formula for learning rate decay,
+
+66
+00:03:46,860 --> 00:03:48,936
+人们还会用其它的公式
+there are a few other ways that people use.
+
+67
+00:03:48,936 --> 00:03:52,097
+比如 这个叫做指数衰减
+For example, this is called exponential decay.
+
+68
+00:03:52,097 --> 00:03:58,009
+其中α相当于一个小于1的值
+Where alpha is equal to some number less than 1,
+
+69
+00:03:58,009 --> 00:04:04,513
+如0.95乘以代数乘以α_0
+such as 0.95 times epoch-num, times alpha 0.
+
+70
+00:04:04,510 --> 00:04:10,032
+所以你的学习率呈指数下降
+So this will exponentially quickly decay your learning rate.
+
+71
+00:04:10,030 --> 00:04:12,604
+人们用到的其它公式有
+Other formulas that people use are things like
+
+72
+00:04:12,604 --> 00:04:21,805
+α=某常数/代数平方根*α_0
+alpha equals some constant over epoch-num square root times alpha 0.
+
+73
+00:04:21,800 --> 00:04:26,167
+或者用到另一超参数 常数k
+Or some constant k, another hyper-parameter,
+
+74
+00:04:26,160 --> 00:04:32,634
+除以mini-batch的数字t的平方根 乘上α_0
+over the mini-batch number t, square rooted, times alpha 0.
+
+75
+00:04:32,634 --> 00:04:36,640
+有时人们也会用一个
+And sometimes you also see people use a learning rate
+
+76
+00:04:36,640 --> 00:04:38,760
+离散下降的学习率
+that decreases in discrete steps.
+
+77
+00:04:38,760 --> 00:04:42,798
+也就是某个步骤有某个学习率
+Wherefore some number of steps, you have some learning rate,
+
+78
+00:04:42,798 --> 00:04:45,960
+一会儿之后 学习率减少了一半
+and then after a while you decrease it by one half.
+
+79
+00:04:45,960 --> 00:04:47,320
+一会儿减少一半
+After a while by one half.
+
+80
+00:04:47,320 --> 00:04:48,970
+一会儿又一半
+After a while by one half.
+
+81
+00:04:48,970 --> 00:04:52,793
+这就是离散下降的意思
+And so this is a discrete staircase.
+
+82
+00:04:55,950 --> 00:05:00,320
+到现在 我们讲了一些公式下
+So so far, we've talked about using some formula
+
+83
+00:05:00,320 --> 00:05:04,761
+看学习率α究竟如何随时间变化
+to govern how alpha, the learning rate, changes over time.
+
+84
+00:05:04,761 --> 00:05:08,900
+人们有时候还会做一件事 手动衰减
+One other thing that people sometimes do,is manual decay.
+
+85
+00:05:08,900 --> 00:05:11,557
+如果你一次只训练一个模型
+And so if you're training just one model at a time, and
+
+86
+00:05:11,550 --> 00:05:15,714
+如果你要花上数小时或数天来训练
+if your model takes many hours,or even many days to train.
+
+87
+00:05:15,714 --> 00:05:17,090
+有些人的确会这么做
+What some people will do,
+
+88
+00:05:17,090 --> 00:05:21,638
+看着自己的模型训练 耗上数日
+is just watch your model as it's training over a large number of days.
+
+89
+00:05:21,630 --> 00:05:22,828
+然后他们觉得
+And then manually say,
+
+90
+00:05:22,820 --> 00:05:25,028
+学习速率变慢了
+it looks like the learning rate slowed down,
+
+91
+00:05:25,020 --> 00:05:26,817
+我把α调小一点
+I'm going to decrease alpha a little bit.
+
+92
+00:05:26,810 --> 00:05:29,888
+手动控制α当然有用
+Of course this works,this manually controlling alpha,
+
+93
+00:05:29,880 --> 00:05:33,330
+一小时复一小时 日复一日地手动调整α
+really tuning alpha by hand,hour by hour, or day by day.
+
+94
+00:05:33,330 --> 00:05:36,647
+只有模型数量小的时候有用
+This works only if you're training only a small number of models,
+
+95
+00:05:36,640 --> 00:05:38,650
+但有的时候人们也会这么做
+but sometimes people do that as well.
+
+96
+00:05:38,650 --> 00:05:40,702
+所以现在你有了多个选择
+So now you have a few more options for
+
+97
+00:05:40,700 --> 00:05:43,014
+来控制学习率α
+how to control the learning rate alpha.
+
+98
+00:05:43,014 --> 00:05:46,630
+你可能会想 哇 好多超参数
+Now, in case you're thinking, wow,this is a lot of hyper-parameters.
+
+99
+00:05:46,630 --> 00:05:48,946
+究竟我应该做哪一个选择？
+How do I select amongst all these different options?
+
+100
+00:05:48,940 --> 00:05:50,920
+我觉得 现在担心为时过早
+I would say, don't worry about it for now.
+
+101
+00:05:50,920 --> 00:05:52,761
+下一周 我们会讲到
+In next week, we'll talk more about
+
+102
+00:05:52,760 --> 00:05:55,640
+如何系统选择超参数
+how to systematically choose hyper-parameters.
+
+103
+00:05:55,640 --> 00:05:59,300
+对我而言 学习率衰减并不是
+For me, I would say that learning rate decay
+
+104
+00:05:59,300 --> 00:06:01,757
+我尝试的要点
+usually lower down on the list of things I try.
+
+105
+00:06:01,750 --> 00:06:04,220
+设定一个固定的α
+Setting alpha, just a fixed value of alpha,
+
+106
+00:06:04,220 --> 00:06:06,682
+然后好好调整 会有很大的影响
+and getting that to be well tuned, has a huge impact.
+
+107
+00:06:06,680 --> 00:06:08,530
+学习率衰减的确大有裨益
+Learning rate decay does help.
+
+108
+00:06:08,530 --> 00:06:10,829
+有时候可以加快训练
+Sometimes it can really help speed up training,
+
+109
+00:06:10,820 --> 00:06:15,368
+但它并不是我会率先尝试的内容
+it is a little bit lower down my list in terms of the things I would try.
+
+110
+00:06:15,360 --> 00:06:18,056
+但下周我们将涉及超参数调整But next week, when we talk about hyper-parameter tuning,
+
+111
+00:06:18,050 --> 00:06:19,842
+你能学到更多系统的办法
+you see more systematic ways
+
+112
+00:06:19,842 --> 00:06:21,978
+来管理所有的超参数
+to organize all of these hyper-parameters.
+
+113
+00:06:21,978 --> 00:06:24,422
+以及如何高效搜索超参数
+and how to efficiently search amongst them.
+
+114
+00:06:24,422 --> 00:06:27,790
+这就是学习率衰减
+So that's it for learning rate decay.
+
+115
+00:06:27,790 --> 00:06:31,189
+最后我还要讲讲神经网络中的
+Finally, I was also going to talk a little bit about local optimal,
+
+116
+00:06:31,180 --> 00:06:33,151
+局部最优以及鞍点
+and saddle points, in neural networks.
+
+117
+00:06:33,151 --> 00:06:36,210
+所以你能更好理解
+So you can have a little bit better intuition about the types of
+
+118
+00:06:36,210 --> 00:06:39,970
+在训练神经网络过程中
+optimization problems your optimization algorithm is trying to solve,
+
+119
+00:06:39,970 --> 00:06:41,574
+你的算法正在解决的优化问题
+when you're trying to train these neural networks.
+
+120
+00:06:41,574 --> 00:06:43,570
+下个视频我们就好好聊聊这些问题。
+Let's go on to the next video to see that.
+
