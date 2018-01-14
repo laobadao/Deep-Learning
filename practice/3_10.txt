@@ -1,0 +1,355 @@
+﻿1
+00:00:00,000 --> 00:00:03,180
+你已经差不多从零开始学习了(字幕来源：网易云课堂)
+You've learned to implement deep learning algorithms more or
+
+2
+00:00:03,180 --> 00:00:06,486
+使用Python和NumPy实现深度学习算法
+less from scratch using Python and NumPy.
+
+3
+00:00:06,486 --> 00:00:08,970
+我很高兴你这样做了  因为我希望你
+And I'm glad you did that because I wanted you to
+
+4
+00:00:08,970 --> 00:00:11,960
+理解这些深度学习算法实际上在做什么
+understand what these deep learning algorithms are really doing.
+
+5
+00:00:11,960 --> 00:00:14,970
+但是你会发现  除非应用更复杂的模型
+But you find unless you implement more complex models,
+
+6
+00:00:14,970 --> 00:00:18,660
+例如卷积神经网络  或者循环神经网络
+such as convolutional neural networks or recurrent neural networks,
+
+7
+00:00:18,660 --> 00:00:23,640
+或者当你开始应用很大的模型  否则它就越来越不实用了
+or as you start to implement very large models that is increasingly not practical,
+
+8
+00:00:23,640 --> 00:00:24,783
+至少对大多数人而言
+at least for most people,
+
+9
+00:00:24,783 --> 00:00:28,300
+从零开始全部靠自己实现并不现实
+is not practical to implement everything yourself from scratch.
+
+10
+00:00:28,300 --> 00:00:31,800
+幸运的是  现在有很多好的深度学习软件框架
+Fortunately, there are now many good deep learning software frameworks
+
+11
+00:00:31,820 --> 00:00:34,577
+可以帮助你实现这些模型
+that can help you implement these models.
+
+12
+00:00:34,688 --> 00:00:36,222
+类比一下
+To make an analogy,
+
+13
+00:00:36,266 --> 00:00:40,244
+我猜你知道如何做矩阵乘法
+I think that hopefully you understand how to do a matrix multiplication
+
+14
+00:00:40,288 --> 00:00:45,155
+你还应该知道如何用编程实现两个矩阵相乘
+and you should be able to implement how to code to multiply two matrices yourself.
+
+15
+00:00:45,155 --> 00:00:47,625
+但是当你在建很大的应用时
+But as you build very large applications,
+
+16
+00:00:47,620 --> 00:00:51,755
+你很可能不想用你自己的矩阵乘法函数
+you'll probably not want to implement your own matrix multiplication function
+
+17
+00:00:51,770 --> 00:00:55,333
+而是想要访问一个数值线性代数库
+but instead you want to call a numerical linear algebra library
+
+18
+00:00:55,377 --> 00:00:57,610
+它会更高效
+that could do it more efficiently for you.
+
+19
+00:00:57,610 --> 00:01:00,183
+但如果你明白两个矩阵相乘是怎么回事
+But this still helps that you understand how
+
+20
+00:01:00,183 --> 00:01:01,755
+还是挺有用的
+multiplying two matrices work.
+
+21
+00:01:01,750 --> 00:01:05,200
+我认为现在深度学习已经很成熟了
+So I think deep learning has now matured to that point where it's actually more
+
+22
+00:01:05,244 --> 00:01:07,590
+利用一些深度学习框架会更加实用
+practical you'll be more efficient doing
+
+23
+00:01:07,590 --> 00:01:10,250
+会使你的工作更加有效
+some things with some of the deep learning frameworks.
+
+24
+00:01:10,250 --> 00:01:13,110
+那就让我们来看一下有哪些框架
+So let's take a look at the frameworks out there.
+
+25
+00:01:13,110 --> 00:01:16,620
+现在有许多深度学习框架
+Today, there are many deep learning frameworks
+
+26
+00:01:16,620 --> 00:01:19,527
+能让实现神经网络变得更简单
+that makes it easy for you to implement neural networks,
+
+27
+00:01:19,527 --> 00:01:22,185
+我们来讲主要的几个
+and here are some of the leading ones.
+
+28
+00:01:22,185 --> 00:01:27,420
+每个框架都是针对某一个用户或开发者群体的
+Each of these frameworks has a dedicated user and developer community
+
+29
+00:01:27,420 --> 00:01:29,520
+我觉得这里的每一个框架
+and I think each of these frameworks is
+
+30
+00:01:29,520 --> 00:01:33,715
+都是某类应用的可靠选择
+a credible choice for some subset of applications.
+
+31
+00:01:33,710 --> 00:01:37,644
+有很多人写文章比较这些深度学习框架
+There are lot of people writing articles comparing these deep learning frameworks
+
+32
+00:01:37,733 --> 00:01:41,370
+以及这些深度学习框架发展得有多好
+and how well these deep learning frameworks changes.
+
+33
+00:01:41,374 --> 00:01:46,315
+而且因为这些框架往往不断进化  每个月都在进步
+And because these frameworks are often evolving and getting better month to month,
+
+34
+00:01:46,315 --> 00:01:49,704
+如果你想看看关于这些框架的优劣之处的讨论
+I'll leave you to do a few internet searches yourself,
+
+35
+00:01:49,704 --> 00:01:54,310
+我留给你自己去上网搜索
+if you want to see the arguments on the pros and cons of some of these frameworks.
+
+36
+00:01:54,310 --> 00:01:59,644
+但我认为很多框架都在很快进步  越来越好
+But I think many of these frameworks are evolving and getting better very rapidly.
+
+37
+00:01:59,733 --> 00:02:03,888
+因此我就不做强烈推荐了
+So rather than too strongly endorsing any of these frameworks
+
+38
+00:02:03,933 --> 00:02:10,150
+而是与你分享推荐一下选择框架的标准
+I want to share with you the criteria I would recommend you use to choose frameworks.
+
+39
+00:02:10,150 --> 00:02:13,120
+一个重要标准就是便于编程
+One important criteria is the ease of programming,
+
+40
+00:02:13,120 --> 00:02:15,640
+这既包括神经网络的开发
+and that means both developing the neural network and
+
+41
+00:02:15,640 --> 00:02:19,720
+和迭代  还包括为产品进行配置
+iterating on it as well as deploying it for production,
+
+42
+00:02:19,720 --> 00:02:25,435
+为了成千上百万  甚至上亿用户的实际使用
+for actual use, by thousands or millions or maybe hundreds of millions of users,
+
+43
+00:02:25,435 --> 00:02:27,540
+取决于你想要做什么
+depending on what you're trying to do.
+
+44
+00:02:27,540 --> 00:02:30,480
+第二个重要标准是运行速度
+A second important criteria is running speeds,
+
+45
+00:02:30,480 --> 00:02:32,410
+特别是训练大数据集时
+especially training on large data sets,
+
+46
+00:02:32,410 --> 00:02:38,780
+一些框架能让你更高效地运行和训练神经网络
+some frameworks will let you run and train your neural network more efficiently than others.
+
+47
+00:02:38,780 --> 00:02:43,155
+还有一个标准人们不常提到  但我觉得很重要
+And then, one criteria that people don't often talk about but I think is important
+
+48
+00:02:43,155 --> 00:02:46,690
+那就是这个框架是否真的开放
+is whether or not the framework is truly open.
+
+49
+00:02:46,690 --> 00:02:49,395
+要是一个框架真的开放
+And for a framework to be truly open,
+
+50
+00:02:49,395 --> 00:02:54,605
+它不仅需要开源  而且需要良好的管理
+it needs not only to be open source but I think it needs good governance as well.
+
+51
+00:02:54,605 --> 00:02:56,983
+不幸的是  在软件行业中
+Unfortunately, in the software industry
+
+52
+00:02:56,980 --> 00:03:00,444
+一些公司有开源软件的历史
+some companies have a history of open sourcing software
+
+53
+00:03:00,488 --> 00:03:04,120
+但是公司保持着对软件的全权控制
+but maintaining single corporation control of the software.
+
+54
+00:03:04,120 --> 00:03:08,343
+当几年时间过去  人们开始使用他们的软件时
+And then over some number of years, as people start to use their software,
+
+55
+00:03:08,343 --> 00:03:14,095
+一些公司开始逐渐关闭曾经开放的资源
+some companies have a history of gradually closing off what was open source,
+
+56
+00:03:14,095 --> 00:03:19,300
+或者将功能转移到他们专营的云服务中
+or perhaps moving functionality into their own proprietary cloud services.
+
+57
+00:03:19,300 --> 00:03:21,866
+因此我会注意的一件事就是
+So one thing I pay a bit of attention to is
+
+58
+00:03:21,880 --> 00:03:28,644
+你能否相信这个框架能长时间保持开源
+how much you trust that the framework will remain open source for a long time
+
+59
+00:03:28,644 --> 00:03:31,960
+而不是在一家公司的控制之下
+rather than just being under the control of a single company,
+
+60
+00:03:31,960 --> 00:03:35,888
+它未来有可能出于某些原因选择停止开源
+which for whatever reason may choose to close it off in the future
+
+61
+00:03:35,933 --> 00:03:40,410
+即便现在这个软件是以开源的形式发布的
+even if the software is currently released under open source.
+
+62
+00:03:40,415 --> 00:03:44,470
+但至少在短期内  取决于你对语言的偏好
+But at least in the short term depending on your preferences of language,
+
+63
+00:03:44,470 --> 00:03:49,005
+看你更喜欢Python  Java还是C++或者其他什么
+whether you prefer Python or Java or C++ or something else,
+
+64
+00:03:49,005 --> 00:03:51,970
+也取决于你在开发的应用
+and depending on what application you're working on,
+
+65
+00:03:51,970 --> 00:03:55,088
+是计算机视觉  还是自然语言处理
+whether it's computer vision or natural language processing
+
+66
+00:03:55,111 --> 00:03:57,880
+或者线上广告  等等
+or online advertising or something else,
+
+67
+00:03:57,880 --> 00:04:01,940
+我认为这里的多个框架都是很好的选择
+I think multiple of these frameworks could be a good choice.
+
+68
+00:04:01,940 --> 00:04:04,422
+程序框架就讲到这里
+So that's it on program frameworks.
+
+69
+00:04:04,444 --> 00:04:09,360
+通过提供比数值线性代数库更高程度的抽象化
+By providing a higher level of abstraction than just a numerical linear algebra library,
+
+70
+00:04:09,365 --> 00:04:11,740
+这里的每一个程序框架都能让你
+any of these program frameworks can make you more
+
+71
+00:04:11,740 --> 00:04:15,000
+在开发深度机器学习应用时更高效
+efficient as you develop machine learning applications.
+

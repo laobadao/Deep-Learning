@@ -1,0 +1,825 @@
+﻿1
+00:00:00,470 --> 00:00:02,933
+上一个视频中我们学习了softmax层(字幕来源：网易云课堂)
+In the last video, you learned about the softmax layer
+
+2
+00:00:03,317 --> 00:00:04,800
+和softmax激活函数
+and the softmax activation function.
+
+3
+00:00:04,800 --> 00:00:08,660
+在这个视频中  你将更深入地了解softmax分类
+In this video, you deepen your understanding of softmax classification,
+
+4
+00:00:08,660 --> 00:00:13,130
+并学习如何训练一个使用了softmax层的模型
+and also learn how to train a model that uses a softmax layer.
+
+5
+00:00:13,130 --> 00:00:14,911
+回忆一下我们之前举的例子
+Recall our earlier example
+
+6
+00:00:14,933 --> 00:00:18,330
+输出层计算出的 z^[L]如下
+where the output layer computes z^[L] as follows.
+
+7
+00:00:18,330 --> 00:00:19,810
+我们有四个分类
+So we have four classes,
+
+8
+00:00:19,810 --> 00:00:23,444
+C等于4  z^[L]可以是4*1维向量
+C = 4 then z^[L] can be (4,1) dimensional vector
+
+9
+00:00:23,440 --> 00:00:26,800
+我们计算了临时变量t
+and we said we compute t which is this temporary variable
+
+10
+00:00:26,888 --> 00:00:30,060
+对元素进行幂运算
+that performs element-wise exponentiation.
+
+11
+00:00:30,060 --> 00:00:35,200
+最后  如果你的输出层的激活函数g^[L]
+And then finally, if the activation function for your output layer, g^[L]
+
+12
+00:00:35,260 --> 00:00:37,600
+是softmax激活函数
+is the softmax activation function,
+
+13
+00:00:37,622 --> 00:00:40,220
+那么输出就会是这样的
+then your outputs will be this.
+
+14
+00:00:40,220 --> 00:00:42,983
+简单来说就是用临时变量t将它归一化
+It's basically taking the temporary variable t
+
+15
+00:00:42,983 --> 00:00:45,470
+使总和为1
+and normalizing it to sum to 1.
+
+16
+00:00:45,470 --> 00:00:49,220
+于是这就变成了a^[L]
+So this then becomes a^[L].
+
+17
+00:00:49,220 --> 00:00:53,200
+你注意到在向量z中  最大的元素是5
+So you notice that in the z vector, the biggest element was 5, and
+
+18
+00:00:53,200 --> 00:00:57,550
+而最大的概率也就是第一种概率
+the biggest probability ends up being this first probability.
+
+19
+00:00:57,550 --> 00:01:03,311
+softmax这个名称的来源是与所谓hard max对比
+The name softmax comes from contrasting it to what's called a hard max
+
+20
+00:01:03,333 --> 00:01:07,740
+hard max会把向量z变成这个向量
+which would have taken the vector z and map it to this vector.
+
+21
+00:01:07,740 --> 00:01:11,622
+hard max函数会观察z的元素
+So hard max function will look at the elements of z
+
+22
+00:01:11,666 --> 00:01:16,183
+然后在z中最大元素的位置放上1
+and just put an 1 in the position of the biggest element of z
+
+23
+00:01:16,183 --> 00:01:18,080
+其他位置放上0
+and then 0s everywhere else.
+
+24
+00:01:18,080 --> 00:01:20,644
+所以这是一个很硬 (hard) 的max
+And so this is a very hard max
+
+25
+00:01:20,688 --> 00:01:23,150
+也就是最大的元素的输出为1
+where the biggest element gets a output of 1
+
+26
+00:01:23,150 --> 00:01:25,750
+其他的输出都为0
+and everything else gets an output of 0.
+
+27
+00:01:25,750 --> 00:01:27,520
+与之相反
+Whereas in contrast,
+
+28
+00:01:27,520 --> 00:01:33,400
+softmax所做的从z到这些概率的映射更为温和
+a softmax is a more gentle mapping from z to these probabilities.
+
+29
+00:01:33,400 --> 00:01:35,133
+我不知道这是不是一个好名字
+So, I'm not sure if this is a great name
+
+30
+00:01:35,130 --> 00:01:39,622
+但至少这就是softmax这一名称背后所包含的想法
+but at least, that was the intuition behind why we call it a softmax,
+
+31
+00:01:39,640 --> 00:01:42,600
+与hard max正好相反
+all this in contrast to the hard max.
+
+32
+00:01:42,800 --> 00:01:46,466
+有一点我没有细讲  但之前已经提到过的
+And one thing I didn't really show but had alluded to is that
+
+33
+00:01:46,533 --> 00:01:49,888
+就是softmax回归或softmax激活函数
+softmax regression or the softmax activation function
+
+34
+00:01:49,911 --> 00:01:56,230
+将logistic激活函数推广到C类  而不仅仅是两类
+generalizes the logistic activation function to C classes rather than just two classes.
+
+35
+00:01:56,230 --> 00:02:01,480
+结果就是如果C等于2  那么C等于2的
+And it turns out that if C = 2, then softmax with
+
+36
+00:02:01,480 --> 00:02:07,840
+softmax实际上变回到了logistic回归
+C = 2 essentially reduces to logistic regression.
+
+37
+00:02:07,840 --> 00:02:10,222
+我不会在这个视频中给出证明
+And I'm not going to prove this in this video
+
+38
+00:02:10,220 --> 00:02:12,777
+但是大致的证明思路是这样的
+but the rough outline for the proof is that
+
+39
+00:02:12,822 --> 00:02:16,222
+如果C等于2  并且你应用了softmax
+if C = 2 and if you apply softmax,
+
+40
+00:02:16,266 --> 00:02:21,550
+那么输出层a^[L]将会输出两个数字
+then the output layer, a^[L], will output two numbers
+
+41
+00:02:21,550 --> 00:02:22,911
+如果C等于2的话
+if C = 2,
+
+42
+00:02:22,955 --> 00:02:29,177
+也许它会输出0.842和0.158  对吧
+so maybe it outputs 0.842 and 0.158, right?
+
+43
+00:02:29,222 --> 00:02:31,155
+这两个数字加起来要等于1
+And these two numbers always have to sum to 1.
+
+44
+00:02:31,170 --> 00:02:34,511
+因为它们的和必须为1  其实它们是冗余的
+And because these two numbers always have to sum to 1, they're actually redundant.
+
+45
+00:02:34,511 --> 00:02:36,666
+也许你不需要计算两个
+And maybe you don't need to bother to compute two of them,
+
+46
+00:02:36,688 --> 00:02:38,777
+而只需要计算其中一个
+maybe you just need to compute one of them.
+
+47
+00:02:38,844 --> 00:02:43,890
+结果就是你最终计算那个数字的方式又回到了
+And it turns out that the way you end up computing that number reduces to
+
+48
+00:02:43,890 --> 00:02:48,790
+logistic回归计算单个输出的方式
+the way that logistic regression is computing its single output.
+
+49
+00:02:48,790 --> 00:02:53,311
+这算不上是一个证明  但我们可以从中得出结论
+So that wasn't much of a proof but the takeaway from this is that
+
+50
+00:02:53,311 --> 00:02:58,360
+softmax回归将logistic回归推广到了两种分类以上
+softmax regression is a generalization of logistic regression to more than two classes.
+
+51
+00:02:58,360 --> 00:03:00,417
+接下来我们来看
+Now let's look at how you would actually train
+
+52
+00:03:00,417 --> 00:03:04,050
+怎样训练带有softmax输出层的神经网络
+a neural network with a softmax output layer.
+
+53
+00:03:04,050 --> 00:03:04,860
+具体而言
+So in particular,
+
+54
+00:03:04,860 --> 00:03:08,330
+我们先定义训练神经网络时会用到的损失函数
+let's define the loss functions you use to train your neural network.
+
+55
+00:03:08,330 --> 00:03:09,320
+举个例子
+Let's take an example.
+
+56
+00:03:09,320 --> 00:03:14,910
+我们来看看训练集中某个样本的目标输出
+Let's see of an example in your training set where the target output,
+
+57
+00:03:14,910 --> 00:03:17,780
+真实标签是0 1 0 0
+the ground truth label is 0 1 0 0.
+
+58
+00:03:17,780 --> 00:03:20,560
+用上一个视频中讲到过的例子
+So the example from the previous video,
+
+59
+00:03:20,560 --> 00:03:25,400
+这表示这是一张猫的图片  因为它属于类1
+this means that this is an image of a cat because it falls into Class 1.
+
+60
+00:03:25,400 --> 00:03:30,990
+现在我们假设你的神经网络输出的是ŷ等于
+And now let's say that your neural network is currently outputting y hat equals...
+
+61
+00:03:30,990 --> 00:03:34,980
+ŷ是一个包括总和为1的概率的向量
+so y hat would be a vector of probabilities sum to 1...
+
+62
+00:03:34,980 --> 00:03:42,770
+0.1  0.4  你可以看到总和为1  这就是a^[L]
+0.1, 0.4, so you can check that sums to 1, and this is going to be a^[L].
+
+63
+00:03:42,770 --> 00:03:45,600
+对于这个样本  神经网络的表现不佳
+So the neural network's not doing very well in this example
+
+64
+00:03:45,666 --> 00:03:49,570
+这实际上是一只猫  但却只分配到20%是猫的概率
+because this is actually a cat and assigned only a 20% chance that this is a cat.
+
+65
+00:03:49,570 --> 00:03:51,333
+所以在本例中表现不佳
+So didn't do very well in this example.
+
+66
+00:03:51,933 --> 00:03:56,600
+那么你想用什么损失函数来训练这个神经网络？
+So what's the loss function you would want to use to train this neural network?
+
+67
+00:03:56,600 --> 00:03:58,400
+在softmax分类中
+In softmax classification,
+
+68
+00:03:58,444 --> 00:04:03,210
+我们一般用到的损失函数是负的j从1到4的和
+the loss we typically use is negative sum of j=1 through 4.
+
+69
+00:04:03,210 --> 00:04:07,160
+实际上一般来说是从1到C的和
+And it's really sum from 1 to C in the general case.
+
+70
+00:04:07,160 --> 00:04:14,520
+我们这里就用4  y_j log ŷ_j
+We're going to just use 4 here-- of y_j log y hat of j.
+
+71
+00:04:14,520 --> 00:04:17,083
+我们来看上面的单个样本
+So let's look at our single example above
+
+72
+00:04:17,083 --> 00:04:19,940
+来更好地理解整个过程
+to better understand what happens.
+
+73
+00:04:19,940 --> 00:04:21,933
+注意在这个样本中
+Notice that in this example,
+
+74
+00:04:21,930 --> 00:04:27,288
+y_1=y_3=y_4=0
+y_1 = y_3 = y_4 = 0
+
+75
+00:04:27,288 --> 00:04:32,630
+因为这些都是0  只有y_2=1
+because those are 0s and only y_2 = 1.
+
+76
+00:04:32,630 --> 00:04:35,340
+如果你看这个求和
+So if you look at this summation,
+
+77
+00:04:35,340 --> 00:04:39,620
+所有含有值为0的y_j的项都等于0
+all of the terms with 0 values of y_j were equal to 0.
+
+78
+00:04:39,620 --> 00:04:46,844
+最后只剩下 -y_2 log ŷ_2
+And the only term you're left with is -y2 log y hat 2,
+
+79
+00:04:46,955 --> 00:04:49,400
+因为当你按照下标j全部加起来
+because when you sum over the indices of j,
+
+80
+00:04:49,466 --> 00:04:52,520
+所有的项都为0  除了j等于2时
+all the terms will end up 0, except when j is equal to 2.
+
+81
+00:04:52,520 --> 00:04:58,340
+又因为y_2=1  所以它就等于-log ŷ_2
+And because y_2 = 1, this is just -log y hat 2.
+
+82
+00:04:58,340 --> 00:05:00,090
+这就意味着
+So what this means is that,
+
+83
+00:05:00,090 --> 00:05:04,133
+如果你的学习算法试图将它变小
+if your learning algorithm is trying to make this small
+
+84
+00:05:04,222 --> 00:05:08,622
+因为梯度下降法是用来减少训练集的损失的
+because you use gradient descent to try to reduce the loss on your training set.
+
+85
+00:05:08,940 --> 00:05:12,450
+要使它变小的唯一方式就是使它变小
+Then the only way to make this small is to make this small.
+
+86
+00:05:12,450 --> 00:05:17,511
+要想做到这一点  就需要使ŷ_2尽可能大
+And the only way to do that is to make y hat 2 as big as possible.
+
+87
+00:05:18,066 --> 00:05:21,266
+因为这些是概率  所以不可能比1大
+And these are probabilities, so they can never be bigger than 1.
+
+88
+00:05:21,377 --> 00:05:23,533
+但这的确也讲得通
+But this kind of makes sense
+
+89
+00:05:23,530 --> 00:05:27,111
+因为在这个例子中x是猫的图片
+because x for this example is the picture of a cat,
+
+90
+00:05:27,155 --> 00:05:31,070
+你就需要这项输出的概率尽可能地大
+then you want that output probability to be as big as possible.
+
+91
+00:05:31,070 --> 00:05:33,844
+概括来讲  损失函数所做的就是
+So more generally, what this loss function does is
+
+92
+00:05:33,860 --> 00:05:37,400
+它找到你的训练集中的真实类别
+it looks at whatever is the ground truth class in your training set,
+
+93
+00:05:37,422 --> 00:05:42,540
+然后试图使该类别相应的概率尽可能地高
+and it tries to make the corresponding probability of that class as high as possible.
+
+94
+00:05:42,540 --> 00:05:46,020
+如果你熟悉统计学中的最大似然估计
+If you're familiar with maximum likelihood estimation statistics,
+
+95
+00:05:46,020 --> 00:05:49,050
+这其实就是最大似然估计的一种形式
+this turns out to be a form of maximum likelyhood estimation.
+
+96
+00:05:49,050 --> 00:05:51,690
+但如果你不知道那是什么意思  也不用担心
+But if you don't know what that means, don't worry about it.
+
+97
+00:05:51,690 --> 00:05:54,311
+用我们刚刚讲过的算法思维也足够了
+The intuition we just talked about will suffice.
+
+98
+00:05:54,422 --> 00:05:57,360
+这是单个训练样本的损失
+Now this is the loss on a single training example.
+
+99
+00:05:57,360 --> 00:06:01,355
+整个训练集的损失J又如何呢
+How about the cost J on the entire training set.
+
+100
+00:06:01,377 --> 00:06:05,610
+也就是设定参数的代价之类的
+So, the cost of setting of the parameters and so on,
+
+101
+00:06:05,610 --> 00:06:07,717
+还有各种形式的偏差的代价
+of all the ways of biases,
+
+102
+00:06:07,710 --> 00:06:10,377
+它的定义你大致也能猜到
+you define that as pretty much what you'd guess,
+
+103
+00:06:10,377 --> 00:06:13,444
+就是整个训练集损失的总和
+sum of your entire training sets of the loss,
+
+104
+00:06:13,555 --> 00:06:18,270
+把你的训练算法对所有训练样本的预测都加起来
+your learning algorithm's predictions are summed over your training samples.
+
+105
+00:06:18,270 --> 00:06:21,200
+因此你要做的就是用梯度下降法
+And so, what you do is use gradient descent
+
+106
+00:06:21,200 --> 00:06:23,730
+使这里的损失最小化
+in order to try to minimize this cost.
+
+107
+00:06:23,730 --> 00:06:26,270
+最后还有一个实现细节
+Finally, one more implementation detail.
+
+108
+00:06:26,270 --> 00:06:30,840
+注意因为C=4  y是一个4*1向量
+Notice that because C is equal to 4, y is a 4 by 1 vector, and
+
+109
+00:06:30,840 --> 00:06:34,044
+ŷ也是一个4*1向量
+y hat is also a 4 by 1 vector.
+
+110
+00:06:34,350 --> 00:06:36,817
+如果你使用向量化实现
+So if you're using a vectorized implementation,
+
+111
+00:06:36,817 --> 00:06:45,610
+矩阵大写Y就是y^(1)  y^(2)到y^(m) 的横向排列
+the matrix capital Y is going to be y^(1), y^(2), through y^(m), stacked horizontally.
+
+112
+00:06:45,610 --> 00:06:49,644
+例如如果上面这个样本是你的第一个训练样本
+And so for example, if this example up here is your first training example
+
+113
+00:06:49,688 --> 00:06:54,244
+那么矩阵Y的第一列就是0 1 0 0
+then the first column of this matrix Y will be 0 1 0 0
+
+114
+00:06:54,240 --> 00:06:58,022
+也许第二个样本是一只狗
+and then maybe the second example is a dog,
+
+115
+00:06:58,088 --> 00:07:02,088
+也许第三个样本是以上均不符合  等等
+maybe the third example is a none of the above, and so on.
+
+116
+00:07:02,177 --> 00:07:08,244
+那么这个矩阵Y最终就是一个4*m维矩阵
+And then this matrix Y will end up being a 4 by m dimensional matrix.
+
+117
+00:07:08,355 --> 00:07:16,183
+类似的  ŷ就是ŷ^(1)...横向排列  一直到ŷ^m
+And similarly, Y hat will be y hat 1 stacked up horizontally going through y hat m
+
+118
+00:07:16,183 --> 00:07:21,683
+这个其实就是ŷ^1  或是第一个训练样本的输出
+so this is actually y hat 1 or the output on the first training example
+
+119
+00:07:21,683 --> 00:07:29,020
+那么ŷ就是0.3  0.2  0.1  0.4等等
+Then y hat with these 0.3, 0.2, 0.1, and 0.4, and so on.
+
+120
+00:07:29,020 --> 00:07:33,190
+ŷ本身也是一个4*m维矩阵
+And y hat itself will also be 4 by m dimensional matrix.
+
+121
+00:07:33,190 --> 00:07:35,000
+最后我们来看一下
+Finally, let's take a look at how
+
+122
+00:07:35,000 --> 00:07:38,840
+在有softmax输出层时如何实现梯度下降法
+you'd implement gradient descent when you have a softmax output layer.
+
+123
+00:07:38,840 --> 00:07:44,283
+这个输出层会计算z^[L]  它是C*1的
+So this output layer will compute z^[L] which is C by 1
+
+124
+00:07:44,283 --> 00:07:46,060
+在这个例子中是4*1
+in our example, 4 by 1 and
+
+125
+00:07:46,060 --> 00:07:52,822
+然后你用softmax激活函数来得到a^[L]或者说ŷ
+then you apply the softmax activation function to get a^[L], or y hat.
+
+126
+00:07:53,640 --> 00:07:58,210
+然后又能由此算出损失
+And then that in turn allows you to compute the loss.
+
+127
+00:07:58,210 --> 00:08:04,466
+我们已经讲了如何实现神经网络前向传播的步骤
+So we've talked about how to implement the forward propagation step of a neural network
+
+128
+00:08:04,466 --> 00:08:06,970
+来得到这些输出  并计算损失
+to get these outputs and to compute that loss.
+
+129
+00:08:06,970 --> 00:08:10,550
+那么反向传播步骤或者梯度下降法又如何呢？
+How about the backpropagation step, or gradient descent?
+
+130
+00:08:10,550 --> 00:08:12,155
+其实初始化反向传播
+Turns out that the key step or
+
+131
+00:08:12,155 --> 00:08:16,140
+所需的关键步骤或者说关键方程是这个表达式
+the key equation you need to initialize backprop is this expression,
+
+132
+00:08:16,140 --> 00:08:20,360
+对于最后一层的z的导数  其实
+that the derivative with respect to z at the last layer, this turns out,
+
+133
+00:08:20,360 --> 00:08:26,060
+你可以用ŷ这个4*1向量减去y这个4*1向量
+you can compute this y hat, the 4 by 1 vector, minus y, the 4 by 1 vector.
+
+134
+00:08:26,060 --> 00:08:29,533
+你可以看到这些都会是4*1向量
+So you notice that all of these are going to be 4 by 1 vectors
+
+135
+00:08:29,577 --> 00:08:31,217
+当你有4个分类时
+when you have 4 classes
+
+136
+00:08:31,217 --> 00:08:33,120
+在一般情况下就是C*1
+and C by 1 in the more general case.
+
+137
+00:08:34,150 --> 00:08:37,400
+这符合我们对dz的一般定义
+And so this going by our usual definition of what is dz,
+
+138
+00:08:37,422 --> 00:08:42,560
+这是对于z^[L]的损失函数的偏导数
+this is the partial derivative for the cost function with respect to z^[L].
+
+139
+00:08:42,560 --> 00:08:47,177
+如果你精通微积分  就可以自己推导
+If you are an expert in calculus, you can derive this yourself.
+
+140
+00:08:47,470 --> 00:08:49,050
+或者说如果你精通微积分
+Or if you're an expert in calculus,
+
+141
+00:08:49,050 --> 00:08:50,511
+可以试着自己推导
+you can try to derive this yourself,
+
+142
+00:08:50,555 --> 00:08:53,000
+但是如果你需要从零开始使用这个公式
+but using this formula will also just work fine,
+
+143
+00:08:53,066 --> 00:08:54,680
+它也一样有用
+if you have a need to implement this from scratch.
+
+144
+00:08:54,750 --> 00:08:58,066
+有了这个  你就可以计算dz^[L]
+With this, you can then compute dz^[L]
+
+145
+00:08:58,060 --> 00:09:00,777
+然后开始反向传播的过程
+and then sort of start off the backprop process
+
+146
+00:09:00,777 --> 00:09:04,822
+计算整个神经网络中所需的所有导数
+to compute all the derivatives you need throughout your neural network.
+
+147
+00:09:05,022 --> 00:09:08,133
+但是在这周的初级练习中
+But it turns out that in this week's primary exercise,
+
+148
+00:09:08,130 --> 00:09:11,533
+我们将开始使用一种深度学习编程框架
+we'll start to use one of the deep learning program frameworks
+
+149
+00:09:11,555 --> 00:09:13,040
+对于这些编程框架
+and for those program frameworks,
+
+150
+00:09:13,040 --> 00:09:17,444
+通常你只需专注于把前向传播做对
+usually it turns out you just need to focus on getting the forward prop right.
+
+151
+00:09:17,730 --> 00:09:21,700
+只要你将它指明为编程框架  前向传播
+And so long as you specify it as a program framework, the forward prop pass,
+
+152
+00:09:21,700 --> 00:09:24,911
+它自己会弄明白怎样反向传播
+the program framework will figure out how to do back prop,
+
+153
+00:09:24,911 --> 00:09:26,800
+会帮你实现反向传播
+how to do the backward pass for you.
+
+154
+00:09:27,790 --> 00:09:30,733
+这个表达式值得牢记
+So this expression is worth keeping in mind
+
+155
+00:09:30,800 --> 00:09:32,600
+如果你需要从头开始
+for if you ever need to implement
+
+156
+00:09:32,600 --> 00:09:35,577
+实现softmax回归或者softmax分类
+softmax regression, or softmax classification from scratch.
+
+157
+00:09:35,600 --> 00:09:38,933
+但其实在这周的初级练习中你不会用到它
+Although you won't actually need this in this week's primary exercise
+
+158
+00:09:38,950 --> 00:09:43,888
+因为编程框架会帮你搞定导数计算
+because the program framework you use will take care of this derivative computation for you.
+
+159
+00:09:43,911 --> 00:09:47,088
+softmax分类就讲到这里
+So that's it for softmax classification,
+
+160
+00:09:47,133 --> 00:09:50,333
+有了它  你就可以运用学习算法
+with it you can now implement learning algorithms
+
+161
+00:09:50,330 --> 00:09:53,666
+将输入分成不止两类
+to categorize inputs into not just one of two classes,
+
+162
+00:09:53,711 --> 00:09:56,820
+而是C个不同类别
+but one of C different classes.
+
+163
+00:09:56,820 --> 00:10:01,088
+接下来我想向你展示一些深度学习编程框架
+Next, I want to show you some of the deep learning program frameworks
+
+164
+00:10:01,111 --> 00:10:05,355
+可以让你在实现深度学习算法时更加高效
+which can make you much more efficient in terms of implementing deep learning algorithms.
+
+165
+00:10:05,355 --> 00:10:07,450
+让我们在下个视频中一起讨论
+Let's go on to the next video to discuss that.
+

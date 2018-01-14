@@ -1,0 +1,410 @@
+﻿1
+00:00:00,000 --> 00:00:03,685
+Batch归一化将你的数据以mini-batch的形式逐一处理(字幕来源：网易云课堂)
+Batch norm processes your data one mini batch at a time,
+
+2
+00:00:03,685 --> 00:00:07,760
+但在测试时  你可能需要对每一个样本逐一处理
+but the test time you might need to process the examples one at a time.
+
+3
+00:00:07,760 --> 00:00:10,585
+我们来看一下怎样调整你的网络来做到这一点
+Let's see how you can adapt your network to do that.
+
+4
+00:00:10,585 --> 00:00:12,233
+回想一下  在训练时
+Recall that during training,
+
+5
+00:00:12,233 --> 00:00:15,260
+这些就是用来执行Batch归一化的等式
+here are the equations you'd use to implement batch norm.
+
+6
+00:00:15,260 --> 00:00:17,025
+在一个mini-batch中
+Within a single mini batch,
+
+7
+00:00:17,025 --> 00:00:22,610
+你将mini-batch的z(i)值求和  计算均值
+you'd sum over that mini batch of the ZI values to compute the mean.
+
+8
+00:00:22,610 --> 00:00:25,910
+所以这里你只要把一个mini-batch中的样本都加起来
+So here, you're just summing over the examples in one mini batch.
+
+9
+00:00:25,910 --> 00:00:29,555
+我用m来表示这个mini-batch中的样本数量
+I'm using M to denote the number of examples in the mini batch
+
+10
+00:00:29,555 --> 00:00:31,870
+而不是整个训练集
+not in the whole training set.
+
+11
+00:00:31,870 --> 00:00:35,955
+然后计算方差  再算z norm
+Then, you compute the variance and then you compute Z norm by
+
+12
+00:00:35,955 --> 00:00:41,325
+即用均值和标准差来调整  加上ε是为了数值稳定性
+scaling by the mean and standard deviation with Epsilon added for numerical stability.
+
+13
+00:00:41,325 --> 00:00:47,100
+z̃是用γ和β再次调整z norm
+And then Z tilde is taking Z norm and rescaling by gamma and beta.
+
+14
+00:00:47,100 --> 00:00:54,577
+请注意用于调节计算的μ和σ²
+So, notice that mu and sigma squared which you need for this scaling calculation
+
+15
+00:00:54,644 --> 00:00:57,620
+是在整个mini-batch上进行计算
+are computed on the entire mini batch.
+
+16
+00:00:57,620 --> 00:01:00,495
+但是在测试时  你可能不能将一个mini-batch中的
+But the test time you might not have a mini batch of
+
+17
+00:01:00,495 --> 00:01:05,240
+6428个或2056个样本同时处理
+6428 or 2056 examples to process at the same time.
+
+18
+00:01:05,240 --> 00:01:08,777
+因此你需要用其他方式来得到μ和σ²
+So, you need some different way of coming up with mu and sigma squared.
+
+19
+00:01:08,822 --> 00:01:10,290
+而且如果你只有一个样本
+And if you have just one example,
+
+20
+00:01:10,290 --> 00:01:15,060
+一个样本的均值和方差没有意义
+taking the mean and variance of that one example, doesn't make sense.
+
+21
+00:01:15,060 --> 00:01:20,666
+那么实际上  为了将你的神经网络运用于测试
+So what's actually done in order to apply your neural network at test time
+
+22
+00:01:20,733 --> 00:01:25,730
+就需要单独估算μ和σ²
+is to come up with some separate estimate of mu and sigma squared.
+
+23
+00:01:25,735 --> 00:01:27,975
+在典型的Batch归一化运用中
+And in typical implementations of batch norm,
+
+24
+00:01:27,970 --> 00:01:35,533
+你需要用一个指数加权平均来估算
+what you do is estimate this using an exponentially weighted average
+
+25
+00:01:35,577 --> 00:01:42,678
+这个平均数涵盖了所有mini-batch
+where the average is across the mini batches.
+
+26
+00:01:42,678 --> 00:01:45,900
+接下来我会具体解释
+So, to be very concrete here's what I mean.
+
+27
+00:01:45,900 --> 00:01:52,888
+我们选择L层  假设我们有mini-batch X^[1]  X^[2]
+Let's pick some layer L and let's say you're going through mini batches X1, X2
+
+28
+00:01:52,955 --> 00:01:57,500
+以及对应的y值等等
+together with the corresponding values of Y and so on.
+
+29
+00:01:57,500 --> 00:02:05,444
+那么在为L层训练X^[1]时  你就得到了μ^[L]
+So, when training on X1 for that layer L, you get some mu L.
+
+30
+00:02:05,511 --> 00:02:12,480
+我还是把它写做第一个mini-batch和这一层的μ吧
+And in fact, I'm going to write this as mu for the first mini batch and that layer.
+
+31
+00:02:12,480 --> 00:02:16,822
+当你训练第二个mini-batch  在这一层和这个mini-batch中
+And then when you train on the second mini batch for that layer and that mini batch,
+
+32
+00:02:16,844 --> 00:02:19,050
+你就会得到第二个μ值
+you end up with some second value of mu.
+
+33
+00:02:19,055 --> 00:02:23,194
+然后在这一隐藏层的第三个mini-batch
+And then for the third mini batch in this hidden layer,
+
+34
+00:02:23,194 --> 00:02:29,090
+你得到了第三个μ值
+you end up with some third value for mu.
+
+35
+00:02:29,090 --> 00:02:33,733
+正如我们之前用指数加权平均
+So just as we saw how to use an exponentially weighted average
+
+36
+00:02:33,930 --> 00:02:38,666
+来计算θ_1  θ_2  θ_3的均值
+to compute the mean of Theta one, Theta two, Theta three
+
+37
+00:02:38,688 --> 00:02:44,173
+当时是试着计算当前气温的指数加权平均
+when you were trying to compute an exponentially weighted average of the current temperature,
+
+38
+00:02:44,173 --> 00:02:47,250
+你会这样来追踪
+you would do that to keep track of what's
+
+39
+00:02:47,250 --> 00:02:50,790
+你看到的这个均值向量的最新平均值
+the latest average value of this mean vector you've seen.
+
+40
+00:02:50,790 --> 00:02:54,195
+于是这个指数加权平均就成了
+So that exponentially weighted average becomes
+
+41
+00:02:54,195 --> 00:03:00,120
+你对这一隐藏层的z均值的估值  同样的
+your estimate for what the mean of the Zs is for that hidden layer and similarly,
+
+42
+00:03:00,120 --> 00:03:03,930
+你也可以用指数加权平均来追踪
+you use an exponentially weighted average to keep track of
+
+43
+00:03:03,930 --> 00:03:09,015
+你在这一层的第一个mini-batch中所见的σ²的值
+these values of sigma squared that you see on the first mini batch in that layer,
+
+44
+00:03:09,015 --> 00:03:13,510
+以及第二个mini-batch中所见的σ²的值等等
+sigma square that you see on second mini batch and so on.
+
+45
+00:03:13,510 --> 00:03:18,780
+因此在用不同的mini-batch训练神经网络的同时
+So you keep a running average of the mu and the sigma squared that you're
+
+46
+00:03:18,780 --> 00:03:24,535
+能够得到你所查看的每一层的μ和σ²的平均数的实时数值
+seeing for each layer as you train the neural network across different mini batches.
+
+47
+00:03:24,535 --> 00:03:26,895
+最后在测试时
+Then finally at test time,
+
+48
+00:03:26,895 --> 00:03:30,275
+对应这个等式
+what you do is in place of this equation,
+
+49
+00:03:30,275 --> 00:03:35,855
+你只需要用你的z值来计算z norm
+you would just compute Z norm using whatever value your Z have,
+
+50
+00:03:35,850 --> 00:03:41,444
+用μ和σ²的指数加权平均
+and using your exponentially weighted average of the mu and sigma square
+
+51
+00:03:41,488 --> 00:03:45,340
+用你手头的最新数值来做调整
+whatever was the latest value you have to do the scaling here.
+
+52
+00:03:45,340 --> 00:03:51,088
+然后你可以用左边我们刚算出来的z norm
+And then you would compute Z tilde on your one test example
+
+53
+00:03:51,150 --> 00:03:57,240
+和你在神经网络训练过程中得到的β和γ参数
+using that Z norm that we just computed on the left  and using the beta and
+
+54
+00:03:57,240 --> 00:04:02,695
+来计算你那个测试样本的z̃值
+gamma parameters that you have learned during your neural network training process.
+
+55
+00:04:02,690 --> 00:04:06,533
+总结一下就是  在训练时
+So the takeaway from this is that during training time
+
+56
+00:04:06,570 --> 00:04:10,800
+μ和σ²是在整个mini-batch上计算出来的
+mu and sigma squared are computed on an entire mini batch of,
+
+57
+00:04:10,866 --> 00:04:14,580
+包含了像是64或28或其他一定数量的样本
+say, 64, 28 or some number of examples.
+
+58
+00:04:14,580 --> 00:04:18,345
+但在测试时  你可能需要逐一处理样本
+But at test time, you might need to process a single example at a time.
+
+59
+00:04:18,340 --> 00:04:22,955
+方法是根据你的训练集估算μ和σ²
+So, the way to do that is to estimate mu and sigma squared from your training set
+
+60
+00:04:23,044 --> 00:04:25,320
+估算的方式有很多种
+and there are many ways to do that.
+
+61
+00:04:25,320 --> 00:04:29,200
+理论上你可以在最终的网络中运行整个训练集
+You could in theory run your whole training set through your final network
+
+62
+00:04:29,200 --> 00:04:30,960
+来得到μ和σ²
+to get mu and sigma squared.
+
+63
+00:04:30,960 --> 00:04:35,066
+但在实际操作中  我们通常运用指数加权平均
+But in practice, what people usually do is implement an exponentially weighted average
+
+64
+00:04:35,150 --> 00:04:40,111
+来追踪在训练过程中你看到的μ和σ²的值
+where you just keep track of the mu and sigma squared values you're seeing during training
+
+65
+00:04:40,155 --> 00:04:44,095
+还可以用指数加权平均  有时也叫做流动平均
+and use an exponentially weighted average, also sometimes called the running average,
+
+66
+00:04:44,090 --> 00:04:47,066
+来粗略估算μ和σ²
+to just get a rough estimate of mu and sigma squared
+
+67
+00:04:47,110 --> 00:04:50,844
+然后用测试中μ和σ²的值
+and then you use those values of mu and sigma squared at test time
+
+68
+00:04:50,888 --> 00:04:55,860
+来进行你所需的隐藏单元z值的调整
+to do the scaling you need of the hidden unit values Z.
+
+69
+00:04:55,860 --> 00:04:58,980
+在实践中  不管你用什么方式估算μ和σ²
+In practice, this process is pretty robust
+
+70
+00:04:58,980 --> 00:05:03,125
+这套过程都是比较稳健的
+to the exact way you used to estimate mu and sigma squared.
+
+71
+00:05:03,120 --> 00:05:07,044
+因此我不会太担心你具体的操作方式
+So, I wouldn't worry too much about exactly how you do this
+
+72
+00:05:07,111 --> 00:05:09,720
+而且如果你使用的是某种深度学习框架
+and if you're using a deep learning framework,
+
+73
+00:05:09,720 --> 00:05:15,177
+通常会有默认的估算μ和σ²的方式
+they'll usually have some default way to estimate the mu and sigma squared
+
+74
+00:05:15,177 --> 00:05:17,660
+应该一样会起到比较好的效果
+that should work reasonably well as well.
+
+75
+00:05:17,665 --> 00:05:21,965
+但在实践中  任何合理的估算你的隐藏单元z值的
+But in practice, any reasonable way to estimate the mean and
+
+76
+00:05:21,965 --> 00:05:28,600
+均值和方差的方式  在测试中应该都会有效
+variance of your hidden unit values Z should work fine at test.
+
+77
+00:05:28,600 --> 00:05:30,422
+Batch归一化就讲到这里
+So, that's it for batch norm.
+
+78
+00:05:30,460 --> 00:05:34,088
+使用Batch归一化  你能够训练更深的网络
+And using it, I think you'll be able to train much deeper networks
+
+79
+00:05:34,088 --> 00:05:37,200
+让你的学习算法运行速度更快
+and get your learning algorithm to run much more quickly.
+
+80
+00:05:37,205 --> 00:05:38,870
+在结束这周的课程前
+Before we wrap up for this week,
+
+81
+00:05:38,870 --> 00:05:42,933
+我还想和你们分享一些关于深度学习框架的想法
+I want to share with you some thoughts on deep learning frameworks as well.
+
+82
+00:05:43,000 --> 00:05:46,000
+让我们在下一段视频中一起讨论这个话题
+Let's start to talk about that in the next video.
+

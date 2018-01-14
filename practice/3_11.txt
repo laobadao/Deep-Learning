@@ -1,0 +1,1155 @@
+﻿1
+00:00:00,333 --> 00:00:02,320
+欢迎来到这周的最后一个视频(字幕来源：网易云课堂)
+Welcome to the last video for this week.
+
+2
+00:00:02,320 --> 00:00:05,987
+有很多很棒的深度学习编程框架
+There are many great, deep learning programming frameworks.
+
+3
+00:00:05,987 --> 00:00:07,900
+其中一个是TensorFlow
+One of them is TensorFlow.
+
+4
+00:00:07,900 --> 00:00:11,430
+我很期待帮助你开始学习使用TensorFlow
+I'm excited to help you start to learn to use TensorFlow.
+
+5
+00:00:11,430 --> 00:00:14,760
+我想在这个视频中向你展示TensorFlow程序的
+What I want to do in this video is show you the basic structure
+
+6
+00:00:14,760 --> 00:00:18,970
+基本结构  然后让你自己练习  学习更多细节
+of a TensorFlow program, and then leave you to practice, learn more details, and
+
+7
+00:00:18,970 --> 00:00:22,000
+并运用到本周的编程练习中
+practice them yourself in this week's programming exercise.
+
+8
+00:00:22,022 --> 00:00:24,660
+这周的编程练习需要花些时间来做
+This week's programming exercise will take some time to do so
+
+9
+00:00:24,660 --> 00:00:27,177
+所以请务必留出一些空余时间
+please be sure to leave some extra time to do it.
+
+10
+00:00:27,266 --> 00:00:29,270
+先提一个启发性的问题
+As a motivating problem,
+
+11
+00:00:29,270 --> 00:00:34,210
+假设你有一个损失函数J需要最小化
+let's say that you have some cost function J that you want to minimize.
+
+12
+00:00:34,210 --> 00:00:38,444
+在本例中  我将使用这个高度简化的损失函数
+And for this example, I'm going to use this highly simple cost function
+
+13
+00:00:38,466 --> 00:00:44,955
+J(w) = w^2- 10w + 25
+J(w) = w squared- 10w + 25.
+
+14
+00:00:44,977 --> 00:00:46,666
+这就是损失函数
+So that's the cost function.
+
+15
+00:00:46,711 --> 00:00:53,750
+也许你已注意到该函数其实就是w减5的平方
+You might notice that this function is actually (w- 5) squared.
+
+16
+00:00:53,750 --> 00:00:55,450
+如果你把这个二次方的式子展开
+If you expand out this quadratic,
+
+17
+00:00:55,450 --> 00:00:56,844
+就得到了上面的表达式
+you get the expression above,
+
+18
+00:00:56,844 --> 00:01:01,550
+所以使它最小的w值是w等于5
+and so the value of w that minimizes this is w = 5.
+
+19
+00:01:01,550 --> 00:01:05,644
+但是假设我们不知道这点  你只有这个函数
+But let's say we didn't know that, and you just have this function.
+
+20
+00:01:05,688 --> 00:01:10,111
+我们来看一下怎样用TensorFlow将其最小化
+Let's see how you can implement something in TensorFlow to minimize this.
+
+21
+00:01:10,111 --> 00:01:13,383
+因为一个非常类似的程序结构可以用来
+Because a very similar structure of program can be used to
+
+22
+00:01:13,383 --> 00:01:14,511
+训练神经网络
+train neural networks
+
+23
+00:01:14,530 --> 00:01:19,288
+其中可以有一些复杂的损失函数J(w, b)
+where you can have some complicated cost function J(w, b)
+
+24
+00:01:19,311 --> 00:01:22,930
+取决于你的神经网络的所有参数
+depending on all the parameters of your neural network.
+
+25
+00:01:22,934 --> 00:01:26,910
+然后类似地  你就能用TensorFlow
+And then, similarly, you'll be able to use TensorFlow to
+
+26
+00:01:26,910 --> 00:01:33,010
+自动找到使损失函数最小的w和b的值
+automatically try to find values of w and b that minimize this cost function.
+
+27
+00:01:33,010 --> 00:01:36,140
+但是让我们先从左边这个更简单的例子入手
+But let's start with the simpler example on the left.
+
+28
+00:01:36,140 --> 00:01:39,533
+我在我的Jupyter笔记本中运行Python
+So, I'm running Python in my Jupyter Notebook
+
+29
+00:01:39,530 --> 00:01:43,977
+为了启动TensorFlow  首先import numpy as np
+and to start up TensorFlow, you import numpy as np
+
+30
+00:01:43,970 --> 00:01:48,155
+而且我们习惯用import tensorflow as tf
+and it's idiomatic to use import tensorflow as tf.
+
+31
+00:01:48,177 --> 00:01:52,970
+接下来  让我定义参数w
+Next, let me define the parameter w.
+
+32
+00:01:52,970 --> 00:01:59,000
+在TensorFlow中  你要用tf.Variable来定义参数
+So in TensorFlow, you're going to use tf.Variable to define a parameter.
+
+33
+00:02:01,555 --> 00:02:06,390
+dtype=tf.float32
+dtype=tf.float32.
+
+34
+00:02:08,200 --> 00:02:10,520
+然后我们来定义损失函数
+And then let's define the cost function.
+
+35
+00:02:10,520 --> 00:02:15,839
+记得损失函数是w^2-10w+25
+So remember the cost function was w squared- 10w + 25.
+
+36
+00:02:15,888 --> 00:02:19,230
+让我用tf.add
+So let me use tf.add.
+
+37
+00:02:19,333 --> 00:02:26,710
+我们有w平方加tf.multiply
+So I'm going to have w squared + tf.multiply.
+
+38
+00:02:26,989 --> 00:02:31,642
+第二项是-10乘以w
+So the second term was -10.w.
+
+39
+00:02:31,640 --> 00:02:35,555
+然后我再加上25
+And then I'm going to add that to 25.
+
+40
+00:02:35,577 --> 00:02:40,222
+让我在这里再加一个tf.add
+So let me put another tf.add over there.
+
+41
+00:02:40,240 --> 00:02:43,110
+这样就定义了我们的损失J
+So that defines the cost J that we had.
+
+42
+00:02:43,110 --> 00:02:53,266
+然后再写train = tf.train.GradientDescentOptimizer
+And then, I'm going to write train = tf.train.GradientDescentOptimizer.
+
+43
+00:02:53,400 --> 00:03:00,600
+让我们用0.01的学习率  目标是最小化损失
+Let's use a learning rate of 0.01 and the goal is to minimize the cost.
+
+44
+00:03:01,200 --> 00:03:05,755
+最后  下面的几行是惯用表达
+And finally, the following few lines are quite idiomatic.
+
+45
+00:03:05,755 --> 00:03:13,360
+init = tf.global_variables_initializer
+init = tf.global_variables_initializer
+
+46
+00:03:13,360 --> 00:03:18,111
+然后session = tf.Sessions
+and then session = tf.Sessions.
+
+47
+00:03:18,155 --> 00:03:20,840
+这样就开启了一个TensorFlow session
+So it starts a TensorFlow session.
+
+48
+00:03:20,840 --> 00:03:25,690
+session.run(init)来初始化全局变量
+Session.run init to initialize global variables.
+
+49
+00:03:25,690 --> 00:03:29,288
+然后要让TensorFlow评估一个变量
+And then, for TensorFlow's to evaluate a variable,
+
+50
+00:03:29,333 --> 00:03:32,930
+我们要用到sess.run(w)
+we're going to use sess.run w.
+
+51
+00:03:32,955 --> 00:03:34,266
+我们还什么都没有做
+We haven't done anything yet.
+
+52
+00:03:34,266 --> 00:03:37,650
+上面的这一行将w初始化为0
+So with this line above, initialize w to zero
+
+53
+00:03:37,650 --> 00:03:39,340
+并定义损失函数
+and define a cost function.
+
+54
+00:03:39,340 --> 00:03:42,000
+我们定义train为学习算法
+We define train to be our learning algorithm
+
+55
+00:03:42,066 --> 00:03:46,000
+它用梯度下降法优化器使损失函数最小化
+which uses a GradientDescentOptimizer to minimize the cost function.
+
+56
+00:03:46,000 --> 00:03:49,511
+但实际上我们还没有运行学习算法
+But we haven't actually run the learning algorithm yet, so
+
+57
+00:03:49,533 --> 00:03:52,044
+session.run我们评估了w
+session.run, we evaluate w,
+
+58
+00:03:52,040 --> 00:03:55,555
+让我print session.run(w)
+and let me print session.run(w).
+
+59
+00:03:55,570 --> 00:03:58,850
+所以如果我们运行这个  它评估w等于0
+So if we run that, it evaluates w to be equal to 0
+
+60
+00:03:58,850 --> 00:04:00,820
+因为我们什么都还没运行
+because we haven't run anything yet.
+
+61
+00:04:00,820 --> 00:04:06,220
+现在让我们输入session.run(train)
+Now, let's do session.run train.
+
+62
+00:04:06,220 --> 00:04:10,990
+它所做的就是运行一步梯度下降法
+So what this will do is run one step of GradientDescent.
+
+63
+00:04:10,990 --> 00:04:15,610
+接下来在运行了一步梯度下降法后
+And then let's evaluate the value of w after one
+
+64
+00:04:15,610 --> 00:04:19,670
+让我们评估一下w的值  再print
+step of GradientDescent and print that.
+
+65
+00:04:19,670 --> 00:04:25,490
+在一步梯度下降法之后  w现在是0.1
+So we do that after the one step of GradientDescent, w is now 0.1.
+
+66
+00:04:25,490 --> 00:04:32,850
+现在我们运行梯度下降1000次迭代  .run(train)
+Let's now run 1000 iterations of GradientDescent so .run(train).
+
+67
+00:04:35,340 --> 00:04:41,333
+然后print(session.run(w))
+And lets then print(session.run w).
+
+68
+00:04:41,422 --> 00:04:44,111
+它运行了梯度下降的1000次迭代
+So this would run a 1,000 iterations of GradientDescent,
+
+69
+00:04:44,155 --> 00:04:47,780
+最后w变成了4.99999
+and at the end w ends up being 4.99999.
+
+70
+00:04:47,780 --> 00:04:52,244
+记不记得我们说要使(w - 5)^2最小化
+Remember, we said that we're minimizing w- 5 squared
+
+71
+00:04:52,244 --> 00:04:56,130
+因此w的最优值是5  这个结果已经很接近了
+so the optimum value of w is 5 and it got very close to this.
+
+72
+00:04:56,130 --> 00:05:02,480
+希望这让你对TensorFlow程序的大致结构有了了解
+So hope this gives you a sense of the broad structure of a TensorFlow program.
+
+73
+00:05:02,480 --> 00:05:08,533
+当你做编程练习  使用更多TensorFlow代码时
+And as you do the programming exercise  and play with more TensorFlow codes yourself,
+
+74
+00:05:08,533 --> 00:05:12,450
+我这里用到的一些函数你会熟悉起来
+some of these functions that I'm using here will become more familiar.
+
+75
+00:05:12,450 --> 00:05:17,000
+这里有地方要注意  w是我们想要优化的参数
+Some things to notice about this, w is the parameter we are trying to optimize
+
+76
+00:05:17,044 --> 00:05:19,560
+因此将它称为变量
+so we're going to declare that as a variable.
+
+77
+00:05:19,560 --> 00:05:22,800
+注意我们需要做的就是定义一个损失函数
+And notice that all we had to do was define a cost function
+
+78
+00:05:22,844 --> 00:05:26,450
+使用这些add和multiply之类的函数
+using these add and multiply and so on functions.
+
+79
+00:05:26,450 --> 00:05:30,622
+TensorFlow知道如何对add和mutiply
+And TensorFlow knows automatically how to take derivatives
+
+80
+00:05:30,666 --> 00:05:34,170
+还有其他函数求导
+with respect to the add and multiply as well as other functions.
+
+81
+00:05:34,170 --> 00:05:38,440
+这就是为什么你只需基本实现前向传播
+Which is why you only had to implement basically forward prop and
+
+82
+00:05:38,440 --> 00:05:43,360
+它能弄明白如何做反向传播和梯度计算
+it can figure out how to do the back prop or the gradient computation.
+
+83
+00:05:43,360 --> 00:05:50,488
+因为它已经内置在add  multiply和平方函数中
+Because that's already built in to the add and multiply as well as the squaring functions.
+
+84
+00:05:50,577 --> 00:05:54,200
+对了  要是觉得这种写法不好看的话
+By the way, in case this notation seems really ugly,
+
+85
+00:05:54,244 --> 00:05:59,630
+TensorFlow其实还重载了
+TensorFlow actually has overloaded the computation for
+
+86
+00:05:59,630 --> 00:06:03,120
+一般的加减运算等等
+the usual plus, minus, and so on.
+
+87
+00:06:03,120 --> 00:06:07,280
+因此你也可以把cost写成更好看的形式
+So you could also just write this nicer format for the cost and
+
+88
+00:06:07,280 --> 00:06:11,400
+把这个标成注释  重新运行  得到了同样的结果
+comment that out and rerun this and get the same result.
+
+89
+00:06:11,400 --> 00:06:14,622
+一旦w被称为TensorFlow变量
+So once w is declared to be a TensorFlow variable,
+
+90
+00:06:14,644 --> 00:06:18,580
+平方  乘法和加减运算都重载了
+the squaring, multiplication, adding, and subtraction operations are overloaded.
+
+91
+00:06:18,580 --> 00:06:22,370
+因此你不必使用上面这种不好看的句法
+So you don't need to use this uglier syntax that I had above.
+
+92
+00:06:22,370 --> 00:06:25,955
+TensorFlow还有一个特点我想告诉你
+Now, there's just one more feature of TensorFlow that I want to show you,
+
+93
+00:06:25,977 --> 00:06:31,260
+那就是这个例子将w的一个固定函数最小化了
+which is this example minimize a fix function of w.
+
+94
+00:06:31,260 --> 00:06:34,866
+如果你想要最小化的函数是训练集函数又如何呢？
+What if the function you want to minimize is the function of your training set?
+
+95
+00:06:34,910 --> 00:06:38,111
+不管你有什么训练数据x
+So whatever you have some training data, x and
+
+96
+00:06:38,111 --> 00:06:42,890
+当你训练神经网络时  训练数据x会改变
+when you're training a neural network the training data x can change.
+
+97
+00:06:42,890 --> 00:06:49,040
+那么如何把训练数据加入TensorFlow程序呢？
+So how do you get training data into a TensorFlow program?
+
+98
+00:06:49,040 --> 00:06:50,955
+我会定义t和x
+So I'm going to define t and x
+
+99
+00:06:51,000 --> 00:06:54,222
+把它想做扮演训练数据的角色
+which is think of this as playing a role of training data
+
+100
+00:06:54,244 --> 00:06:59,800
+事实上训练数据有x和y  但这个例子中只有x
+or really the training data with both x and y, but we only have x in this example.
+
+101
+00:06:59,800 --> 00:07:03,300
+把x定义为placeholder
+So this is going to define x with placeholder
+
+102
+00:07:03,300 --> 00:07:06,583
+类型是float32
+and it's going to be a type float32
+
+103
+00:07:06,583 --> 00:07:10,060
+让它成为[3, 1]数组
+and let's make this a [3,1] array.
+
+104
+00:07:10,060 --> 00:07:11,750
+我要做的就是
+And what I'm going to do is
+
+105
+00:07:11,750 --> 00:07:17,866
+因为cost这个二次方程的三个项前有固定的系数
+whereas the cost here have fixed coefficients in front of the three terms in this quadratic
+
+106
+00:07:17,866 --> 00:07:21,100
+它是1*w^2-10*w+25
+was 1 times w squared- 10*w + 25.
+
+107
+00:07:21,100 --> 00:07:26,620
+我们可以把这些数字1  -10和25变成数据
+We could turn these numbers 1- 10 and 25 into data.
+
+108
+00:07:26,620 --> 00:07:29,333
+我要做的就是把cost
+So what I'm going to do is replace the cost
+
+109
+00:07:29,420 --> 00:07:46,755
+替换成cost = x[0][0]*w*2 + x[1][0]*w + x[2][0]
+with cost = x[0][0]*w squared + x[1][0]*w + x[2][0].
+
+110
+00:07:47,066 --> 00:07:48,866
+嗯  再乘1
+Well, times 1.
+
+111
+00:07:49,180 --> 00:07:55,888
+现在x变成了控制
+So now x becomes sort of like data that controls
+
+112
+00:07:55,910 --> 00:07:58,711
+这个二次函数系数的数据
+the coefficients of this quadratic function.
+
+113
+00:07:58,940 --> 00:08:04,177
+这个placeholder函数告诉TensorFlow
+And this placeholder function tells TensorFlow that
+
+114
+00:08:04,200 --> 00:08:09,088
+你稍后会为x提供数值
+x is something that you provide the values for later.
+
+115
+00:08:09,650 --> 00:08:17,311
+让我们再定义一个数组  coefficient = np.array
+So let's define another array, coefficient = np.array,
+
+116
+00:08:18,577 --> 00:08:27,350
+[1.], [-10.]还有最后一个值是[25.]
+[1.], [-10.] and yes, the last value was [25.].
+
+117
+00:08:27,444 --> 00:08:31,222
+这就是我们要接入x的数据
+So that's going to be the data that we're going to plug into x.
+
+118
+00:08:32,100 --> 00:08:38,488
+最后我们需要用某种方式把这个系数数组接入变量x
+So finally we need a way to get this array coefficients into the variable x
+
+119
+00:08:38,555 --> 00:08:42,970
+做到这一点的句法是  在训练这一步中
+and the syntax to do that is just doing the training step.
+
+120
+00:08:42,970 --> 00:08:47,111
+要提供给x的数值
+That the values for will need to be provided for x,
+
+121
+00:08:47,130 --> 00:08:56,577
+我在这里设置feed_dict = x:coefficients
+I'm going to set here, feed_dict = x:coefficients,
+
+122
+00:08:57,800 --> 00:09:04,030
+然后改一下这个  我要复制粘贴到这里
+And I'm going to change this, I'm going to copy and paste put that there as well.
+
+123
+00:09:04,030 --> 00:09:06,377
+好了  希望没有句法错误
+All right, hopefully, I didn't have any syntax errors.
+
+124
+00:09:06,422 --> 00:09:13,555
+我们重新运行它  希望得到和之前一样的结果
+Let's try re-running this and we get the same results hopefully as before.
+
+125
+00:09:14,510 --> 00:09:17,688
+现在如果你想改变这个二次函数的系数
+And now, if you want to change the coefficients of this quadratic function,
+
+126
+00:09:17,711 --> 00:09:24,030
+假设你把 [-10.] 变成[-20]
+let's say you take this [-10.] and change it to 20, [-20].
+
+127
+00:09:24,030 --> 00:09:26,800
+让我们把它改成100
+And let's change this to 100.
+
+128
+00:09:26,866 --> 00:09:30,740
+现在这个函数就变成了(x-10)^2
+So this is now a function x- 10 squared.
+
+129
+00:09:30,740 --> 00:09:33,666
+如果我重新运行
+And if I re-run this,
+
+130
+00:09:33,844 --> 00:09:39,610
+希望我得到的使(x-10)^2最小化的w值是10
+hopefully, I find that the value that minimizes x- 10 squared is w = 10.
+
+131
+00:09:39,610 --> 00:09:41,155
+让我们看一下  很好
+Let's see, cool, great and
+
+132
+00:09:41,177 --> 00:09:46,410
+在梯度下降1000次迭代之后  我们得到接近10的w
+we get w very close to 10 after running 1,000 integrations of GradientDescent.
+
+133
+00:09:46,410 --> 00:09:50,577
+在你做编程练习时见到更多的是
+So what you see more of when you do that programming exercise is that
+
+134
+00:09:50,666 --> 00:09:55,290
+TensorFlow中的placeholder是一个你之后会赋值的变量
+a placeholder in TensorFlow is a variable whose value you assign later.
+
+135
+00:09:55,290 --> 00:10:02,090
+这种方式便于把训练数据加入损失方程
+And this is a convenient way to get your training data into the cost function.
+
+136
+00:10:02,090 --> 00:10:07,288
+把数据加入损失方程用的是这个句法
+And the way you get your data into the cost function is with this syntax
+
+137
+00:10:07,333 --> 00:10:10,266
+当你运行训练迭代
+when you're running a training iteration to
+
+138
+00:10:10,288 --> 00:10:14,870
+用feed_dict来让x等于coefficients
+use the feed_dict to set x to be equal to the coefficients here.
+
+139
+00:10:14,870 --> 00:10:17,244
+如果你在做mini-batch梯度下降
+And if you are doing mini batch Gradient Descent
+
+140
+00:10:17,266 --> 00:10:20,933
+在每次迭代时你需要插入不同的mini-batch
+where on each iteration you need to plug in a different mini-batch,
+
+141
+00:10:20,977 --> 00:10:26,470
+那么每次迭代  你就用feed_dict来喂入训练集的不同子集
+then on different iterations you use the feed_dict to feed in different subsets of your training sets.
+
+142
+00:10:26,470 --> 00:10:31,740
+把不同的mini-batch喂入损失函数需要数据的地方
+Different mini batches into where your cost function is expecting to see data.
+
+143
+00:10:31,740 --> 00:10:35,920
+希望这让你了解了TensorFlow能做什么
+So hopefully this gives you a sense of what TensorFlow can do.
+
+144
+00:10:35,920 --> 00:10:38,155
+让它如此强大的是
+And the thing that makes this so powerful is
+
+145
+00:10:38,177 --> 00:10:42,270
+你只需说明如何计算损失函数
+all you need to do is specify how to compute the cost function
+
+146
+00:10:42,270 --> 00:10:44,180
+它就能求导
+and then, it takes derivatives and
+
+147
+00:10:44,180 --> 00:10:48,560
+而且用一两行代码就能
+it can apply a gradient optimizer or an Adam optimizer or
+
+148
+00:10:48,560 --> 00:10:53,000
+运用梯度优化器  Adam优化器或者其他优化器
+some other optimizer with just pretty much one or two lines of codes.
+
+149
+00:10:53,000 --> 00:10:55,780
+这还是刚才的代码
+So here's the code again.
+
+150
+00:10:55,780 --> 00:10:57,640
+我稍微整理了一下
+I've cleaned this up just a little bit.
+
+151
+00:10:57,640 --> 00:11:01,866
+尽管这些函数或变量看上去有点神秘
+And in case some of these functions or variables seem a little bit mysterious to use,
+
+152
+00:11:01,866 --> 00:11:06,150
+但你在做编程练习时多练习几次
+they will become more familiar after you've practiced with it a couple times
+
+153
+00:11:06,150 --> 00:11:09,630
+就会熟悉起来了
+by working through programming exercise.
+
+154
+00:11:09,630 --> 00:11:11,460
+还有最后一点我想提一下
+Just one last thing I want to mention.
+
+155
+00:11:11,460 --> 00:11:15,950
+这三行在TensorFlow里是符合表达习惯的
+These three lines of code are quite idiomatic in TensorFlow, and
+
+156
+00:11:15,950 --> 00:11:20,760
+有些程序员会用这种形式来替代
+what some programmers will do is use this alternative format.
+
+157
+00:11:20,760 --> 00:11:22,680
+作用基本上是一样的
+Which basically does the same thing.
+
+158
+00:11:22,680 --> 00:11:25,644
+把session设置为tf.Session()来开始session
+Set session to tf.Session() to start the session,
+
+159
+00:11:25,666 --> 00:11:28,488
+然后用session来运行init
+and then use the session to run init, and
+
+160
+00:11:28,533 --> 00:11:32,450
+再用session评估例如w  再输出结果
+then use the session to evaluate, say, w and then print the result.
+
+161
+00:11:32,450 --> 00:11:37,800
+但这个with结构也会在很多TensorFlow程序中用到
+But this with construction is used in a number of TensorFlow programs as well.
+
+162
+00:11:37,800 --> 00:11:41,422
+它的意思基本上和左边的相同
+It more or less means the same thing as the thing on the left.
+
+163
+00:11:41,444 --> 00:11:47,444
+但是Python中的with命令更方便清理
+But the with command in Python is a little bit better at cleaning up
+
+164
+00:11:47,488 --> 00:11:52,230
+以防在执行这个内循环时出现错误或例外
+in case there's an error or exception while executing this inner loop.
+
+165
+00:11:52,230 --> 00:11:55,590
+所以你也会在编程练习中看到这种写法
+So you will see this in the programming exercise as well.
+
+166
+00:11:55,590 --> 00:11:58,690
+那么这个代码到底做了什么呢？
+So what is this code really doing?
+
+167
+00:11:58,690 --> 00:12:02,030
+让我们看这个等式
+Let's focus on this equation.
+
+168
+00:12:02,030 --> 00:12:06,977
+TensorFlow程序的核心是计算损失的东西
+The heart of a TensorFlow program is something to compute a cost,
+
+169
+00:12:07,022 --> 00:12:11,017
+然后TensorFlow自动算出导数
+and then TensorFlow automatically figures out the derivatives
+
+170
+00:12:11,017 --> 00:12:13,210
+以及如何最小化损失
+and how to minimize that costs.
+
+171
+00:12:13,210 --> 00:12:18,510
+因此这个等式或者这行代码所做的
+So what this equation or what this line of code is doing
+
+172
+00:12:18,510 --> 00:12:23,466
+就是让TensorFlow建立计算图
+is allowing TensorFlow to construct a computation graph.
+
+173
+00:12:23,470 --> 00:12:27,488
+计算图所做的就是取x[0][0]
+And a computation graph does the following, it takes x[0][0],
+
+174
+00:12:27,600 --> 00:12:32,555
+取w  然后将它平方
+it takes w and then it goes w gets squared.
+
+175
+00:12:33,222 --> 00:12:38,177
+然后x[0][0]和w^2相乘
+And then x[0][0] gets multiplied with w squared,
+
+176
+00:12:38,311 --> 00:12:44,960
+你就得到了x[0][0]*w^2  以此类推
+so you have x[0][0]*w squared, and so on, right?
+
+177
+00:12:44,960 --> 00:12:49,977
+最终整个建立起来计算
+And eventually, you know, this gets built up to compute this xw,
+
+178
+00:12:50,044 --> 00:12:54,450
+x[0][0]*w^2 + x[1][0]*w +等等
+x[0][0]*w squared + x[1][0]*w + and so on.
+
+179
+00:12:54,450 --> 00:12:58,330
+最后你得到了损失函数
+And so eventually, you get the cost function.
+
+180
+00:12:58,330 --> 00:13:03,511
+最后加上的一项应该是x [2][0]
+And so the last term to be added would be x [2][0]
+
+181
+00:13:03,555 --> 00:13:05,550
+加上去得到损失函数
+it gets added to be the cost.
+
+182
+00:13:05,550 --> 00:13:08,190
+我就不把所有方程写出来了
+I won't write all the formulas for the cost.
+
+183
+00:13:08,190 --> 00:13:13,000
+TensorFlow的优点在于  通过用这个计算损失的
+And the nice thing about TensorFlow is that by implementing
+
+184
+00:13:13,000 --> 00:13:17,730
+计算图基本实现前向传播
+basically forward propagation through this computation graph that computes the cost,
+
+185
+00:13:17,730 --> 00:13:21,030
+TensorFlow已经内置了
+TensorFlow already has that built in,
+
+186
+00:13:21,030 --> 00:13:24,220
+所有必要的反向函数
+all the necessary backward functions.
+
+187
+00:13:24,220 --> 00:13:28,733
+回忆一下训练深度神经网络时有一组前向函数
+So remember how training a deep neural network has a set of forward functions
+
+188
+00:13:28,777 --> 00:13:30,466
+和一组反向函数
+and a set of backward functions.
+
+189
+00:13:30,533 --> 00:13:34,600
+而像TensorFlow之类的编程框架已经内置了
+And programming frameworks like TensorFlow have already built-in
+
+190
+00:13:34,666 --> 00:13:37,040
+必要的反向函数
+the necessary backward functions.
+
+191
+00:13:37,040 --> 00:13:41,690
+这也是为什么通过内置函数来计算前向函数
+Which is why by using the built-in functions to compute the forward function,
+
+192
+00:13:41,690 --> 00:13:47,177
+它也能自动用反向函数来实现反向传播
+it can automatically do the backward functions as well to implement back propagation
+
+193
+00:13:47,244 --> 00:13:51,150
+即便函数非常复杂  再帮你计算导数
+through even very complicated functions and compute derivatives for you.
+
+194
+00:13:51,150 --> 00:13:54,980
+这就是为什么你不需要明确实现反向传播
+So that's why you don't need to explicitly implement back prop.
+
+195
+00:13:54,980 --> 00:13:58,040
+这是编程框架能帮你变得高效
+This is one of the things that makes the programming frameworks
+
+196
+00:13:58,040 --> 00:13:59,940
+的原因之一
+help you become really efficient.
+
+197
+00:13:59,940 --> 00:14:03,270
+如果你看TensorFlow的使用说明
+If you look at the TensorFlow documentation,
+
+198
+00:14:03,270 --> 00:14:06,070
+我只想指出TensorFlow的说明
+I just want to point out that the TensorFlow documentation
+
+199
+00:14:06,070 --> 00:14:11,133
+用了一套和我不太一样的符号来画计算图
+uses a slightly different notation than I did for drawing the computation graph.
+
+200
+00:14:11,155 --> 00:14:14,000
+它用了x[0][0]  w
+So it uses x[0][0] w.
+
+201
+00:14:14,000 --> 00:14:17,200
+然后它不是写出值  像这里的w^2
+And then, rather than writing the value, like w squared,
+
+202
+00:14:17,200 --> 00:14:20,900
+TensorFlow使用说明倾向于只写运算符
+the TensorFlow documentation tends to just write the operation.
+
+203
+00:14:20,900 --> 00:14:23,600
+所以这里就是平方运算
+So this would be a square operation,
+
+204
+00:14:23,622 --> 00:14:28,320
+而这两者一起指向乘法运算  以此类推
+and then these two get combined in the multiplication operation and so on.
+
+205
+00:14:28,320 --> 00:14:30,790
+然后在最后的节点  我猜应该是
+And then, the final nodes, I guess that would be
+
+206
+00:14:30,790 --> 00:14:36,220
+一个将x[2][0]加上去得到最终值的加法运算
+an addition operation where you add x[2][0] to find the final value.
+
+207
+00:14:36,220 --> 00:14:39,880
+为本课程起见  我认为计算图用
+So for the purposes of this class, I thought that this notation
+
+208
+00:14:39,880 --> 00:14:43,470
+这种表示方式会更容易理解
+for the computation draft would be easier for you to understand.
+
+209
+00:14:43,470 --> 00:14:46,810
+但是如果你去看TensorFlow的使用说明
+But if you look at the TensorFlow documentation,
+
+210
+00:14:46,810 --> 00:14:51,640
+如果你看到说明里的计算图
+if you look at the computation graphs in the documentation,
+
+211
+00:14:51,640 --> 00:14:55,430
+你会看到另一种表示方式
+you see this alternative convention where the nodes are labeled
+
+212
+00:14:55,430 --> 00:14:58,700
+节点都用运算来标记而不是值
+with the operations rather than with the value.
+
+213
+00:14:58,700 --> 00:15:04,070
+但这两种呈现方式表达的是同样的计算图
+But both of these representations represent basically the same computation graph.
+
+214
+00:15:04,070 --> 00:15:08,311
+在编程框架中你可以用一行代码做很多事情
+And there are a lot of things that you can with just one line of code in programming frameworks.
+
+215
+00:15:08,355 --> 00:15:11,380
+例如  你不想用梯度下降法
+For example, if you don't want to use GradientDescent,
+
+216
+00:15:11,380 --> 00:15:14,244
+而是想用Adam优化器
+but instead you want to use the Adam Optimizer
+
+217
+00:15:14,288 --> 00:15:17,955
+你只要改变这行代码  就能很快换掉它
+by changing this line of code, you can very quickly swap it,
+
+218
+00:15:17,950 --> 00:15:21,244
+换成更好的优化算法
+swap in a better optimization algorithm.
+
+219
+00:15:21,480 --> 00:15:26,890
+所有现代深度学习编程框架都支持这样的功能
+So all the modern deep learning programming framework support things like this and
+
+220
+00:15:26,890 --> 00:15:32,160
+让你很容易就能编写复杂的神经网络
+makes it really easy for you to code up even pretty complex neural networks.
+
+221
+00:15:32,160 --> 00:15:33,530
+我希望我帮助你
+So I hope this is helpful for
+
+222
+00:15:33,530 --> 00:15:38,020
+了解了TensorFlow程序典型的结构
+giving you a sense of the typical structure of a TensorFlow program.
+
+223
+00:15:38,020 --> 00:15:40,160
+概括一下这周的内容
+To recap the material from this week,
+
+224
+00:15:40,160 --> 00:15:44,700
+你学习了如何系统化地组织超参数搜索过程
+you saw how to systematically organize the hyperparameter search process.
+
+225
+00:15:44,700 --> 00:15:46,740
+我们还讲了batch归一化
+We also talked about batch normalization and
+
+226
+00:15:46,740 --> 00:15:49,690
+以及如何用它来加速神经网络的训练
+how you can use that to speed up training of your neural networks.
+
+227
+00:15:49,690 --> 00:15:53,380
+最后我们讲了深度学习的编程框架
+And finally, we talked about programming frameworks of deep learning.
+
+228
+00:15:53,380 --> 00:15:55,440
+有很多很棒的编程框架
+There are many great programming frameworks.
+
+229
+00:15:55,440 --> 00:15:59,510
+这最后一个视频我们重点讲了TensorFlow
+And we had this last video focusing on TensorFlow.
+
+230
+00:15:59,510 --> 00:16:03,220
+有了它  我希望你享受这周的编程练习
+With that, I hope you enjoyed this week's programming exercise and
+
+231
+00:16:03,220 --> 00:16:06,955
+帮助你更熟悉这些概念
+that helps you gain even more familiarity with these ideas.
+

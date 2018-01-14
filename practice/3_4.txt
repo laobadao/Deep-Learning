@@ -1,0 +1,670 @@
+﻿1
+00:00:00,000 --> 00:00:01,500
+在深度学习兴起后(字幕来源：网易云课堂)
+In the rise of deep learning,
+
+2
+00:00:01,500 --> 00:00:04,530
+最重要的一个思想是它的一种算法
+one of the most important ideas has been an algorithm
+
+3
+00:00:04,530 --> 00:00:10,110
+叫做Batch归一化 由Sergey Ioffe和Christian Szegedy两位研究者创造
+called Batch Normalization created by two researchers Sergey Ioffe and Christian Szegedy.
+
+4
+00:00:10,110 --> 00:00:14,244
+Batch归一化会使你的参数搜索问题变得很容易
+Batch normalization makes your hyperparameter search problem much easier,
+
+5
+00:00:14,244 --> 00:00:17,640
+使神经网络对超参数的选择更加稳定
+makes the neural network much more robust to the choice of hyperparameters,
+
+6
+00:00:17,640 --> 00:00:20,610
+超参数的范围会更庞大 工作效果也很好
+there's a much bigger range of hyperparameters that work well,
+
+7
+00:00:20,610 --> 00:00:25,330
+也会使你很容易的训练甚至是深层网络
+and will also enable you to much more easily train even very deep networks.
+
+8
+00:00:25,330 --> 00:00:27,810
+让我们来看看Batch归一化是怎么起作用的吧
+Let's see how Batch Normalization works.
+
+9
+00:00:27,810 --> 00:00:31,965
+当训练一个模型 比如logistic回归时 你也许会记得
+When training a model such as logistic regression you might remember
+
+10
+00:00:31,965 --> 00:00:36,380
+归一化输入特征可加速学习过程
+that normalizing the input features can speed up learnings.
+
+11
+00:00:36,380 --> 00:00:39,810
+你计算了平均值 从训练集中减去平均值
+You compute the means, subtract off the means from your training set,
+
+12
+00:00:39,810 --> 00:00:44,125
+计算了方差
+compute the variances.
+
+13
+00:00:44,125 --> 00:00:46,145
+x^(i)的平方和
+This sum of X(i) squared,
+
+14
+00:00:46,145 --> 00:00:49,025
+这是点积平方
+this is the element-wise squaring,
+
+15
+00:00:49,025 --> 00:00:53,610
+接着根据方差归一化你的数据集
+and then normalize your data set according to the variances.
+
+16
+00:00:53,610 --> 00:00:55,650
+在之前的视频中我们看到
+And we saw in an earlier video
+
+17
+00:00:55,650 --> 00:00:57,050
+这是如何把学习问题的轮廓
+how this can turn the contours of your learning problem
+
+18
+00:00:57,050 --> 00:01:00,250
+从很长的东西
+from something that might be very elongated
+
+19
+00:01:00,250 --> 00:01:07,080
+变成更圆的东西  更易于算法优化
+to something that is more round and easier for an algorithm like grading to send to optimize.
+
+20
+00:01:07,080 --> 00:01:10,300
+所以这是有效的
+So this works in terms of normalizing
+
+21
+00:01:10,300 --> 00:01:15,450
+对logistic回归和神经网络的归一化输入特征值而言
+the input feature values to a neural network or to logistic regression.
+
+22
+00:01:15,450 --> 00:01:17,735
+那么更深的模型呢
+Now, how about a deeper model?
+
+23
+00:01:17,735 --> 00:01:19,825
+你没有输入特征值x
+You have not just input features x,
+
+24
+00:01:19,825 --> 00:01:22,960
+但这层有激活值a^[1]
+but in this layer you have activations a[1],
+
+25
+00:01:22,960 --> 00:01:27,050
+这层有激活值a^[2] 等等
+in this layer you have activations a[2] and so on.
+
+26
+00:01:27,050 --> 00:01:33,715
+如果你想训练这些参数 比如w^[3] b^[3]
+So if you want to train the parameters, say, w[3], b[3],
+
+27
+00:01:33,715 --> 00:01:37,090
+那归一化a^[2]的平均值和方差岂不是很好？
+then won't it be nice if you can normalize the mean and variance of a[2]
+
+28
+00:01:37,090 --> 00:01:43,090
+以便使w^[3] b^[3]的训练更有意义
+to make the training of w[3], b[3] more efficient?
+
+29
+00:01:43,090 --> 00:01:44,780
+logistic回归的例子中
+In the case of logistic regression,
+
+30
+00:01:44,780 --> 00:01:47,060
+我们看到了如何归一化x_1 x_2 x_3
+we saw how normalizing x1, x2, x3
+
+31
+00:01:47,060 --> 00:01:51,230
+会帮助你更有效的训练w和b
+maybe helps you train w and b more efficiently.
+
+32
+00:01:51,230 --> 00:01:53,015
+所以问题来了
+So here the question is,
+
+33
+00:01:53,015 --> 00:01:54,540
+对于任何一个隐藏层而言
+for any hidden layer,
+
+34
+00:01:54,540 --> 00:02:00,115
+我们能否规归一化a值
+can we normalize the values of a,
+
+35
+00:02:00,115 --> 00:02:02,170
+在此例中 比如说a^[2]的值
+let's say a[2] in this example,
+
+36
+00:02:02,170 --> 00:02:04,070
+但可以是任何隐藏层的
+but really any hidden layer,
+
+37
+00:02:04,070 --> 00:02:09,210
+以更快速地训练w^[3] b^[3]
+so as to train w[3],b[3] faster,
+
+38
+00:02:09,210 --> 00:02:13,500
+因为a^[2]是
+since a[2] is
+
+39
+00:02:13,500 --> 00:02:19,950
+下一层的输入值 所以就会影响w^[3] b^[3]的训练
+the input onto the next layer that therefore affects your training of w[3] and b[3].
+
+40
+00:02:19,950 --> 00:02:25,470
+简单来说 这就是Batch归一化的作用
+So this is what Batch does, Batch Normalization, or Batch Norm for short, does.
+
+41
+00:02:25,470 --> 00:02:32,665
+尽管 严格来说 我们真正归一化的不是a^[2] 而是z^[2]
+Although technically we'll actually normalize the values of not a[2], but Z[2].
+
+42
+00:02:32,665 --> 00:02:34,850
+深度学习文献中有一些争论
+There is some debate in the deep learning literature
+
+43
+00:02:34,850 --> 00:02:39,170
+关于在激活函数之前是否应将值 z^[2]归一化
+about whether you should normalize the value before the activation function,so Z[2],
+
+44
+00:02:39,170 --> 00:02:42,460
+或是否应该
+or whether you should normalize the value
+
+45
+00:02:42,460 --> 00:02:44,890
+在应用失活函数a^[2]后再规范值
+after applying deactivation function a[2].
+
+46
+00:02:44,890 --> 00:02:48,870
+实践中 经常做的是归一z^[2]
+In practice, normalizing Z[2] is done much more often,
+
+47
+00:02:48,870 --> 00:02:51,595
+所以这就是我介绍的版本
+so that's the version I presented,
+
+48
+00:02:51,595 --> 00:02:55,020
+我推荐其为默认选择
+what I would recommend you use as the default choice.
+
+49
+00:02:55,020 --> 00:02:58,455
+那下面就是Batch归一化的使用方法
+So here is how you would implement Batch Norm.
+
+50
+00:02:58,455 --> 00:03:08,130
+在神经网络中 已知一些中间值
+Given some intermediate values in your neuro net,
+
+51
+00:03:08,130 --> 00:03:18,420
+假设你有一些隐藏单元值 从z^(1)到z^(m)
+let's say that you have some hidden unit values Z(1) up to Z(m),
+
+52
+00:03:18,420 --> 00:03:21,550
+这些来源于隐藏层
+and this is really from some hidden layer,
+
+53
+00:03:21,550 --> 00:03:26,255
+所以 这样写会更准确 即z为隐藏层
+so it'd be more accurate to write this as z for some hidden layer,
+
+54
+00:03:26,255 --> 00:03:29,835
+i从1到m 但这样书写
+i for i=one through m. But to do this writing,
+
+55
+00:03:29,835 --> 00:03:35,250
+我要省略L及方括号 以便简化这一行的符号
+I'm going to omit this square bracket L just to simplify the notation on this line.
+
+56
+00:03:35,250 --> 00:03:36,675
+所以已知这些值
+So given these values,
+
+57
+00:03:36,675 --> 00:03:40,655
+如下 你要计算平均值
+what you do is compute the mean as follows:
+
+58
+00:03:40,655 --> 00:03:43,655
+强调一下 所有这些都针对于L层
+Again, all this is specific to some layer L,
+
+59
+00:03:43,655 --> 00:03:46,795
+但我要省略L及方括号
+but I'm omitting the square bracket L,
+
+60
+00:03:46,795 --> 00:03:52,345
+然后 用正如你常用的那个公式计算方差
+and then you compute the variance using the pretty much the formula that you would expect.
+
+61
+00:03:52,345 --> 00:03:55,375
+接着 你会取每个z^(i)值 使其规范化
+And then you would take each of the Z(i)s and normalize it,
+
+62
+00:03:55,375 --> 00:03:58,605
+方法如下
+so you get Z(i) normalized by
+
+63
+00:03:58,605 --> 00:04:04,395
+减去均值再除以标准偏差
+subtracting off the mean and dividing by the standard deviation.
+
+64
+00:04:04,395 --> 00:04:10,170
+为了使数值稳定 通常将ε作为分母
+For numerical stability, you usually add epsilon to denominator like that,
+
+65
+00:04:10,170 --> 00:04:14,365
+以防σ=0的情况
+just in case sigma squared turns out to be zero in some estimate.
+
+66
+00:04:14,365 --> 00:04:18,540
+所以现在 我们已把这些z值标准化
+And so now we've taken these values Z and normalized them to
+
+67
+00:04:18,540 --> 00:04:22,955
+化为含平均值0和标准单位方差
+have mean zero and standard unit variance.
+
+68
+00:04:22,955 --> 00:04:26,600
+所以z的每一个分量都含有平均值0和方差1
+So every component of Z has mean zero and variance one.
+
+69
+00:04:26,600 --> 00:04:31,380
+但我们不想让隐藏单元总是含有平均值0和方差1
+But we don't want the hidden units to always have mean zero and variance one.
+
+70
+00:04:31,380 --> 00:04:35,035
+也许隐藏单元有了不同的分布会有意义
+Maybe it makes sense for hidden units to have a different distribution.
+
+71
+00:04:35,035 --> 00:04:37,792
+所以我们所要做的就是计算
+So what we do instead is compute,
+
+72
+00:04:37,792 --> 00:04:39,240
+称之为z̃
+we call it Ztilde,
+
+73
+00:04:39,240 --> 00:04:49,080
+=γz^(i)_norm+β
+equals gamma Z(i)norm plus beta.
+
+74
+00:04:49,080 --> 00:04:57,340
+这里 γ和β是你模型的学习参数
+And here gamma and beta are learnable parameters of your model.
+
+75
+00:04:59,439 --> 00:05:01,021
+所以我们使用梯度下降
+So we are using gradient descent,
+
+76
+00:05:01,021 --> 00:05:03,643
+或一些其它类似梯度下降的算法
+or some other algorithm like the gradient descent
+
+77
+00:05:03,643 --> 00:05:05,473
+比如 momentum 或者 Nesterov, Adam
+momentum or Nesterov, Adam
+
+78
+00:05:05,534 --> 00:05:08,783
+你会更新γ和β
+you would update the parameters gamma and beta
+
+79
+00:05:08,783 --> 00:05:11,715
+正如更新神经网络的权重一样
+just as you update the weights of the neural network.
+
+80
+00:05:11,715 --> 00:05:17,007
+请注意 γ和β的作用是
+Now, notice that the effect of gamma and beta is that
+
+81
+00:05:17,007 --> 00:05:21,958
+你可以随意设置z̃的平均值
+it allows you to set the mean of Ztilde to be whatever you want it to be.
+
+82
+00:05:21,958 --> 00:05:29,896
+事实上 如果γ=√σ^2+ε
+In fact, if gamma equals square root sigma squared plus epsilon,
+
+83
+00:05:29,896 --> 00:05:33,526
+如果γ等于这个分母项
+so if gamma were equal to this denominator term
+
+84
+00:05:33,526 --> 00:05:36,779
+β等于μ
+and if beta were equal to mu,
+
+85
+00:05:36,779 --> 00:05:39,680
+这里的这个值
+so this value up here,
+
+86
+00:05:42,090 --> 00:05:46,260
+那γz^i_norm+β的作用在于
+then the effect of gamma Znorm plus beta is
+
+87
+00:05:46,260 --> 00:05:49,449
+它会精确转化这个方程
+that it would exactly invert this equation.
+
+88
+00:05:49,449 --> 00:05:52,170
+如果这些成立
+So if this is true,
+
+89
+00:05:52,170 --> 00:05:58,417
+那么z̃^(i)=z^(i)
+then actually Ztilde(i) is equal to Z(i).
+
+90
+00:05:58,417 --> 00:06:01,943
+通过对γ和β合理设定
+And so by an appropriate setting of the parameters gamma and beta,
+
+91
+00:06:02,273 --> 00:06:07,942
+规范化过程 即这四个等式
+this normalization step, that is these four equations,
+
+92
+00:06:07,942 --> 00:06:11,490
+从根本来说 只是计算恒等函数
+is just computing essentially the identity function.
+
+93
+00:06:11,490 --> 00:06:13,700
+通过赋予γ和β其它值
+By choosing other values of gamma and beta,
+
+94
+00:06:13,700 --> 00:06:19,770
+可以使你构造含其他平均值和方差的隐藏单元值
+this allows you to make the hidden unit values of other means and variances as well.
+
+95
+00:06:19,770 --> 00:06:22,790
+所以 在网络匹配这个单元的方式
+And so the way you fit this unit in your network is
+
+96
+00:06:22,790 --> 00:06:26,016
+之前可能是用z^(1)
+whereas previously you are using these values Z(1),
+
+97
+00:06:26,016 --> 00:06:27,399
+z^(2)等等
+Z(2), and so on,
+
+98
+00:06:27,399 --> 00:06:37,943
+现在则会用z̃̃^(i)取代z^(i)
+you would now use Ztilde(i) instead of Z(i) for
+
+99
+00:06:37,943 --> 00:06:40,089
+方便神经网络中的后续计算
+the later computations in your neural network.
+
+100
+00:06:40,089 --> 00:06:43,156
+如果你想放回[L]
+And you want to put back in this square bracket L,
+
+101
+00:06:43,156 --> 00:06:47,307
+以清楚的表明它位于哪层 你可以把它放这
+to explicitly denote which layer it is in and you can put it back there.
+
+102
+00:06:47,307 --> 00:06:50,652
+所以我希望你学到的是
+So the intuition I hope you take away from this is that
+
+103
+00:06:50,652 --> 00:06:56,620
+归一化输入特征X是怎样有助于神经网络中的学习
+we saw how normalizing the input features X can help learning in the neural network.
+
+104
+00:06:56,620 --> 00:07:01,595
+Batch归一化的作用是它适用的归一化过程不只是输入层
+And what Batch Norm does is it applies that normalization process not just to the input layer
+
+105
+00:07:01,595 --> 00:07:05,149
+甚至同样适用于神经网络中的深度隐藏层
+but to the values even deep in some hidden layer in the neural networks.
+
+106
+00:07:05,149 --> 00:07:07,906
+你应用Batch归一化了
+You apply this type of normalization to normalize
+
+107
+00:07:07,906 --> 00:07:12,555
+一些隐藏单元值中的平均值和方差
+the mean and variance of some of your hidden units values Z.
+
+108
+00:07:12,555 --> 00:07:16,814
+不过 训练输入和这些隐藏单元值的一个区别是
+But one difference between the training input and these hidden unit values is
+
+109
+00:07:16,814 --> 00:07:21,745
+你也许不想隐藏单元值必须是平均值0和方差1
+you might not want your hidden unit values to be forced to mean zero and variance one.
+
+110
+00:07:21,745 --> 00:07:25,203
+比如 如果你有sigmoid激活函数
+For example, if you have a sigmoid activation function,
+
+111
+00:07:25,203 --> 00:07:28,143
+你不想让你的值总是全部集中在这里
+you don't want your values to always be clustered here,
+
+112
+00:07:28,143 --> 00:07:30,554
+你想使它们有更大的方差
+you might want them to have a larger variance
+
+113
+00:07:30,554 --> 00:07:33,177
+或不是0的平均值
+or have a mean that's different than zero
+
+114
+00:07:33,177 --> 00:07:37,149
+以便更好的利用非线性的Sigmoid函数
+in order to better take advantage of the non-linearity of the sigmoid function
+
+115
+00:07:37,149 --> 00:07:40,862
+而不是使所有的值都集中于这个线性版本中
+rather than have all your values be in just this the linear version.
+
+116
+00:07:40,862 --> 00:07:44,635
+这就是为什么有了γ和β两个参数后
+So that's why with the parameters gamma and beta
+
+117
+00:07:44,635 --> 00:07:51,108
+你可以确保所有的z^(i)值可以是你想赋予的任意值
+you can now make sure that your Z(i) values have the range of values that you want.
+
+118
+00:07:51,108 --> 00:07:58,511
+或者它的作用是保证隐藏的单元已使均值和方差标准化
+Or what it does really is that it ensures that your hidden units have standardized mean and variance
+
+119
+00:07:58,511 --> 00:08:03,456
+那里 均值和方差由两参数控制
+where the mean and variance are controlled by two explicit parameters,
+
+120
+00:08:03,456 --> 00:08:07,456
+即γ和β 学习算法可以设置为任何值
+gamma and beta, which the learning algorithm can set to whatever it wants.
+
+121
+00:08:07,456 --> 00:08:09,600
+所以它真正的作用是
+So what it really does is
+
+122
+00:08:09,600 --> 00:08:13,599
+使隐藏单元值的均值和方差标准化
+it normalizes the mean and variance of these hidden unit values,
+
+123
+00:08:13,599 --> 00:08:18,014
+即z^[i] 有固定的均值和方差
+really, the Z[i]s, to have some fixed mean and variance.
+
+124
+00:08:18,014 --> 00:08:21,123
+均值和方差可以是0和1
+And that mean and variance could be zero and one
+
+125
+00:08:21,123 --> 00:08:26,548
+也可以是其它值 它是由γ和β两参数控制的
+or it could be some other value and it's controlled by these parameters gamma and beta.
+
+126
+00:08:26,548 --> 00:08:30,726
+我希望你能学会怎样使用Batch归一化
+So I hope that gives you a sense of the mechanics of how to implement Batch Norm,
+
+127
+00:08:30,726 --> 00:08:33,265
+至少就神经网络的单一层而言
+at least for a single layer in the neural network.
+
+128
+00:08:33,265 --> 00:08:37,242
+在下一个视频中 我会教你如何将Batch归一化与神经网络
+In the next video I want to show you how to fit Batch Norm into a neural network,
+
+129
+00:08:37,242 --> 00:08:38,857
+甚至是深度神经网络相匹配
+even a deep neural network,
+
+130
+00:08:38,857 --> 00:08:41,593
+对于神经网络许多不同层而言 又该如何使它适用
+and how to make it work for the many different layers of a neural network.
+
+131
+00:08:41,593 --> 00:08:44,192
+之后 我会告诉你
+And after that we'll give some more intuition
+
+132
+00:08:44,192 --> 00:08:47,062
+Batch归一化有助于训练神经网络的原因
+about why Batch Norm could help you train your neural networks.
+
+133
+00:08:47,062 --> 00:08:51,172
+所以如果觉得Batch归一化起作用的原因还显得有点神秘 那跟着我走
+So in case why works still seems a little bit mysterious, stay with me.
+
+134
+00:08:51,172 --> 00:08:54,661
+在接下来的两个视频中 我们会弄清楚
+And I think in the two videos from now we're going to make that clear.
+

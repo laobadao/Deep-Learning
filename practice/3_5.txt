@@ -1,0 +1,969 @@
+﻿1
+00:00:00,000 --> 00:00:02,115
+你已经看到那些等式(字幕来源：网易云课堂)
+So you have seen the equations for how to
+
+2
+00:00:02,115 --> 00:00:05,020
+它可以在单一隐藏层上进行Batch归一化
+implement Batch Norm for maybe a single hidden layer.
+
+3
+00:00:05,020 --> 00:00:08,610
+接下来 让我们看看它是怎样在深度网络训练中拟合的吧
+Let's see how it fits into the training of a deep network.
+
+4
+00:00:08,610 --> 00:00:10,969
+假设你有一个这样的神经网络
+So, let's say you have a neural network like this,
+
+5
+00:00:10,969 --> 00:00:13,095
+我之前说过
+you've seen me say before that
+
+6
+00:00:13,095 --> 00:00:16,395
+你可以认为每个单元负责计算两件事
+you can view each of the unit as computing two things.
+
+7
+00:00:16,395 --> 00:00:18,160
+第一 它先计算z
+First, it computes z
+
+8
+00:00:18,195 --> 00:00:22,960
+然后应用其到激活函数中在计算a
+and then it applies the activation function to compute a.
+
+9
+00:00:22,960 --> 00:00:24,005
+所以我们可以认为
+And so we can think of
+
+10
+00:00:24,005 --> 00:00:31,005
+每个圆圈代表着两步的计算过程
+each of these circles as representing a two step computation.
+
+11
+00:00:31,005 --> 00:00:33,130
+同样的 对于下一层而言
+And similarly for the next layer,
+
+12
+00:00:33,130 --> 00:00:41,125
+那就是z^[2]_1和a^[2]_1等
+that is z2 1, and a2 1, and so on.
+
+13
+00:00:41,125 --> 00:00:45,250
+所以 如果你没有应用Batch归一化
+So, if you were not applying Batch Norm,
+
+14
+00:00:45,250 --> 00:00:50,935
+你会把拟合到第一隐藏层
+you would have an input X fit into the first hidden layer,
+
+15
+00:00:50,935 --> 00:00:53,395
+然后首先计算z^[1]
+and then first compute z1,
+
+16
+00:00:53,395 --> 00:00:57,940
+这是由w^[1]和b^[1]两个参数控制得
+and this is governed by the parameters z1 and b1.
+
+17
+00:00:57,940 --> 00:01:04,630
+接着 通常而言 你会把z^[1]拟合到激活函数以计算a^[1]
+And then ordinarily, you would fit z1 into the activation function to compute a1.
+
+18
+00:01:04,630 --> 00:01:09,165
+但Batch归一化的做法是将z^[1]值
+But what would do in Batch Norm is take this value z1,
+
+19
+00:01:09,165 --> 00:01:12,975
+进行Batch归一化
+and apply Batch Norm,
+
+20
+00:01:12,975 --> 00:01:16,935
+简称BN
+sometimes abbreviated BN to it,
+
+21
+00:01:16,935 --> 00:01:19,685
+此过程将由
+and that's going to be governed by parameters,
+
+22
+00:01:19,685 --> 00:01:23,465
+β^[1]和γ^[1]两参数控制
+Beta 1 and Gamma 1,
+
+23
+00:01:23,465 --> 00:01:28,340
+这一步操作会给你一个新的规范化的z^[1]值
+and this will give you this new normalized value z1.
+
+24
+00:01:28,340 --> 00:01:32,930
+然后将其输入激活函数中 得到a^[1]
+And then you fit that to the activation function to get a1,
+
+25
+00:01:32,930 --> 00:01:38,355
+即g^[1]（z̃^[1]）
+which is G1 applied to z tilde 1.
+
+26
+00:01:38,355 --> 00:01:41,770
+现在 你已在第一层进行了计算
+Now, you've done the computation for the first layer,
+
+27
+00:01:41,770 --> 00:01:47,520
+此时 这项Batch归一化发生在z的计算和a之间
+where this Batch Norms that really occurs in between the computation from z and a.
+
+28
+00:01:47,520 --> 00:01:53,785
+接下来 你需要应用a^[1]值来计算z^[2]
+Next, you take this value a1 and use it to compute z2,
+
+29
+00:01:53,785 --> 00:01:58,115
+此过程是由w^[1]和b^[1]控制的
+and so this is now governed by w2, b2.
+
+30
+00:01:58,115 --> 00:02:01,125
+与你在第一层所做的类似
+And similar to what you did for the first layer,
+
+31
+00:02:01,125 --> 00:02:06,470
+你会将z^[2] 进行Batch归一化 我们现在简称BN
+you would take z2 and apply it through Batch Norm, and we abbreviate it to BN now.
+
+32
+00:02:06,470 --> 00:02:11,575
+这是由下一层的Batch归一化参数所管控的的
+This is governed by Batch Norm parameters specific to the next layer.
+
+33
+00:02:11,575 --> 00:02:14,580
+即β^[2]和γ^[2]
+So Beta 2, Gamma 2,
+
+34
+00:02:14,580 --> 00:02:17,845
+现在 你得到z̃^[2]
+and now this gives you z tilde 2,
+
+35
+00:02:17,845 --> 00:02:25,220
+再通过激活函数计算出a^[2]  等等
+and you use that to compute a2 by applying the activation function, and so on.
+
+36
+00:02:25,220 --> 00:02:31,960
+所以 需强调的是 Batch归一化是发生在计算z和a之间的
+So once again, the Batch Norms that happens between computing z and computing a.
+
+37
+00:02:31,960 --> 00:02:33,260
+直觉就是
+And the intuition is that,
+
+38
+00:02:33,260 --> 00:02:36,115
+与其应用没有归一化的z值
+instead of using the un-normalized value z,
+
+39
+00:02:36,115 --> 00:02:40,360
+不如用归一过的z̃ 这是第一层
+you can use the normalized value z tilde, that's the first layer.
+
+40
+00:02:40,360 --> 00:02:41,480
+第二层同理
+The second layer as well,
+
+41
+00:02:41,480 --> 00:02:44,310
+与其应用没有规范过的z^[2]值
+instead of using the un-normalized value z2,
+
+42
+00:02:44,310 --> 00:02:48,990
+不如用经方差和均值归一后的z̃^[2]
+you can use the mean and variance normalized values Z tilde 2.
+
+43
+00:02:48,990 --> 00:02:56,320
+所以 你网络的参数就会是w^[1] b^[1]
+So the parameters of your network are going to be w1, b1.
+
+44
+00:02:56,320 --> 00:03:00,355
+我们将要去掉这些参数
+It turns out we'll get rid of the parameters
+
+45
+00:03:00,355 --> 00:03:08,740
+但现在 想像参数是w^[1] b^[l]到w^[l] b^[l]
+But for now, imagine the parameters are the usual w1，b1......wl, bl,
+
+46
+00:03:08,740 --> 00:03:12,260
+我们将另一些参数
+and we have added to this new network,
+
+47
+00:03:12,260 --> 00:03:14,420
+加入到此新网络中
+additional parameters，
+
+48
+00:03:14,420 --> 00:03:20,290
+β^[1] β^[2] γ^[1] γ^[2] 等等
+Beta 1, Gamma 1, Beta 2, Gamma 2,and so on,
+
+49
+00:03:20,290 --> 00:03:24,283
+对于应用Batch归一化的每一层而言
+for each layer in which you are applying Batch Norm.
+
+50
+00:03:24,283 --> 00:03:26,630
+需要澄清的是 请注意 这里的这些β
+For clarity, note that these Betas here,
+
+51
+00:03:26,630 --> 00:03:28,355
+和超参数β没有任何关系
+these have nothing to do with the hyperparameter beta
+
+52
+00:03:28,355 --> 00:03:29,500
+下一张幻灯片中会解释原因
+but we'll see why in the next slide.
+
+53
+00:03:29,500 --> 00:03:32,165
+后者是用于momentum
+that we had for momentum
+
+54
+00:03:32,165 --> 00:03:36,165
+或计算各个指数的加权平均值
+or for the computing the various exponentially weighted averages.
+
+55
+00:03:36,165 --> 00:03:38,220
+Adam论文的作者
+You know,the authors of the Adam paper
+
+56
+00:03:38,265 --> 00:03:42,620
+在论文里用β代表超参数
+had used Beta in their paper to denote that hyperparameter,
+
+57
+00:03:42,620 --> 00:03:44,405
+Batch归一化论文的作者
+the authors of the Batch Norm paper
+
+58
+00:03:44,405 --> 00:03:47,405
+则使用β代表此参数
+had used Beta to denote this parameter,
+
+59
+00:03:47,405 --> 00:03:49,630
+但这是两个完全不同的β
+but these are two completely different Betas.
+
+60
+00:03:49,630 --> 00:03:53,300
+我在两种情况下都决定使用β
+I decided to stick with Beta on in both cases,
+
+61
+00:03:53,300 --> 00:03:55,114
+以便你阅读那些原创的论文
+in case you read the original papers.
+
+62
+00:03:55,114 --> 00:03:58,535
+但β^[1] β^[2] 等等
+But the Beta 1,Beta 2, and so on,
+
+63
+00:03:58,535 --> 00:04:02,650
+Batch归一化试图去学习β和
+that Batch Norm tries to learn is a different Beta than
+
+64
+00:04:02,650 --> 00:04:10,055
+用于momentum、the Adam、RMS prop算法中的β不同
+the hyperparameter Beta used in momentum and the Adam and RMSprop algorithms.
+
+65
+00:04:10,055 --> 00:04:14,795
+所以现在 这是你算法的新参数
+So now that these are the new parameters of your algorithm,
+
+66
+00:04:14,795 --> 00:04:18,065
+接下来你可以使用想用的任一种优化法
+you would then use whether optimization you want,
+
+67
+00:04:18,065 --> 00:04:21,710
+比如 创造下降来应用它
+such as creating descent in order to implement it.
+
+68
+00:04:21,710 --> 00:04:26,885
+举个例子 对于给定层 你会计算dβ^[l]
+So for example, you might compute d Beta l for a given layer,
+
+69
+00:04:26,885 --> 00:04:28,720
+接着 更新参数β为β^[l]
+and then update the parameters Beta,
+
+70
+00:04:28,720 --> 00:04:34,270
+即为β^[l]-αdβ^[l]
+gets updated as Beta minus learning rate times D Beta L.
+
+71
+00:04:34,270 --> 00:04:39,415
+你也可以使用Adam或 RMS prop或 momentum
+And you can also use Adam or RMS prop or momentum
+
+72
+00:04:39,415 --> 00:04:43,405
+以更新参数β和γ
+in order to update the parameters Beta and Gamma,
+
+73
+00:04:43,405 --> 00:04:45,575
+并不只用创造下降法
+not just creating descent.
+
+74
+00:04:45,575 --> 00:04:48,065
+即使在之前的视频中
+And even though in the previous video,
+
+75
+00:04:48,065 --> 00:04:51,570
+我已经解释过Batch归一化是怎么操作的
+I had explained what the Batch Norm operation does,
+
+76
+00:04:51,570 --> 00:04:55,590
+计算均值和方差 减去 再被它们除
+computes mean and variances and subtracts and divides by them.
+
+77
+00:04:55,590 --> 00:05:00,625
+如果它们使用的是深度学习编程框架
+If they are using a Deep Learning Programming Framework,
+
+78
+00:05:00,625 --> 00:05:02,485
+通常 你不必自己
+usually you won't have to
+
+79
+00:05:02,485 --> 00:05:06,485
+把Batch归一化步骤应用于Batch归一化层
+implement the Batch Norm step on Batch Norm layer yourself.
+
+80
+00:05:06,485 --> 00:05:07,840
+因此 探究框架
+So the probing frameworks,
+
+81
+00:05:07,840 --> 00:05:09,990
+可写成一行代码
+can be sub one line of code.
+
+82
+00:05:09,990 --> 00:05:13,140
+比如说 在TensorFlow框架中
+So for example, in the TensorFlow framework,
+
+83
+00:05:13,140 --> 00:05:17,490
+你可以用这个函数来实现Batch归一化
+you can implement Batch Normalization, you know, with this function.
+
+84
+00:05:17,490 --> 00:05:19,530
+我们会稍后讲解
+We'll talk more about probing frameworks later,
+
+85
+00:05:19,530 --> 00:05:24,435
+但实践中 你不必自己操作所有这些具体的细节
+but in practice you might not end up needing to implement all these details yourself,
+
+86
+00:05:24,435 --> 00:05:29,480
+但知道它是如何作用的
+but self-aware of knowing how it works
+
+87
+00:05:29,480 --> 00:05:30,930
+这样 你会更好的理解代码的作用
+so that you can get a better understanding of what your code is doing.
+
+88
+00:05:30,930 --> 00:05:33,205
+但在深度学习框架中 Batch归一化的过程
+But implementing Batch Norm is often，you know,
+
+89
+00:05:33,230 --> 00:05:36,805
+经常是类似一行代码的东西
+something like one line of code in the deep learning frameworks.
+
+90
+00:05:36,805 --> 00:05:39,560
+所以 到目前为止 我们已经讲了Batch归一化
+Now, so far, we've talked about Batch Norm
+
+91
+00:05:39,560 --> 00:05:42,560
+就像你在整个训练站点上训练一样
+as if you were training on your entire training site at the other time
+
+92
+00:05:42,560 --> 00:05:45,390
+或就像你正在使用Batch梯度下降
+as if you are using Batch gradient descent.
+
+93
+00:05:45,390 --> 00:05:46,500
+实践中
+In practice,
+
+94
+00:05:46,500 --> 00:05:51,720
+Batch归一化通常和训练集的mini-batch一起使用
+Batch Norm is usually applied with mini-batches of your training set.
+
+95
+00:05:51,720 --> 00:05:53,360
+你应用Batch归一化的方式就是
+So the way you actually apply Batch Norm is
+
+96
+00:05:53,360 --> 00:05:59,830
+你用第一个mini-batch然后计算z^[1]
+you take your first mini-batch and compute z1.
+
+97
+00:05:59,830 --> 00:06:03,460
+这和上张幻灯片上我们所做的一样  应用参数w^[1] b^[1]
+Same as we did on the previous slide using the parameters w1,b1
+
+98
+00:06:03,460 --> 00:06:07,365
+使用这个mini-batch
+and then you take just this mini-batch and
+
+99
+00:06:07,365 --> 00:06:08,260
+在其上计算z^[1]的均值和方差
+compute mean and variance of the Z1 on just this mini batch
+
+100
+00:06:08,260 --> 00:06:14,695
+接着 继续第二个mini-batch x^
+and then goes to the second mini-batch x2,
+
+101
+00:06:14,695 --> 00:06:21,580
+接着Batch归一化会减去均值 除以标准差
+and then Batch Norm would subtract by the mean and divide by the standard deviation
+
+102
+00:06:21,580 --> 00:06:24,490
+由β^[1] γ^[1]重新缩放 这样就得到了z^[1]
+and then re-scale by Beta 1, Gamma 1, to give you z1,
+
+103
+00:06:24,490 --> 00:06:27,375
+而所有的这些都是在第一个mini-batch的基础上
+and all this is on the first mini-batch,
+
+104
+00:06:27,375 --> 00:06:33,325
+你再应用激活函数得到a^[1]
+then you apply the activation function to get A1,
+
+105
+00:06:33,325 --> 00:06:41,190
+然后用w^[2] b^[2]计算z^[2] 等等
+and then you compute z2 using w2,b2, and so on.
+
+106
+00:06:41,190 --> 00:06:45,360
+所以你做的这一切都是为了
+So you do all this in order to
+
+107
+00:06:45,360 --> 00:06:50,660
+在第一个mini-batch上进行一步梯度下降法
+
+108
+00:06:50,660 --> 00:06:52,190
+做类似的工作
+and you do something similar
+
+109
+00:06:52,190 --> 00:06:55,885
+你会在第二个mini-batch上计算z^[1]
+where you will now compute z1 on the second mini-batch
+
+110
+00:06:55,890 --> 00:06:59,085
+然后用Batch归一化来计算z^[1] tilde
+and then use Batch Norm to compute z1 tilde.
+
+111
+00:06:59,085 --> 00:07:02,390
+所以在Batch归一化的此步中
+And so here in this Batch Norm step,
+
+112
+00:07:02,390 --> 00:07:08,890
+你用第二个mini-batch中的数据使z̃归一化
+You would be normalizing z tilde using just the data in your second mini-batch,
+
+113
+00:07:08,890 --> 00:07:10,640
+这里的Batch归一化步骤也是如此
+so does Batch Norm step here.
+
+114
+00:07:10,640 --> 00:07:13,580
+让我们来看看在第二个mini-batch中的例子
+Let's look at the examples in your second mini-batch,
+
+115
+00:07:13,580 --> 00:07:18,320
+在mini-batch上计算z^[1]的均值和方差
+computing the mean and variances of the z1's on just that mini-batch and
+
+116
+00:07:18,320 --> 00:07:24,175
+重新缩放的β和γ得到z̃等等
+re-scaling by Beta and Gamma to get z tilde, and so on.
+
+117
+00:07:24,175 --> 00:07:28,840
+然后在第三个mini-batch上同样这样做 继续训练
+And you do this with a third mini-batch, and keep training.
+
+118
+00:07:28,840 --> 00:07:34,415
+现在 我想澄清此参数化的一个细节
+Now, there's one detail to the parameterization that I want to clean up,
+
+119
+00:07:34,415 --> 00:07:38,990
+先前 我说过每层的参数是w^[l] b^[1]
+which is previously, I said that the parameters was wl, bl,
+
+120
+00:07:38,990 --> 00:07:44,640
+还有β^[l]和γ^[l]
+for each layer as well as Beta l, and Gamma l.
+
+121
+00:07:44,640 --> 00:07:50,900
+请注意计算z的方式如下
+Now notice that the way Z was computed is as follows,
+
+122
+00:07:50,900 --> 00:08:00,590
+z^[l]=w^[l]a^[l-1]+b^[l] 但Batch归一化做的是
+zl= wl x a of l - 1 + b of l. But what Batch Norm does,
+
+123
+00:08:00,590 --> 00:08:01,985
+它要看这个mini-batch
+is it is going to look at the mini-batch
+
+124
+00:08:01,985 --> 00:08:06,515
+先将z^[l]归一化 结果为均值0和标准方差
+and normalize zl to first of mean 0 and standard variance,
+
+125
+00:08:06,515 --> 00:08:09,275
+再由β和γ重缩放
+and then a rescale by Beta and Gamma.
+
+126
+00:08:09,275 --> 00:08:10,745
+但这意味着
+But what that means is that,
+
+127
+00:08:10,745 --> 00:08:15,125
+无论b^[l]的值是多少 都是要被减去的
+whatever is the value of bl is actually going to just get subtracted out,
+
+128
+00:08:15,125 --> 00:08:17,735
+因为在Batch归一化的过程中
+because during that Batch Normalization step,
+
+129
+00:08:17,735 --> 00:08:22,090
+你要计算z^[l]的均值 再减去平均值
+you are going to compute the means of the zl's and subtract the mean.
+
+130
+00:08:22,090 --> 00:08:27,675
+在此例的mini-batch中增加任何常数
+And so adding any constant to all of the examples in the mini-batch,
+
+131
+00:08:27,675 --> 00:08:28,865
+数值都不会改变
+it doesn't change anything.
+
+132
+00:08:28,865 --> 00:08:34,170
+因为加上的任何常数都将会被均值减法所抵消
+Because any constant you add will get cancelled out by the mean subtractions step.
+
+133
+00:08:34,170 --> 00:08:35,960
+所以 如果你在使用Batch归一化
+So, if you're using Batch Norm,
+
+134
+00:08:35,960 --> 00:08:38,225
+其实你可以消除这个参数
+you can actually that parameter,
+
+135
+00:08:38,225 --> 00:08:42,020
+或者你也可以 暂时把它设置为0
+or if you want, think of it as setting it permanently to 0.
+
+136
+00:08:42,020 --> 00:08:49,235
+那么 参数化变成z^[l]=w^[l]a^[l-1]
+So then the parameterization becomes zl is just wl x al - 1,
+
+137
+00:08:49,235 --> 00:08:54,375
+然后你计算归一化的z^[l]
+And then you compute zl normalized,
+
+138
+00:08:54,375 --> 00:09:04,610
+z̃=γ^[l]z^[l]+β^[l]
+and we compute z tilde = Gamma zl+ Beta,
+
+139
+00:09:04,610 --> 00:09:06,080
+你最后会用参数β^[l]
+you end up using this parameter Beta L
+
+140
+00:09:06,080 --> 00:09:11,080
+以便决定z̃^[l]的取值
+in order to decide what's the mean of z tilde l.
+
+141
+00:09:11,095 --> 00:09:15,095
+这就是原因
+Which is why guess post in this layer.
+
+142
+00:09:15,095 --> 00:09:16,430
+所以 总结一下
+So just to recap,
+
+143
+00:09:16,430 --> 00:09:24,020
+因为Batch归一化0超过了此层z^[l]的均值
+because Batch Norm zeroes out the mean of these zl values in the layer,
+
+144
+00:09:24,020 --> 00:09:27,445
+b^[l]这个参数没有意义
+there's no point having this parameter bl,
+
+145
+00:09:27,445 --> 00:09:29,400
+所以你必须去掉它
+and so you must get rid of it,
+
+146
+00:09:29,400 --> 00:09:32,330
+由β^[l]替代
+and instead is sort of replaced by Beta l,
+
+147
+00:09:32,330 --> 00:09:39,050
+这是个控制参数 会影响转移或偏置条件
+which is a parameter that controls that ends up affecting the shift or the biased terms.
+
+148
+00:09:39,050 --> 00:09:43,250
+最后 请记住z^[l]的维数
+Finally, remember that the dimension of zl,
+
+149
+00:09:43,250 --> 00:09:45,255
+因为在这个例子中
+because if you're doing this on one example,
+
+150
+00:09:45,255 --> 00:09:48,255
+维数会是(n^[l] 1)
+it's going to be nl by 1,
+
+151
+00:09:48,255 --> 00:09:53,270
+b^[l]的尺寸 (n^[l] 1)
+and so bl had a dimension, nl by one,
+
+152
+00:09:53,270 --> 00:09:56,365
+如果 是l层隐藏单元的数量
+if nl was the number of hidden units in layer l.
+
+153
+00:09:56,365 --> 00:10:00,230
+那β^[l]和γ^[l]的维度
+And so the dimension of Beta l and Gamma l
+
+154
+00:10:00,230 --> 00:10:07,575
+也是(n^[l] 1) 因为这是你有的隐藏层的数量
+is also going to be nl by 1 because that's the number of hidden units you have.
+
+155
+00:10:07,575 --> 00:10:12,555
+你有n^[l] 隐藏单元 所以β^[l]和γ^[l]用来
+You have nl hidden units, and so Beta l and Gamma l are used to
+
+156
+00:10:12,555 --> 00:10:14,670
+将每个隐藏层的均值和方差缩放为
+scale the mean and variance of each of the hidden units
+
+157
+00:10:14,670 --> 00:10:19,195
+网络想要的值
+to whatever the network wants to set them to.
+
+158
+00:10:19,195 --> 00:10:21,990
+让我们总结一下
+So, let's pull all together and describe how
+
+159
+00:10:21,990 --> 00:10:25,195
+关于如何用Batch归一化来应用梯度下降法
+you can implement gradient descent using Batch Norm.
+
+160
+00:10:25,195 --> 00:10:28,925
+假设你在使用mini-batch梯度下降法
+Assuming you're using mini-batch gradient descent,
+
+161
+00:10:28,925 --> 00:10:34,245
+你运行同t等于1到batch数量的for循环
+it runs for t = 1 to the number of many batches.
+
+162
+00:10:34,245 --> 00:10:39,265
+你会应用正向prop于mini-batch x^
+You would implement forward prop on mini-batch xt
+
+163
+00:10:39,265 --> 00:10:44,635
+每个隐藏层都应用正向prop
+and doing forward prop in each hidden layer,
+
+164
+00:10:44,635 --> 00:10:52,330
+用Batch归一化替代z^[l] 为z̃^[l]
+use Batch Norm to replace zl with z tilde l.
+
+165
+00:10:52,330 --> 00:10:57,265
+接下来 它确保在这个mini-batch中
+And so then it ensures that within that mini-batch,
+
+166
+00:10:57,265 --> 00:11:00,810
+z值有归一化的均值和方差
+the value z end up with some normalized mean and variance
+
+167
+00:11:00,810 --> 00:11:09,200
+归一化均值和方差是z̃^[l]
+and the values and the version of the normalized mean and variance is this z tilde l.
+
+168
+00:11:11,200 --> 00:11:17,025
+然后 你用反向prop计算dw^[l]  db^[l]
+And then, you use back prop to compute dw,db,
+
+169
+00:11:17,025 --> 00:11:23,530
+及l的所有值dβ^[l] dγ^[l]
+for all the values of l,d Beta, d Gamma.
+
+170
+00:11:23,530 --> 00:11:26,805
+尽管 严格来说 因为你要去掉b
+Although, technically, since you have got to get rid of b,
+
+171
+00:11:26,805 --> 00:11:28,494
+这部分其实已经去掉了
+this actually now goes away.
+
+172
+00:11:28,494 --> 00:11:33,595
+最后 你更新这些参数
+And then finally, you update the parameters.
+
+173
+00:11:33,595 --> 00:11:40,085
+w^[l]=w^[l]- αdw^[l] 和以前一样
+So, w gets updated as w minus the learning rate times dw, as usual,
+
+174
+00:11:40,085 --> 00:11:47,775
+β^[l]=β^[l]- αdβ^[l]
+Beta gets updated as Beta minus learning rate times dβ,
+
+175
+00:11:47,775 --> 00:11:49,595
+对于γ也是如此
+and similarly for Gamma.
+
+176
+00:11:49,595 --> 00:11:52,770
+如果你已将梯度计算如下
+And if you have computed the gradient as follows,
+
+177
+00:11:52,770 --> 00:11:54,805
+你就可以使用梯度下降法了
+you could use gradient descent.
+
+178
+00:11:54,805 --> 00:11:56,910
+这就是我写到这里的
+That's what I've written down here,
+
+179
+00:11:56,910 --> 00:12:07,200
+但这也适用于有momentum、RMSprop、Adam的梯度下降法
+but this also works with gradient descent with momentum,or RMSprop, or Adam.
+
+180
+00:12:07,200 --> 00:12:09,890
+与其使用梯度下降法更新mini-batch
+Where instead of taking this gradient descent update mini-batch
+
+181
+00:12:09,890 --> 00:12:14,220
+你可以用这些其它的算法来更新
+you could use the updates given by these other algorithms
+
+182
+00:12:14,220 --> 00:12:16,615
+我们在之前几星期视频中讨论过的
+as we discussed in the previous week's videos.
+
+183
+00:12:16,615 --> 00:12:18,790
+也可以应用其它的一些优化算法
+Some of these other optimization algorithms as well can be used
+
+184
+00:12:18,790 --> 00:12:25,730
+来更新由Batch归一化添加到算法中的β和γ参数
+to update the parameters Beta and Gamma that Batch Norm added to algorithm.
+
+185
+00:12:25,730 --> 00:12:26,980
+我希望 你能学会
+So, I hope that gives you a sense of
+
+186
+00:12:26,980 --> 00:12:30,375
+如何从头开始应用Batch归一化 如果你想的话
+how you could implement Batch Norm from scratch if you wanted to.
+
+187
+00:12:30,375 --> 00:12:32,930
+如果你使用深度学习编程框架之一
+If you're using one of the Deep Learning Programming frameworks
+
+188
+00:12:32,930 --> 00:12:34,455
+我们之后会谈到
+which we will talk more about later,
+
+189
+00:12:34,455 --> 00:12:37,700
+希望 你可以直接叫别人应用于
+hopefully you can just call someone else's implementation in
+
+190
+00:12:37,700 --> 00:12:41,720
+编程框架 这会使Batch归一化的使用变得很容易
+the Programming framework which will make using Batch Norm much easier.
+
+191
+00:12:41,720 --> 00:12:44,515
+现在 以防Batch归一化仍然看起来有些神秘
+Now, in case Batch Norm still seems a little bit mysterious
+
+192
+00:12:44,515 --> 00:12:49,375
+尤其是你还不清楚为什么其能如此显著的加速训练
+if you're still not quite sure why it speeds up training so dramatically,
+
+193
+00:12:49,375 --> 00:12:52,140
+我们下一个视频中 会谈到
+let's go to the next video and talk more about
+
+194
+00:12:52,140 --> 00:12:55,210
+Batch归一化为何效果如此显著 它到底在做什么
+why Batch Norm really works and what it is really doing.
+
