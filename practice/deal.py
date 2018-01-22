@@ -64,7 +64,7 @@ def deleteln(infile, outfile):
 
 # 调用示例
 if __name__ == "__main__":
-	filename = "3_7"
+	filename = "1_12"
 	delblankline(filename, "no.txt")
 	addPunctuation(filename +"no", "ch.txt")
 	deleteln(filename+"noch","ch.txt")
