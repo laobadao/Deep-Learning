@@ -88,7 +88,7 @@ def load_vgg_model(path):
         W = wb[0][0]
         b = wb[0][1]
         layer_name = vgg_layers[0][layer][0][0][0][0]
-        assert any(layer_name == expected_layer_name)
+        assert layer_name == expected_layer_name
         return W, b
 
         return W, b
