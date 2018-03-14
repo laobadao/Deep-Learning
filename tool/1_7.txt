@@ -1,0 +1,617 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:01.740
+For most of this week,
+
+2
+00:00:01.740 --> 00:00:04.719
+you've been working with the sequence to sequence model,
+
+3
+00:00:04.719 --> 00:00:08.730
+where an encoder RNN reads in a sentence and then a decoder RNN outputs
+
+4
+00:00:08.730 --> 00:00:13.200
+a new sentence, maybe a translation.
+
+5
+00:00:13.200 --> 00:00:17.400
+One of the most significant ideas recently in deep learning has been
+
+6
+00:00:17.400 --> 00:00:22.710
+the idea of attention models which makes this encoder-decoder.
+
+7
+00:00:22.710 --> 00:00:25.765
+For most of this week,
+
+8
+00:00:25.765 --> 00:00:31.054
+you've been using a encoder-decoder architecture for machine translation,
+
+9
+00:00:31.054 --> 00:00:35.500
+where one RNN reads in a sentence and then different one outputs a sentence.
+
+10
+00:00:35.500 --> 00:00:38.013
+There's a modification to this called
+
+11
+00:00:38.013 --> 00:00:42.395
+the attention model that makes all this work much better.
+
+12
+00:00:42.395 --> 00:00:44.735
+The attention algorithm, the attention idea
+
+13
+00:00:44.735 --> 00:00:47.750
+has been one of the most influential ideas in deep learning.
+
+14
+00:00:47.750 --> 00:00:50.385
+Let's take a look at how that works.
+
+15
+00:00:50.385 --> 00:00:51.905
+A huge weakness of
+
+16
+00:00:51.905 --> 00:00:59.055
+this basic encoder-decoder architecture is that it's not great at long sentences.
+
+17
+00:00:59.055 --> 00:01:02.746
+So, given very long french sentence like this,
+
+18
+00:01:02.746 --> 00:01:07.175
+what we are asking this green encoder neural network to do is to read in
+
+19
+00:01:07.175 --> 00:01:10.280
+the whole sentence and then memorize the whole sentences and store
+
+20
+00:01:10.280 --> 00:01:13.695
+it in the activations conveyed here.
+
+21
+00:01:13.695 --> 00:01:17.065
+And then for the purple that wrote the decoder network to
+
+22
+00:01:17.065 --> 00:01:20.665
+then generate the English translation.
+
+23
+00:01:20.665 --> 00:01:21.470
+Jane went to Africa last September and enjoyed the culture and met many wonderful people,
+
+24
+00:01:21.470 --> 00:01:26.990
+she came back raving about how wonderful her trip was and is tempting me to go too.
+
+25
+00:01:26.990 --> 00:01:35.975
+Now, the way a human translator
+
+26
+00:01:35.975 --> 00:01:39.380
+would translate the sentence is not to first read
+
+27
+00:01:39.380 --> 00:01:42.215
+the whole phrase sentence and then memorize the whole thing
+
+28
+00:01:42.215 --> 00:01:45.444
+and then regurgitate an English sentence from scratch.
+
+29
+00:01:45.444 --> 00:01:50.801
+Instead, what a human translator would do is read the first part of it,
+
+30
+00:01:50.801 --> 00:01:53.455
+maybe generate part of the translation,
+
+31
+00:01:53.455 --> 00:01:55.018
+you'll look at the second part,
+
+32
+00:01:55.018 --> 00:01:56.240
+generate a few more words,
+
+33
+00:01:56.240 --> 00:01:59.400
+look at a few more words, generate a few more words and so on.
+
+34
+00:01:59.400 --> 00:02:02.900
+You kind of work part by part through this sentence because it's just
+
+35
+00:02:02.900 --> 00:02:07.595
+really difficult to memorize the whole long sentence like that.
+
+36
+00:02:07.595 --> 00:02:10.025
+And so, what you see for
+
+37
+00:02:10.025 --> 00:02:16.890
+the encoder-decoder architecture above is that it works quite well for short sentences.
+
+38
+00:02:16.890 --> 00:02:19.420
+So it might achieve a relatively high bleu score.
+
+39
+00:02:19.420 --> 00:02:22.310
+But for very long sentences,
+
+40
+00:02:22.310 --> 00:02:29.497
+maybe longer than 30 or 40 words now the performance comes down.
+
+41
+00:02:29.497 --> 00:02:33.045
+So the blue score might look like this as
+
+42
+00:02:33.045 --> 00:02:38.286
+the sentence length varies and short sentences are just hard to translate,
+
+43
+00:02:38.286 --> 00:02:42.615
+hard to get all the words right and long sentences,
+
+44
+00:02:42.615 --> 00:02:45.330
+it doesn't do well on because it's just difficult to get
+
+45
+00:02:45.330 --> 00:02:49.540
+the neural network to memorize a super long sentence.
+
+46
+00:02:49.540 --> 00:02:53.340
+So in this and the next video,
+
+47
+00:02:53.340 --> 00:02:55.875
+you'll see the attention model,
+
+48
+00:02:55.875 --> 00:02:59.545
+which translates maybe a bit more like humans might looking at
+
+49
+00:02:59.545 --> 00:03:03.240
+part of a sentence at a time and with the attention model,
+
+50
+00:03:03.240 --> 00:03:06.285
+machine translation systems performance can look like
+
+51
+00:03:06.285 --> 00:03:10.560
+this because by working one part of the sentence at a time,
+
+52
+00:03:10.560 --> 00:03:13.260
+you don't see this huge dip which is
+
+53
+00:03:13.260 --> 00:03:16.350
+really measuring the ability of a neural network to memorize
+
+54
+00:03:16.350 --> 00:03:23.075
+a long sentence which maybe isn't what we most badly need a neural network to do.
+
+55
+00:03:23.075 --> 00:03:25.755
+So in this video,
+
+56
+00:03:25.755 --> 00:03:28.545
+I want to just give you some intuition
+
+57
+00:03:28.545 --> 00:03:32.665
+about how attention works and then we'll fetch all the details in the next video.
+
+58
+00:03:32.665 --> 00:03:45.941
+The attention model was due to Dzmitry Bahdanau,
+
+59
+00:03:45.941 --> 00:03:49.530
+Kyunghyun Cho, and Yoshua Bengio and
+
+60
+00:03:49.530 --> 00:03:53.045
+even though it was obviously developed for machine translation,
+
+61
+00:03:53.045 --> 00:03:56.434
+it spread to many other application areas as well.
+
+62
+00:03:56.434 --> 00:03:59.370
+And this is really a very influential and
+
+63
+00:03:59.370 --> 00:04:02.820
+a very seminal paper in the deep learning literature.
+
+64
+00:04:02.820 --> 00:04:06.270
+So let's illustrate this with a short sentence.
+
+65
+00:04:06.270 --> 00:04:09.525
+Even though these ideas were maybe developed more for
+
+66
+00:04:09.525 --> 00:04:14.360
+long sentences but it will be easier to illustrate his ideas through a simple example.
+
+67
+00:04:14.360 --> 00:04:15.910
+We have a usual sentence,
+
+68
+00:04:15.910 --> 00:04:22.830
+Jane visite L'Afrique en septembre and let's say that we use a RNN and in this case,
+
+69
+00:04:22.830 --> 00:04:29.310
+I'm going to use a bi-directional RNN in order to compute some set of
+
+70
+00:04:29.310 --> 00:04:33.130
+features for each of the input words and
+
+71
+00:04:33.130 --> 00:04:37.154
+here I've drawn a standard bi-directional RNN with outputs y1,
+
+72
+00:04:37.154 --> 00:04:43.640
+y2, y3, and so on up to y5 but we're not doing a word for word translation.
+
+73
+00:04:43.640 --> 00:04:48.410
+So, let me get rid of the ys on top.
+
+74
+00:04:55.540 --> 00:04:59.110
+By using a bi-directional RNN,
+
+75
+00:04:59.110 --> 00:05:01.349
+what we've done is for each of the words,
+
+76
+00:05:01.349 --> 00:05:04.380
+really for each of the five positions into a sentence,
+
+77
+00:05:04.380 --> 00:05:07.330
+you can compute a very rich set of features
+
+78
+00:05:07.330 --> 00:05:13.350
+about the words in the sentence and maybe surrounding words in every position.
+
+79
+00:05:13.350 --> 00:05:18.102
+Now, let's go ahead and generate the English translation.
+
+80
+00:05:18.102 --> 00:05:22.920
+We're going to use another RNN to generate the English translations.
+
+81
+00:05:22.920 --> 00:05:30.285
+So, here is my RNN node as usual and instead of using "a" to denote the activation,
+
+82
+00:05:30.285 --> 00:05:34.045
+in order to avoid confusion with the activations down here,
+
+83
+00:05:34.045 --> 00:05:35.790
+I'm just going to use a different notation.
+
+84
+00:05:35.790 --> 00:05:41.150
+I'm going to use "s" to denote the hidden state in this RNN up here.
+
+85
+00:05:41.150 --> 00:05:43.160
+So instead of writing a1,
+
+86
+00:05:43.160 --> 00:05:45.286
+I'm going to write s1.
+
+87
+00:05:45.286 --> 00:05:51.230
+And so, we hope in this model that the first word it generates will be Jane, right?
+
+88
+00:05:51.230 --> 00:05:55.794
+To generate Jane visits Africa in September.
+
+89
+00:05:55.794 --> 00:06:00.120
+Now, the question is when you're trying to generate this first word,
+
+90
+00:06:00.120 --> 00:06:05.735
+this output, what parts of the input French sentence she should be looking at?
+
+91
+00:06:05.735 --> 00:06:08.703
+Seems like you should be looking primarily at this first word.
+
+92
+00:06:08.703 --> 00:06:11.600
+Maybe a few other words close by but
+
+93
+00:06:11.600 --> 00:06:14.775
+you don't need to be looking way at the end of the sentence.
+
+94
+00:06:14.775 --> 00:06:23.645
+So what the attention model would be computing is a set of
+
+95
+00:06:23.645 --> 00:06:27.475
+attention waits and we're going to use
+
+96
+00:06:27.475 --> 00:06:34.443
+alpha 1,1 to denote when you're generating the first words,
+
+97
+00:06:34.443 --> 00:06:36.700
+how much should you be paying attention to
+
+98
+00:06:36.700 --> 00:06:43.510
+this first piece of information here and then we'll also come up
+
+99
+00:06:43.510 --> 00:06:47.700
+with a second that's called the attention wait
+
+100
+00:06:47.700 --> 00:06:53.274
+alpha 1,2 which tells us what we're trying to compute the first word hopefully Jane,
+
+101
+00:06:53.274 --> 00:06:57.925
+how much attention should we pay to
+
+102
+00:06:57.925 --> 00:07:05.080
+this second word from the inputs and so on and the alpha 1,3 and so on.
+
+103
+00:07:05.080 --> 00:07:08.310
+And together, this will tell us what is exactly
+
+104
+00:07:08.310 --> 00:07:12.630
+the context which want to know the C that we should be paying
+
+105
+00:07:12.630 --> 00:07:21.845
+attention to and that is input to this RNN unit to then try to generate the first words.
+
+106
+00:07:21.845 --> 00:07:23.715
+So that's one step of the RNN.
+
+107
+00:07:23.715 --> 00:07:27.580
+I will flesh on all these details in the next video.
+
+108
+00:07:27.580 --> 00:07:30.225
+For the second step of this RNN,
+
+109
+00:07:30.225 --> 00:07:32.730
+we're going to have
+
+110
+00:07:32.730 --> 00:07:38.295
+a new hidden state s2 and we're going to have a new set of attention waits.
+
+111
+00:07:38.295 --> 00:07:45.050
+So we're going to have alpha 2,1 to tell us where we're generating the second word.
+
+112
+00:07:45.050 --> 00:07:49.365
+I guess this would be visits maybe [inaudible] label.
+
+113
+00:07:49.365 --> 00:07:53.196
+How much should we paying attention to the first word in the French input and
+
+114
+00:07:53.196 --> 00:07:57.425
+also alpha 2,2 and so on?
+
+115
+00:07:57.425 --> 00:07:59.815
+How much should we be paying attention to the word visits?
+
+116
+00:07:59.815 --> 00:08:03.515
+How much should we pay attention to L'Afrique? And so on.
+
+117
+00:08:03.515 --> 00:08:08.351
+And of course, the first we generated Jane is also an input
+
+118
+00:08:08.351 --> 00:08:12.710
+to this and there were some contexts that we're paying attention to.
+
+119
+00:08:12.710 --> 00:08:15.980
+The second step, there's also an input and that together,
+
+120
+00:08:15.980 --> 00:08:19.370
+would generate the second word,
+
+121
+00:08:19.440 --> 00:08:24.440
+and that leads us to the third step s3,
+
+122
+00:08:24.440 --> 00:08:29.680
+where this is an input and we have some new context
+
+123
+00:08:29.680 --> 00:08:35.650
+C that depends on the various alpha 3 for the different time steps.
+
+124
+00:08:35.650 --> 00:08:39.600
+It tells us how much should we be paying attention to the different words from
+
+125
+00:08:39.600 --> 00:08:44.492
+the input French sentence and so on.
+
+126
+00:08:44.492 --> 00:08:47.625
+So, some things I haven't specified yet,
+
+127
+00:08:47.625 --> 00:08:50.895
+but that won't go further into detail in the next video
+
+128
+00:08:50.895 --> 00:08:54.290
+is how exactly does context defined
+
+129
+00:08:54.290 --> 00:08:57.600
+and the goal of the context is for the third word is really
+
+130
+00:08:57.600 --> 00:09:02.215
+should capture that maybe we should be looking around this part of the sentence.
+
+131
+00:09:02.215 --> 00:09:07.815
+And the formula you use to do that will defer
+
+132
+00:09:07.815 --> 00:09:14.760
+to next video as well as how do you compute these attention waits.
+
+133
+00:09:14.760 --> 00:09:19.980
+And you'll see in the next video that alpha 3,
+
+134
+00:09:19.980 --> 00:09:22.320
+t which is when you try to generate the third word,
+
+135
+00:09:22.320 --> 00:09:24.550
+I guess this be Africa,
+
+136
+00:09:24.550 --> 00:09:27.091
+just getting the right output,
+
+137
+00:09:27.091 --> 00:09:36.402
+the amounts that this RNN step should be paying attention to the French word at time t,
+
+138
+00:09:36.402 --> 00:09:44.380
+that depends on the activations of the bi-directional RNN at time t. So,
+
+139
+00:09:44.380 --> 00:09:48.570
+I guess it will depend on the forward activations and backward activations
+
+140
+00:09:48.570 --> 00:09:53.185
+at time t and it will depend on the state from the previous steps,
+
+141
+00:09:53.185 --> 00:09:57.705
+so it will depend on s2 and these things together will influence
+
+142
+00:09:57.705 --> 00:10:02.560
+how much you pay attention to a specific word in the input French sentence.
+
+143
+00:10:02.560 --> 00:10:05.685
+But we will flesh out all these details in the next video.
+
+144
+00:10:05.685 --> 00:10:12.190
+But the key intuition to take away is that this way the RNN matches
+
+145
+00:10:12.190 --> 00:10:18.825
+forward generating one word at a time until eventually it generates maybe the EOS,
+
+146
+00:10:18.825 --> 00:10:20.615
+and at every step,
+
+147
+00:10:20.615 --> 00:10:23.904
+there are these attention waits alpha t,
+
+148
+00:10:23.904 --> 00:10:29.470
+t prime that tells it when you're trying to generate the English word,
+
+149
+00:10:29.470 --> 00:10:35.320
+how much should you be paying attention to the t prime French word.
+
+150
+00:10:35.320 --> 00:10:42.460
+And this allows it on every timestep to look only maybe within a local window of
+
+151
+00:10:42.460 --> 00:10:48.893
+the French sentence to pay attention to when generating a specific English word.
+
+152
+00:10:48.893 --> 00:10:52.355
+So I hope this video conveys some intuition about
+
+153
+00:10:52.355 --> 00:10:57.430
+the attention model that you know I have a rough sense of maybe how the algorithm works.
+
+154
+00:10:57.430 --> 00:11:01.000
+Let's go on to the next video to flesh all the details of the attention model.
