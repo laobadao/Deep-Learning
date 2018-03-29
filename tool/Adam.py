@@ -165,20 +165,14 @@ def update_parameters_with_adam(parameters, grads, v, s, t, learning_rate = 0.01
         s["dW" + str(l+1)] = beta2 * s["dW" + str(l+1)] + (1 - beta2)*(grads["dW" + str(l+1)]**2)
 
 		# S_db
-        s["db" + str(l+1)] = beta2 * s["db" + str(l+1)] + (1 - beta2)*(grads["db"] + str(l+1)**2)
-
+        s["db" + str(l+1)] = beta2 * s["db" + str(l+1)] + (1 - beta2)*(grads["db" + str(l+1)]**2)
+        
 		# S_corrected dw
-        s_corrected["dW" +str(l+1)] = s_corrected["dW" + str(l+1)]/(1 - beta2**t)
+        s_corrected["dW" +str(l+1)] = s["dW" + str(l+1)]/(1 - beta2**t)
 
 		# S_corrected db
-        s_corrected["db" + str(l+1)] = s_corrected["db" + str(l+1)]/(1 - beta2**t)
+        s_corrected["db" + str(l+1)] = s["db" + str(l+1)]/(1 - beta2**t)
 
-        # W update
-        parameters["W" + str(l+1)] = parameters["W" + str(l+1)] - learning_rate * (v_corrected["dW" + str(l+1)]/(np.sqrt(s_corrected["dW" + str(l+1)]) + epsilon ))
-
-
-        # b update
-        parameters["b" + str(l+1)] = parameters["b" + str(l+1)] - learning_rate * (v_corrected["db" + str(l+1)]/(np.sqrt(s_corrected["db" + str(l+1)]) + epsilon ))
 
     return parameters, v, s
 
