@@ -1,0 +1,35 @@
+'''
+Adam 核心算法
+
+'''
+def update_parameters_with_adam(parameters, grads, v, s, t, learning_rate = 0.01, beta1 = 0.9, beta2 = 0.09, epsilon = 1e-8):
+    
+    L = len(parameters)//2 # 神经网络的层数
+    v_corrected = {}       # 初始化第一时刻的估计
+    s_corrected = {}       # 初始化第二时刻的估计 
+
+    # 更新所有层的参数 for loop 
+
+    for l in range(L):
+
+        # V_dw
+        v["dW" + str(l+1)] = beta1 * v["dW" + str(l+1)] + (1 - beta1) * grads["dW" + str(l+1)]
+
+		# V_db 
+        v["db" + str(l+1)] = beta1 * v["db" + str(l+1)] + (1 - beta1) * grads["db" + str(l+1)]
+		# V_corrected dw bias-corrected 偏差修正
+        
+
+	    # V_corrected db
+
+		# S_dw
+
+		# S_db
+
+		# S_corrected dw
+
+		# S_corrected db
+
+
+    
+
